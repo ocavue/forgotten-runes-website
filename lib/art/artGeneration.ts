@@ -84,6 +84,7 @@ export const wizardLayerNames = [
 
 export const tokenLayerNames: { [key: string]: string[] } = {
   wizards: wizardLayerNames,
+  souls: wizardLayerNames,
 };
 
 export type TraitsLayerDescription = {
