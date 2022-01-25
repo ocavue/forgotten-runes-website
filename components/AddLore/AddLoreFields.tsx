@@ -52,7 +52,7 @@ export const NSFWField = ({
   ...props
 }: {
   onChange: any;
-  name: string;
+  name?: string;
 }) => {
   // const [field, meta] = useField({ ...props, type: "checkbox" });
   const [checked, setChecked] = useState(false);
@@ -92,37 +92,6 @@ export const NSFWField = ({
           name={props.name}
           // {...field}
           // {...props}
-        />
-      </label>
-    </InlineFieldStyles>
-  );
-};
-
-export const PixelArtField = ({ ...props }: { name: string }) => {
-  // const [field, meta] = useField({ ...props, type: "checkbox" });
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <InlineFieldStyles>
-      <h3>
-        Pixel Art?
-        <HelpTooltip>
-          Pixel Art requires a special style of rendering for sharp edges. Check
-          this box if your Artifact is pixel art
-        </HelpTooltip>
-      </h3>
-      <label className="checkbox-input">
-        {/* <input type="checkbox" {...field} {...props} /> */}
-        <Switch
-          onChange={() => setChecked(!checked)}
-          checked={checked}
-          uncheckedIcon={false}
-          width={40}
-          height={22}
-          offColor={"#494949"}
-          onColor={"#65D36E"}
-          offHandleColor={"#a7a7a7"}
-          name={props.name}
         />
       </label>
     </InlineFieldStyles>

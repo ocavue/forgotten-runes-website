@@ -15,6 +15,12 @@ import axios from "axios";
 import { Flex } from "rebass";
 import { ethers } from "ethers";
 import { getLoreUrl } from "../Lore/loreUtils";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { WizardConfiguration } from "./WizardPicker";
+import { useEthers } from "@usedapp/core";
+import { getTokenName } from "../../lib/nftUtilis";
+import { fetchFromIpfs } from "../../lib/web3Utils";
 
 export const pinFileToIPFS = async (
   base64string: string,
@@ -414,6 +420,383 @@ export const onSubmitAddLoreForm = async ({
   return true;
 };
 
+export const useExistingLoreData = () => {
+  const router = useRouter();
+  const editLoreIndex = router?.query.loreIndex;
+  const editTokenId = router.query?.tokenId;
+  const editTokenAddress = router.query?.tokenAddress;
+
+  const isEditMode = editTokenId && editLoreIndex && editTokenAddress;
+
+  const [existingLoreToken, setExistingLoreToken] =
+    useState<WizardConfiguration>();
+  const [existingLore, setExistingLore] = useState<string>();
+  const [existingLoreBgColor, setExistingLoreBgColor] = useState<string>();
+  const [existingLoreError, setExistingLoreError] = useState<string>();
+
+  const { library } = useEthers();
+
+  useEffect(() => {
+    if (!existingLoreToken && isEditMode) {
+      setExistingLoreToken({
+        tokenId: editTokenId as string,
+        tokenAddress: editTokenAddress as string,
+        name: getTokenName(editTokenId as string, editTokenAddress as string),
+      });
+    }
+  }, [isEditMode, existingLoreToken]);
+
+  useEffect(() => {
+    async function fetchCurrentLore() {
+      console.log(
+        `Fetching existing lore for: ${existingLoreToken?.tokenAddress}-${existingLoreToken?.tokenId}`
+      );
+
+      const contract = await getBookOfLoreContract({
+        provider: library,
+      });
+
+      const loreEntry = await contract.tokenLore(
+        existingLoreToken?.tokenAddress,
+        existingLoreToken?.tokenId,
+        editLoreIndex
+      );
+
+      console.log(`Got lore entry: ${loreEntry}`);
+
+      const loreMetadataURI = loreEntry?.loreMetadataURI;
+
+      if (!loreMetadataURI) return;
+
+      try {
+        const loreData = await fetchFromIpfs(loreMetadataURI);
+
+        if (loreData && loreData?.description) {
+          setExistingLore(loreData?.description);
+          setExistingLoreBgColor(loreData?.background_color ?? "#000000");
+        }
+      } catch (e: any) {
+        console.error(e);
+        setExistingLoreError(e.message);
+      }
+    }
+
+    const isEmpty = !existingLore;
+
+    if (isEditMode && isEmpty && library && existingLoreToken) {
+      fetchCurrentLore();
+    }
+  }, [isEditMode, existingLoreToken, existingLore, library]);
+
+  return {
+    isEditMode,
+    existingLoreToken,
+    existingLoreIndex: editLoreIndex,
+    existingLore,
+    existingLoreBgColor,
+    existingLoreError,
+  };
+};
+
+export const pinFileToIpfs = async (
+  file: File,
+  tokenId: number,
+  tokenContract: string
+) => {
+  const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+
+  //we gather a local file for this example, but any valid readStream source will work here.
+  let data = new FormData();
+  data.append("file", file);
+
+  data.append(
+    "pinataMetadata",
+    JSON.stringify({
+      name: "LoreImage",
+      keyvalues: {
+        token_id: tokenId,
+        token_contract: tokenContract,
+      },
+    })
+  );
+
+  const uploadResponse = await axios.post(url, data, {
+    maxBodyLength: Infinity, //this is needed to prevent axios from erroring out with large files
+    headers: {
+      // @ts-ignore
+      "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+      pinata_api_key: process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_ID,
+      pinata_secret_api_key:
+        process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_SECRET_KEY,
+    },
+  });
+
+  if (uploadResponse.status !== 200 && uploadResponse.status !== 201) {
+    console.error(uploadResponse);
+    throw Error(`Unable to upload image to ipfs: ${uploadResponse.statusText}`);
+  }
+
+  return uploadResponse.data;
+};
+
+export const submitV2Lore = async ({
+  nsfw,
+  tokenId,
+  tokenContract,
+  loreIndex,
+  setErrorMessage,
+  setSubmitting,
+  body,
+  title,
+  bgColor,
+  provider,
+  router,
+}: any) => {
+  console.log("onSubmit", tokenId);
+  setErrorMessage(null);
+
+  if (!body) {
+    toast.error(`Sorry, there was a problem: need either story to submit`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    setErrorMessage("Need a story to be present");
+    return false;
+  }
+
+  setSubmitting(true);
+
+  const { chainId } = await provider.getNetwork();
+  const appChainId = process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID || 4; // Rinkeby default
+  const network = NETWORK(parseInt(appChainId as string));
+  const appChainName = network?.name || "rinkeby";
+
+  // console.log("appChainId: ", appChainId);
+  // console.log("chainId: ", chainId);
+
+  if (chainId.toString() !== appChainId.toString()) {
+    toast.error(
+      `Wrong Network. Please change your network to ${appChainName} and try again`,
+      {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      }
+    );
+    setSubmitting(false);
+    return false;
+  }
+
+  const signer = provider.getSigner();
+
+  const loreContract = await getBookOfLoreContract({
+    provider: provider,
+  });
+
+  toast.info("Signing wizard ID to verify ownership...", {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: false,
+    progress: undefined,
+  });
+
+  let signature: string;
+
+  try {
+    // Note: we can't use signer.signMessage as it doesn't work consistently across wallets: https://github.com/ethers-io/ethers.js/issues/1840
+    signature = await provider.send("personal_sign", [
+      ethers.utils.hexlify(ethers.utils.toUtf8Bytes(tokenId.toString())),
+      (await signer.getAddress()).toLowerCase(),
+    ]);
+  } catch (err: any) {
+    console.log("err: ", err);
+    toast.error(`Sorry, there was a problem when signing: ${err.message}`, {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    setSubmitting(false);
+    return false;
+  }
+
+  toast.dismiss();
+
+  toast.info("Uploading lore...", {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: false,
+    progress: undefined,
+  });
+
+  let loreBody: LoreAPISubmitParams = {
+    token_address: tokenContract,
+    token_id: tokenId,
+    signature: signature,
+    title: title,
+    story: body,
+    pixel_art: false,
+    bg_color: bgColor,
+  };
+
+  console.log("loreBody: ", loreBody);
+  let response, apiResponse;
+
+  try {
+    response = await fetch("/api/lore", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loreBody),
+    });
+
+    apiResponse = await response.json();
+  } catch (err: any) {
+    console.error(err);
+    toast.dismiss();
+    toast.error(`Sorry, there was a problem: ${err?.message}`, {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    setSubmitting(false);
+    return false;
+  }
+
+  toast.dismiss();
+
+  if (response.status !== 201 && response.status !== 200) {
+    console.error(apiResponse);
+
+    toast.error(`Sorry, there was a problem with IPFS upload`, {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    setSubmitting(false);
+    return false;
+  }
+
+  console.log(apiResponse);
+
+  try {
+    let toastMsg = "Confirming your lore on chain";
+    let txToastId = toast.info(toastMsg, {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: false,
+      progress: 0,
+    });
+    const connectedLoreContract = await loreContract
+      //@ts-ignore
+      .connect(signer);
+    const tx = loreIndex
+      ? await connectedLoreContract.updateLoreMetadataURI(
+          tokenContract,
+          tokenId,
+          loreIndex,
+          `ipfs://${apiResponse.hash}`
+        )
+      : await connectedLoreContract.addLore(
+          tokenContract,
+          tokenId,
+          0,
+          nsfw,
+          `ipfs://${apiResponse.hash}`,
+          { gasLimit: 300000 } //TODO: actual gas limit
+        );
+
+    console.log("tx: ", tx);
+    // TODO: this should read the connected network and use that block explorer, not an environment variable
+    const etherscanURL = `${process.env.NEXT_PUBLIC_REACT_APP_BLOCK_EXPLORER}/tx/${tx.hash}`;
+
+    toast.update(txToastId, {
+      render: () => (
+        <Flex flexDirection={"column"}>
+          <p>{toastMsg}</p>
+          <p>
+            <a href={etherscanURL} target="_blank">
+              View on Etherscan
+            </a>
+          </p>
+        </Flex>
+      ),
+      type: toast.TYPE.INFO,
+    });
+
+    const receipt = await tx.wait();
+    console.log(`receipt: ${JSON.stringify(receipt)}`);
+
+    if (receipt.status === 1) {
+      await router.push(
+        `/lore/add?waitForTxHash=${receipt.transactionHash}&tokenId=${tokenId}&tokenAddress=${tokenContract}`
+      );
+      //
+    } else {
+      toast.update(txToastId, {
+        render: () => (
+          <div>
+            <p>{`Sorry, it appears your transaction may have failed (?)`}</p>
+            <p>
+              <a href={etherscanURL} target="_blank">
+                View on Etherscan
+              </a>
+            </p>
+          </div>
+        ),
+        type: toast.TYPE.ERROR,
+      });
+      setSubmitting(false);
+      return false;
+    }
+  } catch (err: any) {
+    console.log("err: ", err);
+    toast.error(`Sorry, there was a problem: ${err.message}`, {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    setSubmitting(false);
+    return false;
+  }
+
+  setSubmitting(false);
+  return true;
+};
+
 export type ImageUploadAPIParams = {
   address: string;
   signature: string;
@@ -495,8 +878,8 @@ export async function uploadBookOfLoreImages({
   });
   toast.done(toastId);
 }
-export const titlePrompts = ["The Lore of"];
 
+export const titlePrompts = ["The Lore of"];
 export const storyPrompts = [`Delete this text and write your Lore here`];
 
 export const getPendingLoreTxHashRedirection = async ({
@@ -512,14 +895,14 @@ export const getPendingLoreTxHashRedirection = async ({
 }) => {
   const { data } = await client.query({
     query: gql`
-          query Lore{
-              lores(where: { struck: false, nsfw: false, txHash: "${waitForTxHash}" }) {
-                  id
-                  index
-                  txHash
-              }
-          }
-      `,
+        query Lore{
+            lores(where: { struck: false, nsfw: false, txHash: "${waitForTxHash}" }) {
+                id
+                index
+                txHash
+            }
+        }
+    `,
     fetchPolicy: "no-cache",
   });
   console.log(data);

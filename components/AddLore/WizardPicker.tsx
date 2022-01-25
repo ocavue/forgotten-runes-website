@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { EmptyWell } from "../ui/EmptyWell";
 import { ConnectWalletButton } from "../web3/ConnectWalletButton";
-import { useMst } from "../../store";
-import { observer } from "mobx-react-lite";
 import {
   CHARACTER_CONTRACTS,
+  FORGOTTEN_PONIES_ADDRESS,
   getSoulsContract,
   getWizardsContract,
 } from "../../contracts/ForgottenRunesWizardsCultContract";
@@ -16,9 +15,16 @@ import WizardCard from "../WizardCard";
 import productionWizardData from "../../data/nfts-prod.json";
 import productionSoulsData from "../../data/souls-prod.json";
 import stagingSoulsData from "../../data/souls-staging.json";
+import productionPoniesData from "../../data/ponies-prod.json";
 
 import { BigNumber } from "ethers";
 import { useEthers } from "@usedapp/core";
+import {
+  Contract as EthCallContract,
+  Provider as EthCallProvider,
+} from "ethcall";
+import { PONIES_ABI } from "../../contracts/abis";
+import { Network, Web3Provider } from "@ethersproject/providers";
 
 const wizData = productionWizardData as { [wizardId: string]: any };
 const soulsData = (
@@ -26,6 +32,7 @@ const soulsData = (
     ? stagingSoulsData
     : productionSoulsData
 ) as { [soulId: string]: any };
+const poniesData = productionPoniesData as { [wizardId: string]: any };
 
 const WizardPickerModalElement = styled.div`
   display: flex;
@@ -37,13 +44,12 @@ const WizardPickerModalElement = styled.div`
   height: 100%;
 `;
 
-const WizardPickerFormContainer = styled.div`
+export const WizardPickerFormContainer = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
   width: 100%;
   padding: 1em 0em 1em 0em;
-  margin-bottom: 2em;
 `;
 
 function NotConnected() {
@@ -87,11 +93,11 @@ function WizardGrid({
   tokens,
   onWizardPicked,
 }: {
-  tokens: { [tokenAddress: string]: any[] };
+  tokens: { [tokenAddress: string]: any[] } | undefined;
   onWizardPicked: onWizardPickedFn;
 }) {
-  console.log(tokens);
-  console.log(CHARACTER_CONTRACTS);
+  // console.log(tokens);
+  // console.log(CHARACTER_CONTRACTS);
   return (
     <WizardGridElement>
       <WizardGridLayout>
@@ -117,42 +123,75 @@ function WizardGrid({
             />
           );
         })}
+        {(tokens?.[CHARACTER_CONTRACTS.ponies] ?? []).map((token: any) => {
+          return (
+            <WizardCard
+              key={"ponies-" + token.id}
+              tokenAddress={CHARACTER_CONTRACTS.ponies}
+              id={token.id}
+              name={token?.name ?? token.id}
+              onWizardPicked={onWizardPicked}
+            />
+          );
+        })}
       </WizardGridLayout>
       {tokens?.[CHARACTER_CONTRACTS.souls]?.length === 0 &&
-        tokens?.[CHARACTER_CONTRACTS.wizards]?.length === 0 && (
+        tokens?.[CHARACTER_CONTRACTS.wizards]?.length === 0 &&
+        tokens?.[CHARACTER_CONTRACTS.ponies]?.length === 0 && (
           <NoWizards>
-            The connected wallet doesn't hold any Wizards or Souls. Perhaps try
-            another wallet?
+            The connected wallet doesn't hold any Wizards or Souls or Ponies.
+            Perhaps try another wallet?
           </NoWizards>
         )}
     </WizardGridElement>
   );
 }
 
-function WizardList({
-  injectedProvider,
+export function WizardList({
   onWizardPicked,
 }: {
-  injectedProvider: any;
   onWizardPicked: onWizardPickedFn;
 }) {
-  const [tokens, setTokens] = useState<{ [tokenAddress: string]: any[] }>({});
+  const [tokens, setTokens] = useState<{ [tokenAddress: string]: any[] }>();
+  const { account, library } = useEthers();
 
   useEffect(() => {
     async function run() {
       console.log("getting characters");
       try {
-        const address = injectedProvider.provider.selectedAddress;
+        const { chainId } = (await library?.getNetwork()) as Network;
+
         const wizardsContract = await getWizardsContract({
-          provider: injectedProvider,
+          provider: library,
+          chainId: chainId,
         });
-        const wizardTokens = await wizardsContract.tokensOfOwner(address);
 
         const soulsContract = await getSoulsContract({
-          provider: injectedProvider,
+          provider: library,
+          chainId: chainId,
         });
 
-        const soulsTokens = await soulsContract.tokensOfOwner(address);
+        const ethcallProvider = new EthCallProvider();
+        await ethcallProvider.init(library as Web3Provider);
+
+        const poniesContract = new EthCallContract(
+          FORGOTTEN_PONIES_ADDRESS[chainId as number],
+          PONIES_ABI
+        );
+        let poniesTokens = await ethcallProvider.tryAll(
+          Array.from({ length: 10 }).map((_, i) =>
+            poniesContract.tokenOfOwnerByIndex(account, i)
+          )
+        );
+
+        poniesTokens = poniesTokens.filter((value: any) => value);
+
+        console.log(poniesTokens);
+
+        const [wizardTokens, soulsTokens] = await Promise.all([
+          wizardsContract.tokensOfOwner(account),
+          soulsContract.tokensOfOwner(account),
+        ]);
 
         setTokens({
           [wizardsContract.address.toLowerCase()]: wizardTokens.map(
@@ -167,30 +206,28 @@ function WizardList({
               id: id.toNumber().toString(),
             })
           ),
+          [FORGOTTEN_PONIES_ADDRESS[chainId as number].toLowerCase()]:
+            poniesTokens.map((id: BigNumber) => ({
+              ...poniesData[id.toNumber()],
+              id: id.toNumber().toString(),
+            })),
         });
       } catch (err) {
         console.log("err: ", err);
       }
     }
-    run();
-  });
+    if (!tokens && library) run();
+  }, [tokens, library]);
 
   return <WizardGrid tokens={tokens} onWizardPicked={onWizardPicked} />;
 }
 
-function WizardPickerModal({
-  onRequestClose,
-  onWizardPicked,
-  injectedProvider,
-}: any) {
+function WizardPickerModal({ onRequestClose, onWizardPicked }: any) {
   return (
     <WizardPickerModalElement>
       <h1>Pick a Character</h1>
       <WizardPickerFormContainer>
-        <WizardList
-          injectedProvider={injectedProvider}
-          onWizardPicked={onWizardPicked}
-        />
+        <WizardList onWizardPicked={onWizardPicked} />
       </WizardPickerFormContainer>
       <Button onClick={onRequestClose}>Done</Button>
     </WizardPickerModalElement>
@@ -198,7 +235,7 @@ function WizardPickerModal({
 }
 
 type Props = {
-  currentWizard?: WizardConfiguration;
+  currentWizard: WizardConfiguration | undefined;
   setCurrentWizard: (WizardConfiguration: WizardConfiguration) => void;
 };
 
@@ -227,7 +264,9 @@ export type WizardConfiguration = {
 };
 
 const WizardPicker = ({ currentWizard, setCurrentWizard }: Props) => {
-  const { library, account } = useEthers();
+  const { account } = useEthers();
+
+  console.log(account);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const closeModal = () => setModalIsOpen(false);
@@ -251,7 +290,7 @@ const WizardPicker = ({ currentWizard, setCurrentWizard }: Props) => {
 
   return (
     <WizardPickerElement>
-      <EmptyWell noBorder={currentWizard ? true : false}>
+      <EmptyWell noBorder={!!currentWizard}>
         {currentWizard && (
           <WizardCard
             tokenAddress={currentWizard.tokenAddress}
@@ -272,7 +311,6 @@ const WizardPicker = ({ currentWizard, setCurrentWizard }: Props) => {
           <WizardPickerModal
             onRequestClose={closeModal}
             onWizardPicked={wizardPicked}
-            injectedProvider={library}
           />
         </StyledModal>
       </EmptyWell>

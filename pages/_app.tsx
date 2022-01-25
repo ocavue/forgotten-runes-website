@@ -7,7 +7,10 @@ import { motion, AnimateSharedLayout } from "framer-motion";
 import NextNprogress from "nextjs-progressbar";
 
 import "../public/static/game/wizards/fonts.css";
+
+import "react-markdown-editor-lite/lib/index.css";
 import "../styles/root.css";
+
 import { ChainId, DAppProvider } from "@usedapp/core";
 
 function App({ Component, pageProps }: { Component: any; pageProps: any }) {
@@ -97,6 +100,7 @@ function App({ Component, pageProps }: { Component: any; pageProps: any }) {
         <MobxStateTreeProvider value={store}>
           <AnimateSharedLayout>
             <Component {...pageProps} />
+
             <NextNprogress
               color="darkgrey"
               startPosition={0.1}

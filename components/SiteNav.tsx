@@ -47,17 +47,21 @@ const SiteNavElement = styled.nav`
   .submenu {
     list-style-type: none;
   }
+
   .logo {
     font-size: 20px;
     padding: 7.5px 10px 7.5px 0;
     max-width: 80vw;
   }
+
   .item {
     padding: 10px;
   }
+
   .item.button {
     padding: 9px 5px;
   }
+
   .item:not(.button) a:hover,
   .item a:hover::after {
     color: #ccc;
@@ -70,56 +74,68 @@ const SiteNavElement = styled.nav`
     display: flex;
     margin: 0 auto;
   }
+
   a.icon-link:hover {
     opacity: 0.8;
   }
 
   /* Mobile menu */
+
   .menu {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
   }
+
   .menu li a {
     display: block;
     padding: 15px 5px;
   }
+
   .toggle {
     order: 1;
     font-size: 20px;
   }
+
   .item.button {
     order: 2;
   }
+
   .item {
     order: 3;
     width: 100%;
     text-align: center;
     display: none;
   }
+
   .active .item {
     display: block;
   }
+
   /* Tablet menu */
   @media (min-width: 700px) {
     .menu {
       /* justify-content: center; */
       justify-content: flex-end;
     }
+
     .logo {
       flex: 1;
     }
+
     .toggle {
       flex: 1;
       text-align: right;
       order: 2;
     }
+
     /* Button up from tablet screen */
     .menu li.button a {
       padding: 10px 15px;
       margin: 5px 0;
     }
+
     .toggle {
       max-width: 60px;
     }
@@ -132,16 +148,19 @@ const SiteNavElement = styled.nav`
       background: none;
       justify-content: flex-end;
     }
+
     .logo {
       order: 0;
       margin-right: 2em;
     }
+
     .item {
       order: 1;
       position: relative;
       display: block;
       width: auto;
     }
+
     .toggle {
       display: none;
     }
@@ -152,6 +171,7 @@ const SiteNavRow = styled.div`
   .menu {
     justify-content: center;
   }
+
   .logo {
     @media (min-width: 960px) {
       max-width: 260px;
@@ -191,7 +211,11 @@ export const LogoToggleRow = styled.div`
   }
 `;
 
-export default function SiteNav({}: Props) {
+export default function SiteNav({
+  hideNavItems = false,
+}: {
+  hideNavItems: boolean | undefined;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => setIsOpen(!isOpen);
 
@@ -242,42 +266,44 @@ export default function SiteNav({}: Props) {
           </li>
         </ul>
       </SiteNavTopRow>
-      <SiteNavRow>
-        <ul className={"menu" + (isOpen ? " active" : "")}>
-          <li className="item">
-            <a href="/">The Secret Tower</a>
-          </li>
-          <li className="item">
-            <Link as={"/wtf"} href={"/wtf"} passHref={true}>
-              Start Here
-            </Link>
-          </li>
+      {!hideNavItems && (
+        <SiteNavRow>
+          <ul className={"menu" + (isOpen ? " active" : "")}>
+            <li className="item">
+              <a href="/">The Secret Tower</a>
+            </li>
+            <li className="item">
+              <Link as={"/wtf"} href={"/wtf"} passHref={true}>
+                Start Here
+              </Link>
+            </li>
 
-          <li className="item">
-            <Link as={"/lore"} href={"/lore"} passHref={true}>
-              <a>Book of Lore</a>
-            </Link>
-          </li>
+            <li className="item">
+              <Link as={"/lore"} href={"/lore"} passHref={true}>
+                <a>Book of Lore</a>
+              </Link>
+            </li>
 
-          <li className="item">
-            <Link as={"/map"} href={"/map"} passHref={true}>
-              <a>Map</a>
-            </Link>
-          </li>
+            <li className="item">
+              <Link as={"/map"} href={"/map"} passHref={true}>
+                <a>Map</a>
+              </Link>
+            </li>
 
-          <li className="item">
-            <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-              <a>All Wizards</a>
-            </Link>
-          </li>
+            <li className="item">
+              <Link as={"/gallery"} href={"/gallery"} passHref={true}>
+                <a>All Wizards</a>
+              </Link>
+            </li>
 
-          <li className="item">
-            <Link as={"/posts"} href={"/posts"} passHref={true}>
-              <a>Blog</a>
-            </Link>
-          </li>
-        </ul>
-      </SiteNavRow>
+            <li className="item">
+              <Link as={"/posts"} href={"/posts"} passHref={true}>
+                <a>Blog</a>
+              </Link>
+            </li>
+          </ul>
+        </SiteNavRow>
+      )}
     </SiteNavElement>
   );
 }

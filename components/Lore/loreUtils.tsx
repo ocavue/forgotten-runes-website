@@ -35,8 +35,7 @@ export function typeSetter({
   components.currentLeftPage = !lorePageData.leftPage.isEmpty ? (
     <IndividualLorePage
       bgColor={lorePageData.leftPage.bgColor ?? "#000000"}
-      title={lorePageData.leftPage.title}
-      story={lorePageData.leftPage.story}
+      story={lorePageData.leftPage.story as string}
     />
   ) : (
     <CoreCharacterPage
@@ -48,8 +47,7 @@ export function typeSetter({
   components.currentRightPage = !lorePageData.rightPage.isEmpty ? (
     <IndividualLorePage
       bgColor={lorePageData.rightPage.bgColor ?? "#000000"}
-      title={lorePageData.rightPage.title}
-      story={lorePageData.rightPage.story}
+      story={lorePageData.rightPage.story as string}
     />
   ) : (
     <EmptyLorePage

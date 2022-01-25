@@ -2,7 +2,6 @@ import Layout from "../../../../components/Layout";
 import { GetStaticPropsContext } from "next";
 import Book from "../../../../components/Lore/Book";
 import { LorePageData } from "../../../../components/Lore/types";
-import LoreSharedLayout from "../../../../components/Lore/LoreSharedLayout";
 import OgImage from "../../../../components/OgImage";
 import dynamic from "next/dynamic";
 
@@ -24,13 +23,7 @@ import flatMap from "lodash/flatMap";
 import productionWizardData from "../../../../data/nfts-prod.json";
 import productionSoulsData from "../../../../data/souls-prod.json";
 import stagingSoulsData from "../../../../data/souls-staging.json";
-import {
-  ChainId,
-  DAppProvider,
-  useEtherBalance,
-  useEthers,
-  Config,
-} from "@usedapp/core";
+import { Config } from "@usedapp/core";
 
 const soulsData = (
   parseInt(process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID ?? "1") === 4
@@ -217,7 +210,9 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   const tokenId: number = parseInt((context.params?.tokenId as string) ?? "0");
   const pageNum: number = parseInt((context.params?.page as string) ?? "0");
 
-  console.log(`In static props for ${tokenId} page ${pageNum}`);
+  console.log(
+    `In static props for ${loreTokenSlug}, ${tokenId} page ${pageNum}`
+  );
 
   if (pageNum % 2 !== 0) {
     // We always key from right page, so redirect...

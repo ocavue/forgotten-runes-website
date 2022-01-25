@@ -3,6 +3,7 @@ import { useState } from "react";
 import { WizardConfiguration } from "./AddLore/WizardPicker";
 import { motion } from "framer-motion";
 import { isWizardsContract } from "../contracts/ForgottenRunesWizardsCultContract";
+import { getTokenImageSrc } from "../lib/nftUtilis";
 
 const CardStyle = styled.div<{ isHovering: boolean }>`
   /* opacity: ${(props) => (props.isHovering ? 1 : 0.7)}; */
@@ -108,11 +109,7 @@ const WizardCard = ({
           <WizardImage
             layoutId={`wizard-image-${id}`}
             key={`wizard-image-${id}`}
-            src={
-              isWizardsContract(tokenAddress)
-                ? `${process.env.NEXT_PUBLIC_REACT_APP_WIZARDS_WEB_IMG_BASE_URL}/alt/400-nobg/wizard-${id}.png`
-                : `${process.env.NEXT_PUBLIC_SOULS_API}/api/souls/img/${id}.png`
-            }
+            src={getTokenImageSrc(id, tokenAddress)}
           />
         </WizardImageContainer>
       </WizardFrame>

@@ -8,12 +8,14 @@ type Props = {
   children?: ReactNode;
   description?: string;
   title?: string;
+  excludeNav?: boolean;
 };
 
 const Layout = ({
   children,
   description,
   title = "Forgotten Runes Wizard's Cult: 10,000 on-chain Wizard NFTs",
+  excludeNav = false,
 }: Props) => (
   <div>
     <Head>
@@ -36,7 +38,7 @@ const Layout = ({
 
       {/* <meta property="og:image" content="image.png" /> */}
     </Head>
-    <SiteNav />
+    <SiteNav hideNavItems={excludeNav} />
     <header></header>
     {children}
     <Footer />

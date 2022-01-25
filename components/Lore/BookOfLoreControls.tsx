@@ -230,7 +230,7 @@ export default function BookOfLoreControls({
     rightPageLoreIndex &&
     rightPageCreator?.toLowerCase() === account?.toLowerCase();
   const writeNewLoreButton = (
-    <Link href="/lore/add" passHref={true}>
+    <Link href="/lore/write" passHref={true}>
       <WriteButton size="medium">Write New Lore</WriteButton>
     </Link>
   );
@@ -249,7 +249,7 @@ export default function BookOfLoreControls({
             leftPageLoreIndex &&
             leftPageCreator?.toLowerCase() === account.toLowerCase() && (
               <Link
-                href={`/lore/add?tokenId=${tokenId}&tokenAddress=${CHARACTER_CONTRACTS[loreTokenSlug]}&loreIndex=${leftPageLoreIndex}`}
+                href={`/lore/write?tokenId=${tokenId}&tokenAddress=${CHARACTER_CONTRACTS[loreTokenSlug]}&loreIndex=${leftPageLoreIndex}`}
                 passHref={true}
               >
                 <WriteButton size="medium">Edit Left Page</WriteButton>
@@ -302,7 +302,7 @@ export default function BookOfLoreControls({
           {!account && <ConnectWalletButton />}
           {canEditRightPage && (
             <Link
-              href={`/lore/add?tokenId=${tokenId}&tokenAddress=${CHARACTER_CONTRACTS[loreTokenSlug]}&loreIndex=${rightPageLoreIndex}`}
+              href={`/lore/write?tokenId=${tokenId}&tokenAddress=${CHARACTER_CONTRACTS[loreTokenSlug]}&loreIndex=${rightPageLoreIndex}`}
               passHref={true}
             >
               <WriteButton size="medium">Edit Right Page</WriteButton>
