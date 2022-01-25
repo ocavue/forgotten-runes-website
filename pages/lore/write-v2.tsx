@@ -30,6 +30,7 @@ import { getTokenImageSrc } from "../../lib/nftUtilis";
 import "react-toastify/dist/ReactToastify.css";
 import StyledToastContainer from "../../components/StyledToastContainer";
 import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
+import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
@@ -51,7 +52,7 @@ const WriteLore = ({}: {}) => {
   const { bgColor: firstImageBgColor } = useExtractColors(firstImageUrl);
 
   const router = useRouter();
-  const { library } = useEthers();
+  const { library, account } = useEthers();
   const gas = useGasPrice();
 
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -132,7 +133,8 @@ const WriteLore = ({}: {}) => {
         </Flex>
         <div style={{ width: 200 }} />
       </Flex>
-      {!pickedToken && !isEditMode && (
+      {!pickedToken && !isEditMode && !account && (<ConnectWalletButton/>)}
+      {!pickedToken && !isEditMode && account && (
         <>
           <Flex
             flexDirection="column"
@@ -177,6 +179,7 @@ const WriteLore = ({}: {}) => {
                 {isEditMode ? "Editing existing entry" : "New lore entry"}
               </h4>
               <MdEditor
+                allowPasteImage={false}
                 onChangeTrigger={"afterRender"}
                 value={editorText}
                 style={{ height: "100%" }}

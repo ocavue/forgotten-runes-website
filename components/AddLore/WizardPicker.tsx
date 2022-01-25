@@ -264,7 +264,9 @@ export type WizardConfiguration = {
 };
 
 const WizardPicker = ({ currentWizard, setCurrentWizard }: Props) => {
-  const { library, account } = useEthers();
+  const { account } = useEthers();
+
+  console.log(account);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const closeModal = () => setModalIsOpen(false);
@@ -288,7 +290,7 @@ const WizardPicker = ({ currentWizard, setCurrentWizard }: Props) => {
 
   return (
     <WizardPickerElement>
-      <EmptyWell noBorder={currentWizard ? true : false}>
+      <EmptyWell noBorder={!!currentWizard}>
         {currentWizard && (
           <WizardCard
             tokenAddress={currentWizard.tokenAddress}
