@@ -23,7 +23,7 @@ import { ModalDecorator } from "../ui/ModalDecorator";
 const walletConnectConnector = new WalletConnectConnector({
   infuraId: process.env.NEXT_PUBLIC_REACT_APP_INFURA_PROJECT_ID,
   chainId: parseInt(process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID as string),
-  qrcode: true
+  qrcode: true,
 });
 
 const ConnectModal = styled(ModalDecorator)`
@@ -76,18 +76,27 @@ export function ConnectWalletButton() {
         onRequestClose={setModalIsOpen}
         ariaHideApp={false}
       >
-        <Flex flexDirection={"column"} alignItems={"center"} justifyContent={"center"} width={"100%"}>
-          <ConnectButton onClick={async () => {
-            await activateBrowserWallet();
-            setModalIsOpen(false);
-          }}>
+        <Flex
+          flexDirection={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          width={"100%"}
+        >
+          <ConnectButton
+            onClick={async () => {
+              await activateBrowserWallet();
+              setModalIsOpen(false);
+            }}
+          >
             Connect Wallet (MetaMask etc)
           </ConnectButton>
-          <Spacer pt={4}/>
-          <ConnectButton onClick={async () => {
-            await activate(walletConnectConnector);
-            setModalIsOpen(false);
-          }}>
+          <Spacer pt={4} />
+          <ConnectButton
+            onClick={async () => {
+              await activate(walletConnectConnector);
+              setModalIsOpen(false);
+            }}
+          >
             Connect WalletConnect
           </ConnectButton>
         </Flex>
@@ -96,7 +105,5 @@ export function ConnectWalletButton() {
         Connect Your Wallet
       </ConnectButton>
     </>
-
-
   );
 }

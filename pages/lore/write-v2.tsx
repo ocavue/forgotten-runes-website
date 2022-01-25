@@ -133,7 +133,7 @@ const WriteLore = ({}: {}) => {
         </Flex>
         <div style={{ width: 200 }} />
       </Flex>
-      {!pickedToken && !isEditMode && !account && (<ConnectWalletButton/>)}
+      {!pickedToken && !isEditMode && !account && <ConnectWalletButton />}
       {!pickedToken && !isEditMode && account && (
         <>
           <Flex
