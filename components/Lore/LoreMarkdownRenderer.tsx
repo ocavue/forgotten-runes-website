@@ -55,9 +55,9 @@ const LoreMarkdownRenderer = ({
                       const priorMatchEnd =
                         index === 0
                           ? 0
-                          // @ts-ignore
-                          : tokenTagMatches[index - 1].index +
-                          // @ts-ignore
+                          : // @ts-ignore
+                            tokenTagMatches[index - 1].index +
+                            // @ts-ignore
                             tokenTagMatches[index - 1][0].length;
 
                       const tagType = match[1]; // e.g. "wizard"
