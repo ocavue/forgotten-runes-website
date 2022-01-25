@@ -114,3 +114,12 @@ p {
   line-height: 1.7;
 }
 
+.rc-md-editor .rc-md-navigation {
+  background: rgb(22,22,22);
+  border-bottom: 1px solid rgb(22,22,22);
+}
+
+.rc-md-editor {
+  background: rgb(22,22,22);
+}
+

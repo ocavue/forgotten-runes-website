@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-import { Flex } from "rebass";
+import { Box, Flex } from "rebass";
 import LoreMarkdownRenderer from "../../components/Lore/LoreMarkdownRenderer";
 import { useExtractColors } from "../../hooks/useExtractColors";
 import {
@@ -133,7 +133,12 @@ const WriteLore = ({}: {}) => {
         </Flex>
         <div style={{ width: 200 }} />
       </Flex>
-      {!pickedToken && !isEditMode && !account && <ConnectWalletButton />}
+      {!pickedToken && !isEditMode && !account && (
+        <Box p={6} alignSelf={"center"}>
+          <ConnectWalletButton showOpen={true} />
+        </Box>
+      )}
+
       {!pickedToken && !isEditMode && account && (
         <>
           <Flex
@@ -178,47 +183,54 @@ const WriteLore = ({}: {}) => {
               <h4>
                 {isEditMode ? "Editing existing entry" : "New lore entry"}
               </h4>
-              <MdEditor
-                allowPasteImage={false}
-                onChangeTrigger={"afterRender"}
-                value={editorText}
+              <div
                 style={{ height: "100%" }}
-                view={{ menu: true, md: true, html: false }}
-                plugins={[
-                  "header",
-                  "font-bold",
-                  "font-italic",
-                  "font-underline",
-                  "font-strikethrough",
-                  "list-unordered",
-                  "list-ordered",
-                  "block-quote",
-                  "block-wrap",
-                  "block-code-inline",
-                  "block-code-block",
-                  "image",
-                  "link",
-                  "clear",
-                ]}
-                renderHTML={(text) => <></>}
-                onChange={(value) => {
-                  setEditorText(value.text);
-                }}
-                onImageUpload={async (a: File) => {
-                  try {
-                    const res = await pinFileToIpfs(a, 1, "1");
+                onPaste={async () =>
+                  console.log(await navigator.clipboard.readText())
+                }
+              >
+                <MdEditor
+                  allowPasteImage={false}
+                  onChangeTrigger={"afterRender"}
+                  value={editorText}
+                  style={{ height: "100%" }}
+                  view={{ menu: true, md: true, html: false }}
+                  plugins={[
+                    "header",
+                    "font-bold",
+                    "font-italic",
+                    "font-underline",
+                    "font-strikethrough",
+                    "list-unordered",
+                    "list-ordered",
+                    "block-quote",
+                    "block-wrap",
+                    "block-code-inline",
+                    "block-code-block",
+                    "image",
+                    "link",
+                    "clear",
+                  ]}
+                  renderHTML={(text) => <></>}
+                  onChange={(value) => {
+                    setEditorText(value.text);
+                  }}
+                  onImageUpload={async (a: File) => {
+                    try {
+                      const res = await pinFileToIpfs(a, 1, "1");
 
-                    const url = `ipfs://${res.IpfsHash}`;
-                    if (!firstImageUrl) {
-                      setFirstImageUrl(url);
+                      const url = `ipfs://${res.IpfsHash}`;
+                      if (!firstImageUrl) {
+                        setFirstImageUrl(url);
+                      }
+                      return url;
+                    } catch (e: any) {
+                      console.error(e);
+                      return "Problem uploading, please try again...";
                     }
-                    return url;
-                  } catch (e: any) {
-                    console.error(e);
-                    return "Problem uploading, please try again...";
-                  }
-                }}
-              />
+                  }}
+                />
+              </div>
             </Flex>
             <Flex flex={1} pl={2} flexDirection={"column"}>
               <h4>Preview</h4>

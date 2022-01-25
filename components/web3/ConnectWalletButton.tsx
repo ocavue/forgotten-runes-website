@@ -45,29 +45,29 @@ const ConnectModal = styled(ModalDecorator)`
     right: auto;
     bottom: auto;
     border: none;
-    background: #0d0019;
+    background: black;
     overflow: auto;
     border-radius: 3px;
     outline: none;
-    padding: 10px;
+    padding: 80px;
     margin-right: -50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    min-width: 20vw;
-    min-height: 30vw;
+    //min-width: 20vw;
+    //min-height: 30vw;
     color: white;
     display: flex;
-    width: 70vw;
-    max-width: 600px;
+    //width: 70vw;
+    //max-width: 600px;
     max-height: 90vh;
     z-index: 2001;
   }
 `;
 export default StyledModal;
 
-export function ConnectWalletButton() {
+export function ConnectWalletButton({ showOpen }: { showOpen?: boolean }) {
   const { activate, activateBrowserWallet } = useEthers();
-  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(showOpen ?? false);
 
   return (
     <>

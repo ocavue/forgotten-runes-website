@@ -132,7 +132,7 @@ export const EmptyLorePage = ({
       <TextPage alignSelf="center" alignChildren="center">
         <ReactMarkdown>{`No${furtherOrAny} Lore has been recorded...`}</ReactMarkdown>
 
-        <Link href="/lore/write-v2">
+        <Link href="/lore/write">
           <WriteButton size="medium">Write Your Lore</WriteButton>
         </Link>
         {loreTokenSlug === "souls" && (
