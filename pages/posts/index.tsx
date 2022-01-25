@@ -9,32 +9,13 @@ import fs from "fs";
 import matter from "gray-matter";
 import path from "path";
 import styled from "@emotion/styled";
-
-export type Post = {
-  content: string;
-  data: any;
-  filePath: string;
-};
-
-const StyledAnchor = styled.a`
-  font-size: 1.2em;
-  margin-bottom: 0.3em;
-  display: inline-block;
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover > h2 {
-    text-decoration: underline;
-  }
-`;
-const Description = styled.div``;
-const BlogEntries = styled.ul`
-  list-style: none;
-  padding-inline-start: 0;
-`;
-const BlogEntry = styled.li`
-  margin: 2em 0;
-`;
+import { Post } from "../../components/Blog/types";
+import BlogEntry from "../../components/Blog/BlogEntry";
+import {
+  ogImagePropsFromFrontMatter,
+  ogImageURL,
+} from "../../components/OgImage";
+import { BlogPostGrid } from "../../components/Blog/BlogPostGrid";
 
 export default function Index({ posts }: { posts: Post[] }) {
   // sort the blog posts by their index in the descending order
@@ -44,29 +25,16 @@ export default function Index({ posts }: { posts: Post[] }) {
     return indexB - indexA;
   });
   return (
-    <InfoPageLayout title="Blog Posts: Forgotten Runes Wizard's Cult: 10,000 on-chain Wizard NFTs">
+    <InfoPageLayout
+      title="Blog Posts: Forgotten Runes Wizard's Cult: 10,000 on-chain Wizard NFTs"
+      size="wide"
+    >
       <h1>Forgotten Blog Posts</h1>
-      <BlogEntries>
+      <BlogPostGrid>
         {posts.map((post) => (
-          <BlogEntry key={post.filePath}>
-            <Link
-              as={`/posts/${post.filePath.replace(
-                /(\.(\w\w-?(\w\w)?))?\.mdx?$/,
-                ""
-              )}`}
-              href={`/posts/[slug]`}
-              passHref={true}
-            >
-              <StyledAnchor>
-                <h2>{post.data.title}</h2>
-                {post.data.description && (
-                  <Description>{post.data.description}</Description>
-                )}
-              </StyledAnchor>
-            </Link>
-          </BlogEntry>
+          <BlogEntry post={post} key={post.filePath} />
         ))}
-      </BlogEntries>
+      </BlogPostGrid>
     </InfoPageLayout>
   );
 }
@@ -76,11 +44,14 @@ export const getStaticProps: GetStaticProps = async ({
   locales,
   defaultLocale,
 }) => {
-  let posts = compact(
+  let posts: Post[] = compact(
     postFilePaths.map((filePath) => {
       const { basename, localeExt } = fileLocale(filePath);
       const source = fs.readFileSync(path.join(POSTS_PATH, filePath));
       const { content, data } = matter(source);
+
+      let ogImageProps = ogImagePropsFromFrontMatter(data);
+      let coverImageUrl = ogImageURL(ogImageProps);
 
       return {
         content,
@@ -88,6 +59,7 @@ export const getStaticProps: GetStaticProps = async ({
         filePath,
         basename,
         locale: localeExt,
+        coverImageUrl,
       };
     })
   );

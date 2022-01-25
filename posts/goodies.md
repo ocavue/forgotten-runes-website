@@ -3,6 +3,7 @@ title: How to access all the extra Wizard goodies
 description: Forgotten Runes Wizards come with all kinds of extras, beyond the NFT itself. This guide will show you how to access your Wizard’s art, turnarounds of that Wizard, the GM generator, and many other upcoming treats such as walk cycles.
 ogWizardImage: 777
 index: 9
+category: art
 ---
 
 Forgotten Runes Wizards come with all kinds of extras, beyond the NFT itself. Many of these extras come from our team, and some come from our cult members.
@@ -57,9 +58,9 @@ To use this fun tool and get a "mugshot" of your Wizard, simply follow these ste
 1. Join our [Discord](https://t.co/maMRpMaVhJ?amp=1)!
 
 2. Go into the #wiz-bots channel
-   
+
    ![](https://i.imgur.com/7qD2f6I.png)
-   
+
 3. Type `!mugshot [your wizard number]` into the chat. For example, if your Wizards serial number is #32, type in `!mugshot 32`
 
    ![](https://i.imgur.com/6EGvDn9.png)

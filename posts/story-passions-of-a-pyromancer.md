@@ -3,6 +3,7 @@ title: Passions of a Pyromancer
 description: "Story featuring Pyromancer Tegu of the Wold and Spellsinger Rumplskin of Avalon"
 ogImage: https://i.imgur.com/2yOZx8n.jpg
 index: 23
+category: lore
 ---
 
 ![](https://i.imgur.com/xLVdBqT.png)

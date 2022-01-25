@@ -15,15 +15,22 @@ type Props = {
   bgColor?: string;
 };
 
-// https://og.forgottenrunes.com/6001.png?wizard=6001&fontSize=128px
-export default function OgImage({
-  title,
-  fontSize,
-  wizard,
-  wizardImage,
-  images,
-  bgColor,
-}: Props) {
+export function ogImagePropsFromFrontMatter(frontMatter: any) {
+  let ogImageProps: any = {
+    title: frontMatter.title,
+  };
+  if (frontMatter.ogWizardImage) {
+    ogImageProps.wizardImage = parseInt(frontMatter.ogWizardImage);
+  }
+  if (frontMatter.ogImage) {
+    ogImageProps.images = frontMatter.ogImage;
+  }
+  return ogImageProps;
+}
+
+export function ogImageURL(props: Props) {
+  const { title, fontSize, wizard, wizardImage, images, bgColor } = props;
+
   const filename = encodeURIComponent(title);
   let params: any = {};
   if (fontSize) {
@@ -47,6 +54,26 @@ export default function OgImage({
   const ogImageUrl = [ogImageBaseURL, filename, ".png", "?", queryString].join(
     ""
   );
+  return ogImageUrl;
+}
+
+// https://og.forgottenrunes.com/6001.png?wizard=6001&fontSize=128px
+export default function OgImage({
+  title,
+  fontSize,
+  wizard,
+  wizardImage,
+  images,
+  bgColor,
+}: Props) {
+  const ogImageUrl = ogImageURL({
+    title,
+    fontSize,
+    wizard,
+    wizardImage,
+    images,
+    bgColor,
+  });
 
   return (
     <Head>

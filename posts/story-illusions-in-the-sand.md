@@ -3,6 +3,7 @@ title: Illusions in the Sand
 description: "Story featuring Shaman Ozhor of the Sands and Holy Arcanist Illuminus of the Salt"
 ogImage: https://i.imgur.com/ul6m56z.jpg
 index: 20
+category: lore
 ---
 
 ![](https://i.imgur.com/rS5LORd.png)

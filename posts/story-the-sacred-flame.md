@@ -3,6 +3,7 @@ title: The Sacred Flame
 description: "It was possible that this Sacred Flame did not burn at all, but was rather a catalyst to open a portal through the Quantum Shadow itself"
 ogImage: https://i.imgur.com/G16RRFp.jpg
 index: 23
+category: lore
 ---
 
 _The [Flames](https://opensea.io/assets/0x31158181b4b91a423bfdc758fc3bf8735711f9c5/0) appeared , 1112 of them, suddenly one night..._

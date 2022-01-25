@@ -3,6 +3,7 @@ title: 砂漠のイリュージョン
 description: "Shaman Ozhor of the SandsとHoly Arcanist Illuminus of the Saltの物語"
 ogImage: https://i.imgur.com/ul6m56z.jpg
 index: 20
+category: lore
 ---
 
 ![](https://i.imgur.com/rS5LORd.png)

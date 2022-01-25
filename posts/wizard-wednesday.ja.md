@@ -3,6 +3,7 @@ title: Wizard Wednesday, Twitter Spaceで毎週行われるForgotten Runesのミ
 description: 毎週、私たちはTwitter Spaceに集まりカルトの集会を行っています
 ogImage: https://forgottenrunes.com/static/img/wizard-wednesday.jpg
 index: 6
+category: announcements
 ---
 
 <ResponsiveImg src="/static/img/wizard-wednesday.jpg" pixelArt={true} />

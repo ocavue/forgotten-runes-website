@@ -3,6 +3,7 @@ title: Decentralized Lore Creation
 description: "This digital tome is an ever growing archive of each Wizard’s lore. When you own a Wizard, you have the rights to build them out and create their history."
 ogWizardImage: 4746
 index: 17
+category: lore
 ---
 
 ### **What is Decentralized Lore Creation?**

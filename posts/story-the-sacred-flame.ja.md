@@ -3,6 +3,7 @@ title: Sacred Flame(聖なる炎)
 description: "Sacred Flameは実際は何物も燃やしておらず、クアンタムシャドウそのものへのポータルを開く触媒であった可能性もある"
 ogImage: https://i.imgur.com/G16RRFp.jpg
 index: 23
+category: lore
 ---
 
 _[Flames](https://opensea.io/assets/0x31158181b4b91a423bfdc758fc3bf8735711f9c5/0)が現れた、1112ものFlameが、一夜にして..._

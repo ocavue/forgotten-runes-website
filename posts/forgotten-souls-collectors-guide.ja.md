@@ -3,6 +3,7 @@ title: Forgotten Soulsコレクターズガイド
 description: "Wizardを燃やすべきか否か? このドキュメントはForgotten Soulsのコレクター向けガイドです。"
 ogImage: https://i.imgur.com/hnfqCgs.jpg
 index: 15
+category: collection
 ---
 
 ![](https://i.imgur.com/hnfqCgs.jpg)

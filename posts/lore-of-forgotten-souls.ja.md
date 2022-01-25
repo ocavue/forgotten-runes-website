@@ -3,6 +3,7 @@ title: Forgotten Runes SoulsのLore（伝承）
 description: ハロウィーンにGreat Burningが始まりました。 これまで400を超えるWizardが炎に身を投じ、多種多様な忌まわしいものとなって戻ってきました。ここでは、Runiverse（ルーン世界）に現れた新たなアンデッド達にまつわるLore（伝承）をご紹介します。
 ogImage: https://forgottenrunes.com/static/img/souls/OSFeatureSouls.png
 index: 16
+category: collection
 ---
 
 ![](/static/img/souls/OSFeatureSouls.png)

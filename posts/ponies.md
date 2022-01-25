@@ -3,6 +3,7 @@ title: "Elysian Fields: Forgotten Runes Ponies"
 description: "A herd of Ponies appears"
 index: 24
 ogImage: https://i.imgur.com/FF8WG3q.png
+category: collection
 ---
 
 ![](https://i.imgur.com/FF8WG3q.png)

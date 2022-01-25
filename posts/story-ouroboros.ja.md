@@ -3,6 +3,7 @@ title: ウロボロス
 description: "Fortune Teller Crackerjack of the Desert、 Sage Voidoth of the Ash、そしてArcanist Dr. Death of the Etherの物語"
 ogImage: https://i.imgur.com/F3G3TX5.jpg
 index: 21
+category: lore
 ---
 
 ![](https://i.imgur.com/xVvHaE4.png)

@@ -17,6 +17,7 @@ import {
   isSoulsContract,
   isWizardsContract,
 } from "../../contracts/ForgottenRunesWizardsCultContract";
+import Spacer from "../Spacer";
 
 const wizData = productionWizardData as { [wizardId: string]: any };
 const soulsData = (
@@ -116,24 +117,37 @@ export const CoreCharacterPage = ({
   );
 };
 
-export const EmptyLorePage = ({ pageNum }: { pageNum: number }) => {
+export const EmptyLorePage = ({
+  pageNum,
+  loreTokenSlug,
+  tokenId,
+}: {
+  pageNum: number;
+  loreTokenSlug: "wizards" | "souls";
+  tokenId: number;
+}) => {
   const furtherOrAny = pageNum < 1 ? "" : " further";
-
-  const noMoreLore = `No${furtherOrAny} Lore has been recorded...`;
 
   return (
     <BookOfLorePage bg={"#000000"}>
       <TextPage alignSelf="center" alignChildren="center">
-        <ReactMarkdown>{noMoreLore}</ReactMarkdown>
+        <ReactMarkdown>{`No${furtherOrAny} Lore has been recorded...`}</ReactMarkdown>
+
         <Link href="/lore/add">
           <WriteButton size="medium">Write Your Lore</WriteButton>
         </Link>
+        {loreTokenSlug === "souls" && (
+          <>
+            <Spacer pt={3} />
+            <ReactMarkdown>{`[View Lore of the Wizard that became this Soul](/lore/wizards/${tokenId}/0)`}</ReactMarkdown>
+          </>
+        )}
       </TextPage>
     </BookOfLorePage>
   );
 };
 
-const IPFS_HTTP_SERVER = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD
+export const IPFS_HTTP_SERVER = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD
   ? `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD}/image/fetch/f_auto/${IPFS_SERVER}/`
   : `${IPFS_SERVER}/`;
 

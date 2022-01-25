@@ -3,6 +3,7 @@ title: Commissions for Wizard Art
 description: Our community has a vibrant culture of creating artwork from their Wizards. This document is a directory of folks who take commissions to create artwork of the Wizards
 ogWizardImage: 4640
 index: 3
+category: community
 ---
 
 Below we've included the artist, some example artworks, how you can contact them for your own commissions.
@@ -119,7 +120,6 @@ Examples:
 
 - [#4159 Party Music for Artificer Horace](https://opensea.io/assets/0x495f947276749ce646f68ac8c248420045cb7b5e/9013605400530109520503820491760377436763154446583357164055150077560695554049)
 - [#76 Study Music for Wise Sam](https://opensea.io/assets/0x495f947276749ce646f68ac8c248420045cb7b5e/90136054005301095205038204917603774367631544465833571640551500786602071818250)
-
 
 --
 

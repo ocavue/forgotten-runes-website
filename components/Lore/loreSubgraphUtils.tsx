@@ -86,37 +86,58 @@ export async function getLoreInChapterForm(
   if (!results) {
     console.log("No cached lore data - fetching from graph");
 
-    const { data } = await client.query({
-      query: gql`
-        query WizardLore {
-            loreTokens(first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${tokenContract}"}) {
-                tokenContract
-                tokenId
-                lore(
-                    where: { struck: false, nsfw: false }
-                    orderBy: id
-                    orderDirection: asc
-                ) {
-                    ${COMMON_LORE_FIELDS}
-                }
-            }
-        }
-    `,
-      fetchPolicy: "no-cache",
-    });
+    results = [];
 
-    results = (data?.loreTokens ?? []).map((loreTokenEntry: any) => {
-      return {
-        tokenId: parseInt(loreTokenEntry.tokenId),
-        lore: loreTokenEntry.lore.map((loreEntry: any) => ({
-          loreMetadataURI: loreEntry.loreMetadataURI,
-          createdAtTimestamp: loreEntry.createdAtTimestamp,
-          creator: loreEntry.creator,
-        })),
-      };
-    });
+    // Not we optimistically fetch N lore pages at a time - this is a temporary hack as it's faster than waiting for results to then do another request etc
+    const serverGraphPagesToFetch = 2;
+    const graphResults = await Promise.all(
+      Array.from({ length: serverGraphPagesToFetch }, (_, i) =>
+        client.query({
+          query: gql`
+          query WizardLore {
+              loreTokens(skip: ${
+                i * 999
+              }, first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${tokenContract}"}) {
+                  tokenContract
+                  tokenId
+                  lore(
+                      where: { struck: false, nsfw: false }
+                      orderBy: id
+                      orderDirection: asc
+                  ) {
+                      ${COMMON_LORE_FIELDS}
+                  }
+              }
+          }
+      `,
+          fetchPolicy: "no-cache",
+        })
+      )
+    );
+    console.log(`Got ${graphResults.length} queries worth of results....`);
+
+    for (let i = 0; i < graphResults.length; i++) {
+      const loreTokens = graphResults[i]?.data?.loreTokens ?? [];
+
+      console.log(`Query ${i} had ${loreTokens.length} lore tokens`);
+
+      results.push(
+        ...loreTokens.map((loreTokenEntry: any) => {
+          return {
+            tokenId: parseInt(loreTokenEntry.tokenId),
+            lore: loreTokenEntry.lore.map((loreEntry: any) => ({
+              loreMetadataURI: loreEntry.loreMetadataURI,
+              createdAtTimestamp: loreEntry.createdAtTimestamp,
+              creator: loreEntry.creator,
+              index: loreEntry.index,
+            })),
+          };
+        })
+      );
+    }
 
     if (updateCache) {
+      console.log("Updating cache file");
       await fs.writeFile(
         cacheFile,
         JSON.stringify({ timestamp: new Date().getTime(), data: results }),
@@ -180,6 +201,8 @@ export async function getLeftRightPages(
         loreElement.creator,
         tokenId
       );
+      leftPage.creator = loreElement.creator;
+      leftPage.loreIndex = loreElement.index;
     } else {
       // Would end up showing wizard
       leftPage = {
@@ -198,6 +221,8 @@ export async function getLeftRightPages(
         loreElement.creator,
         tokenId
       );
+      rightPage.creator = loreElement.creator;
+      rightPage.loreIndex = loreElement.index;
     } else {
       // Would end showing add lore
       rightPage = {

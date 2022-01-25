@@ -3,6 +3,7 @@ title: "Forgotten RunesはCoinbase NFTが最初に扱う4クリエイターの1�
 description: "CoinbaseがNFTプラットフォームの立ち上げをアナウンスし、Forgotten Runesがフィーチャリングクリエータとして掲載されています。"
 ogImage: https://i.imgur.com/MWCNIZi.png
 index: 12
+category: announcements
 ---
 
 ![](https://i.imgur.com/MWCNIZi.png)

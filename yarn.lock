@@ -11795,10 +11795,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-markdown-draft-js@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/markdown-draft-js/-/markdown-draft-js-2.3.0.tgz#60d69308d77f6cbd64122fa5a23c8d98503c4deb"
-  integrity sha512-18T5AiQkp10lkPLJeNe90gbC268vAe/5tCtoSz/w2xM5PlbMSl7eX1XFd4AKJXvpM27hbW/O8C06Jin2mL32jQ==
+markdown-draft-js@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/markdown-draft-js/-/markdown-draft-js-2.4.0.tgz#164c53be05a96b3a7864cdd0fc3e51166726d01e"
+  integrity sha512-MalOqajYYaELKLPHLnUcaU7kwhIHveVdKd15SKBkDkWj1NBLHuM5uZjXQ5TDfM4rrk4tcAzIvwWhCJzdGNcmkg==
   dependencies:
     remarkable "^2.0.1"
 
@@ -17481,6 +17481,13 @@ tinycolor2@^1.4.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
+
+title-case@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/title-case/-/title-case-3.0.3.tgz#bc689b46f02e411f1d1e1d081f7c3deca0489982"
+  integrity sha512-e1zGYRvbffpcHIrnuqT0Dh+gEJtDaxDSoG4JAIpq4oDFyooziLBIiYQv0GBT4FUAnUop5uZ1hiIAj7oAF6sOCA==
+  dependencies:
+    tslib "^2.0.3"
 
 tmp@0.0.33, tmp@^0.0.33:
   version "0.0.33"

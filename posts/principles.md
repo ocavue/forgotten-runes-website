@@ -3,6 +3,7 @@ title: "Principles of The Forgotten Runes Wizard's Cult"
 description: "Our community has many principles that we live by. This document captures some of them."
 ogWizardImage: 284
 index: 7
+category: community
 ---
 
 ## "Wizards are for Everyone"

@@ -3,6 +3,7 @@ title: パイロマンサーの情熱
 description: "Pyromancer Tegu of the WoldとSpellsinger Rumplskin of Avalonの物語"
 ogImage: https://i.imgur.com/2yOZx8n.jpg
 index: 23
+category: lore
 ---
 
 ![](https://i.imgur.com/xLVdBqT.png)

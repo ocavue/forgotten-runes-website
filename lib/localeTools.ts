@@ -1,21 +1,12 @@
 import path from "path";
-import { forEach, groupBy, keyBy } from "lodash";
+import { compact, forEach, groupBy, keyBy } from "lodash";
+import { Post } from "../components/Blog/types";
 
-export type LocaleFile = {
-  filePath: string;
-  basename: string;
-  locale: string;
-  content: string;
-  data: any;
-};
-export const pickBestByLocale = (
-  locale: string,
-  files: LocaleFile[]
-): LocaleFile[] => {
+export const pickBestByLocale = (locale: string, files: Post[]): Post[] => {
   const idx = groupBy(files, (f) => f.basename);
 
-  let outFiles: LocaleFile[] = [];
-  forEach(idx, (localeFiles: LocaleFile[], filename: string) => {
+  let outFiles: Post[] = [];
+  forEach(idx, (localeFiles: Post[], filename: string) => {
     const localeIndexed = keyBy(localeFiles, "locale");
     if (localeIndexed[locale]) {
       outFiles.push(localeIndexed[locale]);

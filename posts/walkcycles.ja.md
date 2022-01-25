@@ -3,6 +3,7 @@ title: メタバースに対応したForgotten Runes Wizardのウォークサイ
 description: 新しいウォークサイクルのスプライトシートを使って、10,000のForgotten RunesのWizardsと一緒に歩いてみましょう
 ogImage: https://i.imgur.com/6pSQbuE.png
 index: 18
+category: art
 ---
 
 [Forgotten Runes Wizard](https://www.forgottenrunes.com/gallery) NFTを所有することは、50x50ピクセルの画像だけでなく、そのWizardのキャラクター自体を所有することを意味します。そして今、そのキャラクターにピクセルアートのメタバースにおいて命を吹き込むことができるようになりました。

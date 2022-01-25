@@ -1,8 +1,9 @@
 ---
 title: "Bisonic Inc Partners with Magic Machine to Create Forgotten Runes Wizard's Cult Metaverse - Create-to-earn MMO"
-description: ""
+description: "Bisonic and Magic Machine have partnered to create an MMO-RPG create-to-earn metaverse game in the world of the Forgotten Runes Wizards"
 ogImage: https://i.imgur.com/60VfzuZ.png
 index: 23
+category: announcements
 ---
 
 BISONIC INC PARTNERS WITH MAGIC MACHINE
@@ -35,12 +36,12 @@ Forgotten Runes Wizard’s Cult is a collaborative legendarium rooted in blockch
 
 Magic Machine’s model is disrupting legacy media’s IP structures by granting commercial rights to its NFT holders. In the short time since its inception, the Forgotten Runes community has become one of the most committed and creative in the space with art, poems, and animation being created daily. Where other brands allow consumers to be fans of their characters, the Forgotten Runes Wizard holders ARE their characters, personally and financially.
 
-Forgotten Runes Wizard’s Cult games will roll out to consumers in 2022 with games, interactive creative tools, and an in-game NFT marketplace unique to the game and property. The first public land sale will take place at [insert game landing page URL] in Q1 of 2022, with more details coming soon. For news and updates, follow us on Twitter, join our Discord, or sign up for updates at [game landing page URL].
+Forgotten Runes Wizard’s Cult games will roll out to consumers in 2022 with games, interactive creative tools, and an in-game NFT marketplace unique to the game and property. The first public land sale will take place at [runiverse.world](https://runiverse.world/) in Q1 of 2022, with more details coming soon. For news and updates, follow us on Twitter, join our Discord, or sign up for updates at [runiverse.world](https://runiverse.world/).
 
 **About Bisonic**
 Bisonic is a metaverse video game developer and publisher consisting of AAA industry veterans. They produce high-quality metaverse games on the blockchain, where players can create value, engage, and compete with communities in fun and meaningful ways. Visit www.bisonic.io for more information.
 
-A**bout Magic Machine**
+**About Magic Machine**
 Magic Machine is a next-generation studio embracing blockchain technology. They are disrupting traditional media by creating decentralized ownership of IP and characters. Wizards are just the beginning. Based on the Ethereum blockchain, Magic Machine has created a collaborative legendarium through Forgotten Runes Wizard Cult, a collection of 10,000 unique Wizards, each with their own stories and personas written by their NFT holders. The community is deeply rooted in storytelling, fan-art, and future-facing opportunities like TV, film, and games linked to various Wizards and holders.
 
 Magic Machine builds worlds with characters and themes that are impactful, personal, and well-crafted while challenging legacy media's approach by way of decentralized intellectual property.
