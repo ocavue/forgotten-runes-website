@@ -52,11 +52,12 @@ const LoreMarkdownRenderer = ({
 
                   if (tokenTagMatches.length > 0) {
                     tokenTagMatches.forEach((match, index) => {
-                      // @ts-ignore
                       const priorMatchEnd =
                         index === 0
                           ? 0
+                          // @ts-ignore
                           : tokenTagMatches[index - 1].index +
+                          // @ts-ignore
                             tokenTagMatches[index - 1][0].length;
 
                       const tagType = match[1]; // e.g. "wizard"
@@ -77,8 +78,8 @@ const LoreMarkdownRenderer = ({
 
                       if (index === tokenTagMatches.length - 1) {
                         const fullMatchedWord = match[0]; // e.g. @wizard123
-                        // @ts-ignore
                         processedChildren.push(
+                          // @ts-ignore
                           child.slice(match.index + fullMatchedWord.length)
                         );
                       }
