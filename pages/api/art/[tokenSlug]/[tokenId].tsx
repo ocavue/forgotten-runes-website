@@ -22,6 +22,7 @@ import {
 import archiver from "archiver"; // https://github.com/archiverjs/node-archiver
 import { forEach, isNumber, size } from "lodash";
 import sharp from "sharp";
+import { tokenGoodiesSettings } from "../../../../lib/art/goodies";
 
 function bufferToStream(buffer: Buffer) {
   var bufferStream = new stream.PassThrough();
@@ -137,88 +138,97 @@ export default async function handler(
       ]);
 
       // build turnarounds
-      const turnarounds = await getAllTurnaroundFrameBuffers({
-        tokenId,
-        tokenSlug: tokenSlug as string,
-        size,
-      });
-      turnarounds.forEach(({ name, buffer }) => {
-        zipFiles.push([
-          bufferToStream(buffer),
-          { name: `${size}/turnarounds/${name}` },
-        ]);
-      });
-
-      // build rider
-      const ridingBodyBuffer = await getRidingTokenBodyBuffer({
-        tokenSlug: tokenSlug as string,
-        tokenId: tokenId as string,
-        scale,
-      });
-      zipFiles.push([
-        bufferToStream(ridingBodyBuffer),
-        { name: `${size}/${tokenId}-${slugify(tokenData.name)}-riding.png` },
-      ]);
-
-      // right here
-
-      // build familiars
-      const wizardLayerData = await getTokenLayersData({
-        tokenSlug: tokenSlug as string,
-        tokenId,
-      });
-
-      const hasFamiliar =
-        isNumber(parseInt(wizardLayerData.familiar)) &&
-        parseInt(wizardLayerData.familiar) !== 7777;
-
-      if (hasFamiliar) {
-        const familiarTurnarounds = await getAllFamiliarTurnaroundFrameBuffers({
+      if (tokenGoodiesSettings[tokenSlug as string].hasTurnarounds) {
+        const turnarounds = await getAllTurnaroundFrameBuffers({
           tokenId,
           tokenSlug: tokenSlug as string,
           size,
         });
-        familiarTurnarounds.forEach(({ name, buffer }) => {
+        turnarounds.forEach(({ name, buffer }) => {
           zipFiles.push([
             bufferToStream(buffer),
-            { name: `${size}/familiar-turnarounds/${name}` },
+            { name: `${size}/turnarounds/${name}` },
           ]);
         });
+      }
+
+      // build rider
+      if (tokenGoodiesSettings[tokenSlug as string].hasRiderBodies) {
+        const ridingBodyBuffer = await getRidingTokenBodyBuffer({
+          tokenSlug: tokenSlug as string,
+          tokenId: tokenId as string,
+          scale,
+        });
+        zipFiles.push([
+          bufferToStream(ridingBodyBuffer),
+          { name: `${size}/${tokenId}-${slugify(tokenData.name)}-riding.png` },
+        ]);
+      }
+
+      // build familiars
+      if (tokenGoodiesSettings[tokenSlug as string].hasFamiliarTurnarounds) {
+        const wizardLayerData = await getTokenLayersData({
+          tokenSlug: tokenSlug as string,
+          tokenId,
+        });
+
+        const hasFamiliar =
+          isNumber(parseInt(wizardLayerData.familiar)) &&
+          parseInt(wizardLayerData.familiar) !== 7777;
+
+        if (hasFamiliar) {
+          const familiarTurnarounds =
+            await getAllFamiliarTurnaroundFrameBuffers({
+              tokenId,
+              tokenSlug: tokenSlug as string,
+              size,
+            });
+          familiarTurnarounds.forEach(({ name, buffer }) => {
+            zipFiles.push([
+              bufferToStream(buffer),
+              { name: `${size}/familiar-turnarounds/${name}` },
+            ]);
+          });
+        }
       }
     }
 
     // build spritesheet
-    let genOptions = {
-      tokenSlug: tokenSlug as string,
-      tokenId: tokenId as string,
-      width: 50,
-      image: true,
-    };
-    const { buffer, frameFiles } = await buildSpritesheet(genOptions);
+    if (tokenGoodiesSettings[tokenSlug as string].hasSpritesheet) {
+      let genOptions = {
+        tokenSlug: tokenSlug as string,
+        tokenId: tokenId as string,
+        width: 50,
+        image: true,
+      };
+      const { buffer, frameFiles } = await buildSpritesheet(genOptions);
 
-    // resize here
-    for (let i = 0; i < sizes.length; i++) {
-      const size = sizes[i];
-      for (let f = 0; f < frameFiles.length; f++) {
-        const frameFile = frameFiles[f];
-        const { filename, buffer: frameFileBuffer } = frameFile;
+      // resize here
+      for (let i = 0; i < sizes.length; i++) {
+        const size = sizes[i];
+        for (let f = 0; f < frameFiles.length; f++) {
+          const frameFile = frameFiles[f];
+          const { filename, buffer: frameFileBuffer } = frameFile;
 
-        const imgSharp = await sharp(frameFileBuffer);
-        const imgMetadata = await imgSharp.metadata();
-        const newImgWidth = Math.floor((imgMetadata.width || 50) * scales[i]);
-        const newImgHeight = Math.floor((imgMetadata.height || 50) * scales[i]);
+          const imgSharp = await sharp(frameFileBuffer);
+          const imgMetadata = await imgSharp.metadata();
+          const newImgWidth = Math.floor((imgMetadata.width || 50) * scales[i]);
+          const newImgHeight = Math.floor(
+            (imgMetadata.height || 50) * scales[i]
+          );
 
-        const resizedBuffer = await imgSharp
-          .resize(newImgWidth, newImgHeight, {
-            fit: sharp.fit.fill,
-            kernel: sharp.kernel.nearest,
-          })
-          .toBuffer();
+          const resizedBuffer = await imgSharp
+            .resize(newImgWidth, newImgHeight, {
+              fit: sharp.fit.fill,
+              kernel: sharp.kernel.nearest,
+            })
+            .toBuffer();
 
-        zipFiles.push([
-          bufferToStream(resizedBuffer),
-          { name: `${size}/spritesheet/${filename}` },
-        ]);
+          zipFiles.push([
+            bufferToStream(resizedBuffer),
+            { name: `${size}/spritesheet/${filename}` },
+          ]);
+        }
       }
     }
 
