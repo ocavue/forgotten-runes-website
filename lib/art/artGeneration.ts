@@ -2,6 +2,8 @@ import sharp from "sharp";
 import path from "path";
 import wizardLayers from "../../public/static/nfts/wizards/wizards-layers.json";
 import wizardTraits from "../../public/static/nfts/wizards/wizards-traits.json";
+import soulLayers from "../../public/static/nfts/souls/souls-layers.json";
+import soulTraits from "../../public/static/nfts/souls/souls-traits.json";
 import { compact, groupBy, keyBy, map } from "lodash";
 import fs from "fs";
 import fetch from "node-fetch";
@@ -62,6 +64,7 @@ export const wizardLayersIdx: { [key: string]: any } = keyBy(
   wizardLayers,
   "idx"
 );
+export const soulLayersIdx: { [key: string]: any } = keyBy(soulLayers, "idx");
 
 export async function getWizardPartsBuffer() {
   return sharp(
@@ -82,9 +85,19 @@ export const wizardLayerNames = [
   "rune",
 ];
 
+export const soulsLayerNames = [
+  "background",
+  "body",
+  "familiar",
+  "head",
+  "prop",
+  "rune",
+  "undesirable",
+];
+
 export const tokenLayerNames: { [key: string]: string[] } = {
   wizards: wizardLayerNames,
-  souls: wizardLayerNames,
+  souls: soulsLayerNames,
 };
 
 export type TraitsLayerDescription = {
@@ -109,17 +122,25 @@ function doubleKeyBy(collection: any[], key1: string, key2: string) {
 const wizardsTraitsLayerDescriptionByLabel: {
   [trait: string]: { [label: string]: TraitsLayerDescription };
 } = doubleKeyBy(wizardTraits, "trait", "label");
+const soulsTraitsLayerDescriptionByLabel: {
+  [trait: string]: { [label: string]: TraitsLayerDescription };
+} = doubleKeyBy(soulTraits, "trait", "label");
+
 export const tokenTraitsByLabel: {
   [tokenSlug: string]: {
     [trait: string]: { [label: string]: TraitsLayerDescription };
   };
 } = {
   wizards: wizardsTraitsLayerDescriptionByLabel,
+  souls: soulsTraitsLayerDescriptionByLabel,
 };
 
 const wizardTraitsLayerDescriptionByIndex: {
   [idx: string]: TraitsLayerDescription;
 } = keyBy(wizardTraits, "idx");
+const soulTraitsLayerDescriptionByIndex: {
+  [idx: string]: TraitsLayerDescription;
+} = keyBy(soulTraits, "idx");
 
 export const tokenTraitsByIndex: {
   [tokenSlug: string]: {
@@ -127,7 +148,39 @@ export const tokenTraitsByIndex: {
   };
 } = {
   wizards: wizardTraitsLayerDescriptionByIndex,
+  souls: soulTraitsLayerDescriptionByIndex,
 };
+
+export async function extractTokenFrameBuffer({
+  tokenSlug,
+  frameNum,
+  partsBuffer,
+}: {
+  tokenSlug: string;
+  partsBuffer?: Buffer;
+  frameNum: number;
+}) {
+  switch (tokenSlug) {
+    default:
+    case "wizards": {
+      return extractWizardFrame({
+        partsBuffer: partsBuffer as Buffer,
+        frameNum,
+      });
+    }
+    case "souls": {
+      const filename = tokenTraitsByIndex[tokenSlug][frameNum].filename;
+      return sharp(
+        path.join(
+          ROOT_PATH,
+          `public/static/nfts/${tokenSlug}/layers/${filename}`
+        )
+      )
+        .png()
+        .toBuffer();
+    }
+  }
+}
 
 export async function extractWizardFrame({
   partsBuffer,
@@ -184,6 +237,9 @@ export async function getTokenLayersData({
     case "wizards": {
       return wizardLayersIdx[tokenId];
     }
+    case "souls": {
+      return soulLayersIdx[tokenId];
+    }
   }
 }
 
@@ -229,7 +285,8 @@ export async function getTraitLayerBufferForTokenId({
     throw new Error(`Unknown trait ${traitSlug}`);
   }
 
-  const layerPartBuffer = await extractWizardFrame({
+  const layerPartBuffer = await extractTokenFrameBuffer({
+    tokenSlug,
     partsBuffer,
     frameNum,
   });
@@ -266,7 +323,8 @@ export async function getTraitLayerBuffer({
 
   const tokenLayerInfo = tokenTraitsByLabel[tokenSlug][traitSlug][traitName];
 
-  const layerPartBuffer = await extractWizardFrame({
+  const layerPartBuffer = await extractTokenFrameBuffer({
+    tokenSlug,
     partsBuffer,
     frameNum: parseInt(tokenLayerInfo.idx),
   });
@@ -325,7 +383,8 @@ export async function getStyledTokenBuffer({
       continue;
     }
 
-    const layerPartBuffer = await extractWizardFrame({
+    const layerPartBuffer = await extractTokenFrameBuffer({
+      tokenSlug,
       partsBuffer,
       frameNum,
     });
@@ -881,7 +940,8 @@ export async function getRiderOnMountImageBuffer({
   });
   const headBuffer =
     frameNum >= 0
-      ? await extractWizardFrame({
+      ? await extractTokenFrameBuffer({
+          tokenSlug,
           partsBuffer,
           frameNum,
         })
@@ -893,7 +953,8 @@ export async function getRiderOnMountImageBuffer({
   });
   const propBuffer =
     propFrameNum >= 0
-      ? await extractWizardFrame({
+      ? await extractTokenFrameBuffer({
+          tokenSlug,
           partsBuffer,
           frameNum: propFrameNum,
         })
@@ -998,7 +1059,8 @@ export async function getRidingTokenBodyBuffer({
   });
   const headBuffer =
     frameNum >= 0
-      ? await extractWizardFrame({
+      ? await extractTokenFrameBuffer({
+          tokenSlug,
           partsBuffer,
           frameNum,
         })
