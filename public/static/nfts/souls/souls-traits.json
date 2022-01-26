@@ -1,0 +1,1724 @@
+[
+  {
+    "idx": "0",
+    "filename": "bg_black_soul.png",
+    "trait": "background",
+    "label": "Death"
+  },
+  {
+    "idx": "1",
+    "filename": "bg_blue_soul.png",
+    "trait": "background",
+    "label": "Famine"
+  },
+  {
+    "idx": "2",
+    "filename": "bg_green_soul.png",
+    "trait": "background",
+    "label": "Pestilence"
+  },
+  {
+    "idx": "3",
+    "filename": "bg_red_soul.png",
+    "trait": "background",
+    "label": "Conquest"
+  },
+  {
+    "idx": "4",
+    "filename": "body_Lich_emperor.png",
+    "trait": "body",
+    "label": "Supreme Emperor Lich Armor"
+  },
+  {
+    "idx": "5",
+    "filename": "body_armsash_soul.png",
+    "trait": "body",
+    "label": "Ethereal Shoulder Cape"
+  },
+  {
+    "idx": "6",
+    "filename": "body_beltrobe_soul.png",
+    "trait": "body",
+    "label": "Ethereal Tunic"
+  },
+  {
+    "idx": "7",
+    "filename": "body_elf_soul.png",
+    "trait": "body",
+    "label": "Ethereal Elven Cloak"
+  },
+  {
+    "idx": "8",
+    "filename": "body_femAdept_soul.png",
+    "trait": "body",
+    "label": "Ethereal Jumpsuit with Hip Pouch"
+  },
+  {
+    "idx": "9",
+    "filename": "body_femCloak_soul.png",
+    "trait": "body",
+    "label": "Caped Ethereal Jumpsuit"
+  },
+  {
+    "idx": "10",
+    "filename": "body_vest_soul.png",
+    "trait": "body",
+    "label": "Ethereal Vest"
+  },
+  {
+    "idx": "11",
+    "filename": "body_void_soul.png",
+    "trait": "body",
+    "label": "Ethereal Sash"
+  },
+  {
+    "idx": "12",
+    "filename": "body_twopiecesuit_purple_zombie.png",
+    "trait": "body",
+    "label": "Ethereal Aristocrat"
+  },
+  {
+    "idx": "13",
+    "filename": "body_pirate_soul.png",
+    "trait": "body",
+    "label": "Ethereal Swashbuckling Gear"
+  },
+  {
+    "idx": "14",
+    "filename": "body_grim.png",
+    "trait": "body",
+    "label": "Reaper Robe"
+  },
+  {
+    "idx": "16",
+    "filename": "body_nosferatu.png",
+    "trait": "body",
+    "label": "Gotchic Frock"
+  },
+  {
+    "idx": "17",
+    "filename": "body_flyingdutchman.png",
+    "trait": "body",
+    "label": "Undead Swashbuckler"
+  },
+  {
+    "idx": "18",
+    "filename": "body_marielaveau.png",
+    "trait": "body",
+    "label": "Fortune Telling Robes"
+  },
+  {
+    "idx": "19",
+    "filename": "body_bloodymary.png",
+    "trait": "body",
+    "label": "Houppelande"
+  },
+  {
+    "idx": "20",
+    "filename": "body_whitelady.png",
+    "trait": "body",
+    "label": "White Chiffon"
+  },
+  {
+    "idx": "21",
+    "filename": "body_zombieking.png",
+    "trait": "body",
+    "label": "Regal Decay"
+  },
+  {
+    "idx": "22",
+    "filename": "body_angel.png",
+    "trait": "body",
+    "label": "Angelic Robe"
+  },
+  {
+    "idx": "24",
+    "filename": "body_claire_soul.png",
+    "trait": "body",
+    "label": "Skeleton in Spandex"
+  },
+  {
+    "idx": "27",
+    "filename": "body_ghoul_green.png",
+    "trait": "body",
+    "label": "Carnal Body of Sickness"
+  },
+  {
+    "idx": "28",
+    "filename": "body_ghoul_bloodlust.png",
+    "trait": "body",
+    "label": "Blood Gorged Vulgarity"
+  },
+  {
+    "idx": "29",
+    "filename": "body_ghoul_purple.png",
+    "trait": "body",
+    "label": "Carnal Body of Shade"
+  },
+  {
+    "idx": "30",
+    "filename": "body_ghoul_red.png",
+    "trait": "body",
+    "label": "Carnal Body Salaciousness"
+  },
+  {
+    "idx": "31",
+    "filename": "body_ghoul_white.png",
+    "trait": "body",
+    "label": "Carnal Body of Death"
+  },
+  {
+    "idx": "32",
+    "filename": "body_ghoul_green_fem.png",
+    "trait": "body",
+    "label": "Lascivious Body of Sickness"
+  },
+  {
+    "idx": "33",
+    "filename": "body_ghoul_purple_fem.png",
+    "trait": "body",
+    "label": "Lascivious Body Shade"
+  },
+  {
+    "idx": "34",
+    "filename": "body_ghoul_red_fem.png",
+    "trait": "body",
+    "label": "Lascivious Body Salaciousness"
+  },
+  {
+    "idx": "36",
+    "filename": "body_lich_cape.png",
+    "trait": "body",
+    "label": "Wight Cape"
+  },
+  {
+    "idx": "38",
+    "filename": "body_lich_mantle.png",
+    "trait": "body",
+    "label": "Dark Mantle"
+  },
+  {
+    "idx": "40",
+    "filename": "body_phantasm_paranormal.png",
+    "trait": "body",
+    "label": "Paranormal Phantasmal Body"
+  },
+  {
+    "idx": "41",
+    "filename": "body_phantasm_sash.png",
+    "trait": "body",
+    "label": "Phantasm Sash"
+  },
+  {
+    "idx": "42",
+    "filename": "body_phantasm_veil.png",
+    "trait": "body",
+    "label": "Phantasmal body of the Veil"
+  },
+  {
+    "idx": "43",
+    "filename": "body_phantasm_void.png",
+    "trait": "body",
+    "label": "Phantasmal body of the Void"
+  },
+  {
+    "idx": "45",
+    "filename": "body_poltergeist_glitch.png",
+    "trait": "body",
+    "label": "Glitched Poltergeist"
+  },
+  {
+    "idx": "46",
+    "filename": "body_poltergeist_grey.png",
+    "trait": "body",
+    "label": "Channel 3 Robe"
+  },
+  {
+    "idx": "47",
+    "filename": "body_poltergeist_white.png",
+    "trait": "body",
+    "label": "Channel 1 Robe"
+  },
+  {
+    "idx": "49",
+    "filename": "body_revenant.png",
+    "trait": "body",
+    "label": "Skeleton with Sash"
+  },
+  {
+    "idx": "50",
+    "filename": "body_revenant_disgusting.png",
+    "trait": "body",
+    "label": "Disgusting Decayed Body"
+  },
+  {
+    "idx": "51",
+    "filename": "body_skeleton.png",
+    "trait": "body",
+    "label": "Skeleton"
+  },
+  {
+    "idx": "52",
+    "filename": "body_skeleton_rainbow.png",
+    "trait": "body",
+    "label": "Technicolor Skeleton"
+  },
+  {
+    "idx": "53",
+    "filename": "body_skeleton_bloody.png",
+    "trait": "body",
+    "label": "Decaying Skeleton"
+  },
+  {
+    "idx": "54",
+    "filename": "body_skeleton_green.png",
+    "trait": "body",
+    "label": "Vile Skeleton"
+  },
+  {
+    "idx": "55",
+    "filename": "body_skeleton_gold.png",
+    "trait": "body",
+    "label": "Burned Gold Skeleton"
+  },
+  {
+    "idx": "56",
+    "filename": "body_skeleton_white.png",
+    "trait": "body",
+    "label": "Skeleton in Red Boots"
+  },
+  {
+    "idx": "57",
+    "filename": "body_spectre_blue.png",
+    "trait": "body",
+    "label": "Shade Spectral Body"
+  },
+  {
+    "idx": "58",
+    "filename": "body_spectre_green.png",
+    "trait": "body",
+    "label": "Ecto Spectral Body"
+  },
+  {
+    "idx": "59",
+    "filename": "body_spectre_purple.png",
+    "trait": "body",
+    "label": "Ethereal Spectral Body"
+  },
+  {
+    "idx": "60",
+    "filename": "body_spectre_white.png",
+    "trait": "body",
+    "label": "Holy Spectral Body"
+  },
+  {
+    "idx": "61",
+    "filename": "body_twopiecesuit_oz_zombie.png",
+    "trait": "body",
+    "label": "Emerald Zombie"
+  },
+  {
+    "idx": "62",
+    "filename": "body_usergnome.png",
+    "trait": "body",
+    "label": "Skipper Ghost"
+  },
+  {
+    "idx": "63",
+    "filename": "body_wraith_four.png",
+    "trait": "body",
+    "label": "Corporeal Body"
+  },
+  {
+    "idx": "64",
+    "filename": "body_wraith_one.png",
+    "trait": "body",
+    "label": "Ethereal Cleric Robe"
+  },
+  {
+    "idx": "65",
+    "filename": "body_wraith_three.png",
+    "trait": "body",
+    "label": "Regal Undead"
+  },
+  {
+    "idx": "66",
+    "filename": "body_wraith_two.png",
+    "trait": "body",
+    "label": "Mischief Suit"
+  },
+  {
+    "idx": "68",
+    "filename": "body_zombie_brown.png",
+    "trait": "body",
+    "label": "Blight Rags"
+  },
+  {
+    "idx": "69",
+    "filename": "body_zombie_green.png",
+    "trait": "body",
+    "label": "Gangrene Rags"
+  },
+  {
+    "idx": "70",
+    "filename": "body_zombie_pale.png",
+    "trait": "body",
+    "label": "Consumption Rags"
+  },
+  {
+    "idx": "71",
+    "filename": "body_zombie_red.png",
+    "trait": "body",
+    "label": "Putrid Rags"
+  },
+  {
+    "idx": "72",
+    "filename": "body_zombie_brown_fem.png",
+    "trait": "body",
+    "label": "Blight Tattered"
+  },
+  {
+    "idx": "73",
+    "filename": "body_zombie_green_fem.png",
+    "trait": "body",
+    "label": "Gangrene Tattered"
+  },
+  {
+    "idx": "77",
+    "filename": "familair_ladybug_ghost.png",
+    "trait": "familiar",
+    "label": "Ladybug Ghost"
+  },
+  {
+    "idx": "78",
+    "filename": "familiar_bat_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Bat"
+  },
+  {
+    "idx": "79",
+    "filename": "familiar_bat_skeleton.png",
+    "trait": "familiar",
+    "label": "Bat Skeleton"
+  },
+  {
+    "idx": "80",
+    "filename": "familiar_bunny_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Bunny"
+  },
+  {
+    "idx": "81",
+    "filename": "familiar_bunny_skeleton.png",
+    "trait": "familiar",
+    "label": "Bunny Skeleton"
+  },
+  {
+    "idx": "82",
+    "filename": "familiar_bunny_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Bunny"
+  },
+  {
+    "idx": "85",
+    "filename": "familiar_cat_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Cat"
+  },
+  {
+    "idx": "86",
+    "filename": "familiar_cat_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Cat"
+  },
+  {
+    "idx": "87",
+    "filename": "familiar_cockatrice_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Cockatrice"
+  },
+  {
+    "idx": "88",
+    "filename": "familiar_cockatrice_skeleton.png",
+    "trait": "familiar",
+    "label": "Cockatrice Skeleton"
+  },
+  {
+    "idx": "90",
+    "filename": "familiar_crow_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Crow"
+  },
+  {
+    "idx": "91",
+    "filename": "familiar_crow_skeleton.png",
+    "trait": "familiar",
+    "label": "Crow Skeleton"
+  },
+  {
+    "idx": "92",
+    "filename": "familiar_crow_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Crow"
+  },
+  {
+    "idx": "93",
+    "filename": "familiar_dog_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Dog"
+  },
+  {
+    "idx": "94",
+    "filename": "familiar_fox_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Fox"
+  },
+  {
+    "idx": "95",
+    "filename": "familiar_fox_skeleton.png",
+    "trait": "familiar",
+    "label": "Fox Skeleton"
+  },
+  {
+    "idx": "96",
+    "filename": "familiar_fox_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Fox"
+  },
+  {
+    "idx": "98",
+    "filename": "familiar_frog_fire.png",
+    "trait": "familiar",
+    "label": "Blaze Frog"
+  },
+  {
+    "idx": "99",
+    "filename": "familiar_frog_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Frog"
+  },
+  {
+    "idx": "100",
+    "filename": "familiar_frog_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Frog"
+  },
+  {
+    "idx": "101",
+    "filename": "familiar_hummingbird_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Hummingbird"
+  },
+  {
+    "idx": "102",
+    "filename": "familiar_hummingbird_skeleton.png",
+    "trait": "familiar",
+    "label": "Hummingbird Skeleton"
+  },
+  {
+    "idx": "103",
+    "filename": "familiar_monkey_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Monkey"
+  },
+  {
+    "idx": "104",
+    "filename": "familiar_monkey_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Monkey"
+  },
+  {
+    "idx": "105",
+    "filename": "familiar_monkey_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Monkey"
+  },
+  {
+    "idx": "106",
+    "filename": "familiar_owl_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Owl"
+  },
+  {
+    "idx": "107",
+    "filename": "familiar_owl_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Owl"
+  },
+  {
+    "idx": "108",
+    "filename": "familiar_rat_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Rat"
+  },
+  {
+    "idx": "110",
+    "filename": "familiar_rat_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Rat"
+  },
+  {
+    "idx": "111",
+    "filename": "familiar_rat_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Rat"
+  },
+  {
+    "idx": "115",
+    "filename": "familiar_slime_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Slime"
+  },
+  {
+    "idx": "116",
+    "filename": "familiar_snail_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Snail"
+  },
+  {
+    "idx": "117",
+    "filename": "familiar_snake_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Snake"
+  },
+  {
+    "idx": "118",
+    "filename": "familiar_snake_skeleton.png",
+    "trait": "familiar",
+    "label": "Skeleton Snake"
+  },
+  {
+    "idx": "126",
+    "filename": "familiar_wolf_ghost.png",
+    "trait": "familiar",
+    "label": "Ghost Wolf"
+  },
+  {
+    "idx": "127",
+    "filename": "familiar_wolf_skeleton.png",
+    "trait": "familiar",
+    "label": "Wolf Skeleton"
+  },
+  {
+    "idx": "128",
+    "filename": "familiar_wolf_zombie.png",
+    "trait": "familiar",
+    "label": "Zombie Wolf"
+  },
+  {
+    "idx": "129",
+    "filename": "familiar_thylacine.png",
+    "trait": "familiar",
+    "label": "Resurrected Thylacine"
+  },
+  {
+    "idx": "130",
+    "filename": "familiar_dodo.png",
+    "trait": "familiar",
+    "label": "Resurrected Dodo"
+  },
+  {
+    "idx": "131",
+    "filename": "familiar_sabertooth.png",
+    "trait": "familiar",
+    "label": "Resurrected Smilodon Kitten"
+  },
+  {
+    "idx": "132",
+    "filename": "familiar_mariespython.png",
+    "trait": "familiar",
+    "label": "Python"
+  },
+  {
+    "idx": "133",
+    "filename": "head_BlackGoat_soul.png",
+    "trait": "head",
+    "label": "Evil One's Skull"
+  },
+  {
+    "idx": "134",
+    "filename": "head_Cat_soul.png",
+    "trait": "head",
+    "label": "Felis Skull"
+  },
+  {
+    "idx": "136",
+    "filename": "head_Corvin_soul.png",
+    "trait": "head",
+    "label": "Corvid Skull"
+  },
+  {
+    "idx": "137",
+    "filename": "head_Ctulu_soul.png",
+    "trait": "head",
+    "label": "Eldritch Horror"
+  },
+  {
+    "idx": "139",
+    "filename": "head_Dotta_soul.png",
+    "trait": "head",
+    "label": "Angelic Dotta"
+  },
+  {
+    "idx": "140",
+    "filename": "head_grim.png",
+    "trait": "head",
+    "label": "Grim Reaper's Skull"
+  },
+  {
+    "idx": "142",
+    "filename": "head_nosferatu.png",
+    "trait": "head",
+    "label": "Count Orlok"
+  },
+  {
+    "idx": "143",
+    "filename": "head_flyingdutchman.png",
+    "trait": "head",
+    "label": "Captian of the Namesake"
+  },
+  {
+    "idx": "144",
+    "filename": "head_marielaveau.png",
+    "trait": "head",
+    "label": "Marie Laveau"
+  },
+  {
+    "idx": "145",
+    "filename": "head_bloodymary.png",
+    "trait": "head",
+    "label": "Mary Tudor"
+  },
+  {
+    "idx": "146",
+    "filename": "head_whitelady.png",
+    "trait": "head",
+    "label": "Jane Doe"
+  },
+  {
+    "idx": "147",
+    "filename": "head_zombieking.png",
+    "trait": "head",
+    "label": "King of the Dead"
+  },
+  {
+    "idx": "148",
+    "filename": "head_video_ghost.png",
+    "trait": "head",
+    "label": "Toru"
+  },
+  {
+    "idx": "150",
+    "filename": "head_Eggplant_soul.png",
+    "trait": "head",
+    "label": "Veggie Ghost"
+  },
+  {
+    "idx": "151",
+    "filename": "head_Eyebol_soul.png",
+    "trait": "head",
+    "label": "Eyeball Fireball"
+  },
+  {
+    "idx": "152",
+    "filename": "head_Flamos_soul.png",
+    "trait": "head",
+    "label": "Ghost Flame"
+  },
+  {
+    "idx": "153",
+    "filename": "head_Ghoul_green.png",
+    "trait": "head",
+    "label": "Ghoul of Sickness"
+  },
+  {
+    "idx": "154",
+    "filename": "head_Ghoul_purple.png",
+    "trait": "head",
+    "label": "Ghoul of Shade"
+  },
+  {
+    "idx": "156",
+    "filename": "head_Ghoul_red.png",
+    "trait": "head",
+    "label": "Salacious Ghoul"
+  },
+  {
+    "idx": "157",
+    "filename": "head_Ghoul_white.png",
+    "trait": "head",
+    "label": "Pale Ghoul"
+  },
+  {
+    "idx": "158",
+    "filename": "head_Herne_soul.png",
+    "trait": "head",
+    "label": "Hunter Skull"
+  },
+  {
+    "idx": "160",
+    "filename": "head_Ilu_soul.png",
+    "trait": "head",
+    "label": "Transcendent Illuminatus"
+  },
+  {
+    "idx": "161",
+    "filename": "head_Imp_soul.png",
+    "trait": "head",
+    "label": "Imp Skull"
+  },
+  {
+    "idx": "162",
+    "filename": "head_Jack_soul.png",
+    "trait": "head",
+    "label": "Ghost Pumpkin"
+  },
+  {
+    "idx": "163",
+    "filename": "head_Lich_blue.png",
+    "trait": "head",
+    "label": "Lich Duke"
+  },
+  {
+    "idx": "164",
+    "filename": "head_Lich_gold.png",
+    "trait": "head",
+    "label": "Golden Lich"
+  },
+  {
+    "idx": "165",
+    "filename": "head_Lich_emperor.png",
+    "trait": "head",
+    "label": "Lich Emperor"
+  },
+  {
+    "idx": "166",
+    "filename": "head_Lich_yellow.png",
+    "trait": "head",
+    "label": "Lich Despot"
+  },
+  {
+    "idx": "167",
+    "filename": "head_Lich_vr.png",
+    "trait": "head",
+    "label": "Lich Cyborog"
+  },
+  {
+    "idx": "168",
+    "filename": "head_Lich_purple.png",
+    "trait": "head",
+    "label": "Lich Baron"
+  },
+  {
+    "idx": "169",
+    "filename": "head_Lich_white.png",
+    "trait": "head",
+    "label": "Lich Marquis"
+  },
+  {
+    "idx": "170",
+    "filename": "head_Moloch_soul.png",
+    "trait": "head",
+    "label": "Canaanite Skull"
+  },
+  {
+    "idx": "171",
+    "filename": "head_Mushroom_soul.png",
+    "trait": "head",
+    "label": "Death Shroom"
+  },
+  {
+    "idx": "172",
+    "filename": "head_Pezo_soul.png",
+    "trait": "head",
+    "label": "Anuran Skull"
+  },
+  {
+    "idx": "173",
+    "filename": "head_Phantasm_horned.png",
+    "trait": "head",
+    "label": "Horned Phantasm"
+  },
+  {
+    "idx": "174",
+    "filename": "head_Phantasm_paranormal.png",
+    "trait": "head",
+    "label": "Paranormal Phantasm"
+  },
+  {
+    "idx": "175",
+    "filename": "head_Phantasm_veil.png",
+    "trait": "head",
+    "label": "Phantasm of the Veil"
+  },
+  {
+    "idx": "176",
+    "filename": "head_Phantasm_void.png",
+    "trait": "head",
+    "label": "Phantasm of the Void"
+  },
+  {
+    "idx": "177",
+    "filename": "head_Pino_soul.png",
+    "trait": "head",
+    "label": "Soul of Wooden Boy"
+  },
+  {
+    "idx": "178",
+    "filename": "head_Poltergeist_grey.png",
+    "trait": "head",
+    "label": "Channel 3 Poltergeist"
+  },
+  {
+    "idx": "179",
+    "filename": "head_Poltergeist_white.png",
+    "trait": "head",
+    "label": "Channel 1 Poltergeist"
+  },
+  {
+    "idx": "180",
+    "filename": "head_Revenant_bigblood.png",
+    "trait": "head",
+    "label": "Blood Eater Revenant"
+  },
+  {
+    "idx": "181",
+    "filename": "head_Revenant_eyes.png",
+    "trait": "head",
+    "label": "Gouged Revenant"
+  },
+  {
+    "idx": "182",
+    "filename": "head_Revenant_green.png",
+    "trait": "head",
+    "label": "Rotten Revenant"
+  },
+  {
+    "idx": "183",
+    "filename": "head_Revenant_tongue.png",
+    "trait": "head",
+    "label": "Lewd Revenant"
+  },
+  {
+    "idx": "184",
+    "filename": "head_skeleton_rainbow.png",
+    "trait": "head",
+    "label": "Hue Skeleton"
+  },
+  {
+    "idx": "185",
+    "filename": "head_Spectre_blue.png",
+    "trait": "head",
+    "label": "Shade Spectre"
+  },
+  {
+    "idx": "186",
+    "filename": "head_Spectre_green.png",
+    "trait": "head",
+    "label": "Ecto Spectre"
+  },
+  {
+    "idx": "187",
+    "filename": "head_Spectre_purple.png",
+    "trait": "head",
+    "label": "Ethereal Spectre"
+  },
+  {
+    "idx": "188",
+    "filename": "head_Spectre_white.png",
+    "trait": "head",
+    "label": "Holy Spectre"
+  },
+  {
+    "idx": "189",
+    "filename": "head_Tundror_soul.png",
+    "trait": "head",
+    "label": "Wild Zombie"
+  },
+  {
+    "idx": "191",
+    "filename": "head_Zombie_brown.png",
+    "trait": "head",
+    "label": "Blight Zombie"
+  },
+  {
+    "idx": "192",
+    "filename": "head_Zombie_green.png",
+    "trait": "head",
+    "label": "Gangrene Zombie"
+  },
+  {
+    "idx": "193",
+    "filename": "head_Zombie_pale.png",
+    "trait": "head",
+    "label": "Consumption Zombie"
+  },
+  {
+    "idx": "194",
+    "filename": "head_Zombie_red.png",
+    "trait": "head",
+    "label": "Putrid Zombie"
+  },
+  {
+    "idx": "197",
+    "filename": "head_ghoul_bloodlust.png",
+    "trait": "head",
+    "label": "Ghoul of Bloodlust"
+  },
+  {
+    "idx": "200",
+    "filename": "head_poltergeist_glitch.png",
+    "trait": "head",
+    "label": "Glitched Poltergeist"
+  },
+  {
+    "idx": "201",
+    "filename": "head_revenant_disgusting.png",
+    "trait": "head",
+    "label": "Disgusting Revenant"
+  },
+  {
+    "idx": "202",
+    "filename": "head_usergnome_soul.png",
+    "trait": "head",
+    "label": "Furgnome Ghost"
+  },
+  {
+    "idx": "203",
+    "filename": "head_usergnome_angel.png",
+    "trait": "head",
+    "label": "Gremplin Ghost"
+  },
+  {
+    "idx": "204",
+    "filename": "head_wraith_four.png",
+    "trait": "head",
+    "label": "Wraith Captain"
+  },
+  {
+    "idx": "205",
+    "filename": "head_wraith_one.png",
+    "trait": "head",
+    "label": "Wraith Deacon"
+  },
+  {
+    "idx": "206",
+    "filename": "head_wraith_three.png",
+    "trait": "head",
+    "label": "Wraith Knight"
+  },
+  {
+    "idx": "207",
+    "filename": "head_wraith_two.png",
+    "trait": "head",
+    "label": "Wraith Devout"
+  },
+  {
+    "idx": "209",
+    "filename": "head_Woomba_soul.png",
+    "trait": "head",
+    "label": "Kobold Skull"
+  },
+  {
+    "idx": "210",
+    "filename": "head_doovoo_soul.png",
+    "trait": "head",
+    "label": "Houngan Death Lord"
+  },
+  {
+    "idx": "211",
+    "filename": "head_braindrain_soul.png",
+    "trait": "head",
+    "label": "Braindrain Skull"
+  },
+  {
+    "idx": "212",
+    "filename": "item_ale_soul.png",
+    "trait": "prop",
+    "label": "Empty Mug of Ale"
+  },
+  {
+    "idx": "213",
+    "filename": "item_apple_soul.png",
+    "trait": "prop",
+    "label": "Poison Apple"
+  },
+  {
+    "idx": "214",
+    "filename": "item_bell_soul.png",
+    "trait": "prop",
+    "label": "Banshee's Bell"
+  },
+  {
+    "idx": "215",
+    "filename": "item_bloodvile_soul.png",
+    "trait": "prop",
+    "label": "Vile of Vomit"
+  },
+  {
+    "idx": "216",
+    "filename": "item_book_soul.png",
+    "trait": "prop",
+    "label": "Book of Dark Magic"
+  },
+  {
+    "idx": "217",
+    "filename": "item_candle_soul.png",
+    "trait": "prop",
+    "label": "Candle of Clairvoyance"
+  },
+  {
+    "idx": "218",
+    "filename": "item_card_soul.png",
+    "trait": "prop",
+    "label": "Joker Card"
+  },
+  {
+    "idx": "219",
+    "filename": "item_crystalBall_soul.png",
+    "trait": "prop",
+    "label": "Quartz Orbuculum"
+  },
+  {
+    "idx": "220",
+    "filename": "item_egg_cockatrice_soul.png",
+    "trait": "prop",
+    "label": "Cockatrice hatchling"
+  },
+  {
+    "idx": "221",
+    "filename": "item_egg_dragon_soul.png",
+    "trait": "prop",
+    "label": "Dragon hatchling"
+  },
+  {
+    "idx": "222",
+    "filename": "item_egg_platypus_soul.png",
+    "trait": "prop",
+    "label": "Platypus hatchling"
+  },
+  {
+    "idx": "223",
+    "filename": "item_eyeball_soul.png",
+    "trait": "prop",
+    "label": "Medusa's Eye"
+  },
+  {
+    "idx": "224",
+    "filename": "item_firework_soul.png",
+    "trait": "prop",
+    "label": "Forever Sparkler"
+  },
+  {
+    "idx": "225",
+    "filename": "item_goblet_soul.png",
+    "trait": "prop",
+    "label": "Devil's Goblet"
+  },
+  {
+    "idx": "226",
+    "filename": "item_harp_soul.png",
+    "trait": "prop",
+    "label": "Banshee's Harp"
+  },
+  {
+    "idx": "227",
+    "filename": "item_horseshoe_soul.png",
+    "trait": "prop",
+    "label": "Inverted Horseshoe"
+  },
+  {
+    "idx": "228",
+    "filename": "item_hourglass_soul.png",
+    "trait": "prop",
+    "label": "Anti Hourglass"
+  },
+  {
+    "idx": "229",
+    "filename": "item_key_quantum_soul.png",
+    "trait": "prop",
+    "label": "Quantum Key"
+  },
+  {
+    "idx": "230",
+    "filename": "item_key_soul.png",
+    "trait": "prop",
+    "label": "Skeleton Key"
+  },
+  {
+    "idx": "231",
+    "filename": "item_magicBag_soul.png",
+    "trait": "prop",
+    "label": "Bag of Cataclysm"
+  },
+  {
+    "idx": "232",
+    "filename": "item_mushroom_soul.png",
+    "trait": "prop",
+    "label": "Death Shroom"
+  },
+  {
+    "idx": "233",
+    "filename": "item_peyote_soul.png",
+    "trait": "prop",
+    "label": "Underworld Peyote"
+  },
+  {
+    "idx": "234",
+    "filename": "item_phoenixFeather_soul.png",
+    "trait": "prop",
+    "label": "Double Phoenix Feather"
+  },
+  {
+    "idx": "235",
+    "filename": "item_pipe_soul.png",
+    "trait": "prop",
+    "label": "Charred Pipe"
+  },
+  {
+    "idx": "236",
+    "filename": "item_potion_soul.png",
+    "trait": "prop",
+    "label": "Penumbra Potion"
+  },
+  {
+    "idx": "237",
+    "filename": "item_piratesword.png",
+    "trait": "prop",
+    "label": "Rusted Cutlass"
+  },
+  {
+    "idx": "238",
+    "filename": "item_reaping_hook.png",
+    "trait": "prop",
+    "label": "Reaping Hook"
+  },
+  {
+    "idx": "239",
+    "filename": "item_mariescandle.png",
+    "trait": "prop",
+    "label": "Marie's Candle"
+  },
+  {
+    "idx": "240",
+    "filename": "item_marystorch.png",
+    "trait": "prop",
+    "label": "Mary's Torch"
+  },
+  {
+    "idx": "241",
+    "filename": "item_whiteskull.png",
+    "trait": "prop",
+    "label": "White Skull"
+  },
+  {
+    "idx": "242",
+    "filename": "item_brain.png",
+    "trait": "prop",
+    "label": "Fresh Brains"
+  },
+  {
+    "idx": "246",
+    "filename": "item_rose_soul.png",
+    "trait": "prop",
+    "label": "Flaming Rose"
+  },
+  {
+    "idx": "247",
+    "filename": "item_skull_soul.png",
+    "trait": "prop",
+    "label": "Hamlet's Skull"
+  },
+  {
+    "idx": "248",
+    "filename": "item_snowcone_soul.png",
+    "trait": "prop",
+    "label": "Mystic Ice Cream melted"
+  },
+  {
+    "idx": "249",
+    "filename": "item_stick_soul.png",
+    "trait": "prop",
+    "label": "A dumb stick... on fire"
+  },
+  {
+    "idx": "250",
+    "filename": "item_torch_soul.png",
+    "trait": "prop",
+    "label": "Ghost Torch"
+  },
+  {
+    "idx": "253",
+    "filename": "item_wand_soul.png",
+    "trait": "prop",
+    "label": "Wand of Conquest"
+  },
+  {
+    "idx": "255",
+    "filename": "spell_bolt_soul.png",
+    "trait": "prop",
+    "label": "Odin's Despair: the Dark Cloud Spell"
+  },
+  {
+    "idx": "256",
+    "filename": "spell_dazzle_soul.png",
+    "trait": "prop",
+    "label": "Pixie's Dance: the Razzle Spell"
+  },
+  {
+    "idx": "257",
+    "filename": "spell_death_soul.png",
+    "trait": "prop",
+    "label": "Seraphim's Touch: the Life Spell"
+  },
+  {
+    "idx": "258",
+    "filename": "spell_earth_soul.png",
+    "trait": "prop",
+    "label": "Dwarve's Heart: the Diamond Spell"
+  },
+  {
+    "idx": "259",
+    "filename": "spell_fire_soul.png",
+    "trait": "prop",
+    "label": "Howl of Cerberus: the Black Flame Spell"
+  },
+  {
+    "idx": "260",
+    "filename": "spell_greenflame_soul.png",
+    "trait": "prop",
+    "label": "Bugbear's Flame: the Discombobulation Spell"
+  },
+  {
+    "idx": "261",
+    "filename": "spell_love_soul.png",
+    "trait": "prop",
+    "label": "The Everlasting Supreme Love Spell"
+  },
+  {
+    "idx": "262",
+    "filename": "spell_plant_soul.png",
+    "trait": "prop",
+    "label": "Dryad's Decay: the Rafflesia Spell"
+  },
+  {
+    "idx": "264",
+    "filename": "spell_water_soul.png",
+    "trait": "prop",
+    "label": "Nixie's Lament: the Rain Spell"
+  },
+  {
+    "idx": "265",
+    "filename": "spell_wind_soul.png",
+    "trait": "prop",
+    "label": "Basilisk's Hiss: the Heat Spell"
+  },
+  {
+    "idx": "266",
+    "filename": "staff_ball_soul.png",
+    "trait": "prop",
+    "label": "Trapped Soul Staff"
+  },
+  {
+    "idx": "267",
+    "filename": "staff_bigstick_soul.png",
+    "trait": "prop",
+    "label": "A Big Magic Stick with Ether Fire"
+  },
+  {
+    "idx": "268",
+    "filename": "staff_bone_soul.png",
+    "trait": "prop",
+    "label": "Charred Bone Stave"
+  },
+  {
+    "idx": "269",
+    "filename": "staff_broom_soul.png",
+    "trait": "prop",
+    "label": "Broom on Fire"
+  },
+  {
+    "idx": "270",
+    "filename": "staff_caduceus_soul.png",
+    "trait": "prop",
+    "label": "Golden Caduceus"
+  },
+  {
+    "idx": "271",
+    "filename": "staff_Cjewel_green_soul.png",
+    "trait": "prop",
+    "label": "Ghoul Stone Staff"
+  },
+  {
+    "idx": "272",
+    "filename": "staff_crook_soul.png",
+    "trait": "prop",
+    "label": "Death Crook"
+  },
+  {
+    "idx": "273",
+    "filename": "staff_Djewel_red_soul.png",
+    "trait": "prop",
+    "label": "Fire Stone Staff"
+  },
+  {
+    "idx": "274",
+    "filename": "staff_ether_soul.png",
+    "trait": "prop",
+    "label": "Ether Staff 2.0"
+  },
+  {
+    "idx": "275",
+    "filename": "staff_flameSpear_soul.png",
+    "trait": "prop",
+    "label": "Sulfer Spear"
+  },
+  {
+    "idx": "277",
+    "filename": "staff_moon_soul.png",
+    "trait": "prop",
+    "label": "Blood Moon Staff"
+  },
+  {
+    "idx": "279",
+    "filename": "staff_ramSkull_soul.png",
+    "trait": "prop",
+    "label": "Entropy Staff"
+  },
+  {
+    "idx": "281",
+    "filename": "staff_scythe_soul.png",
+    "trait": "prop",
+    "label": "Soul Reaper Scythe"
+  },
+  {
+    "idx": "282",
+    "filename": "staff_snake_soul.png",
+    "trait": "prop",
+    "label": "Death Adder Rod"
+  },
+  {
+    "idx": "283",
+    "filename": "staff_star_soul.png",
+    "trait": "prop",
+    "label": "Neutron Star Staff"
+  },
+  {
+    "idx": "284",
+    "filename": "staff_sun_soul.png",
+    "trait": "prop",
+    "label": "Black Sun Staff"
+  },
+  {
+    "idx": "285",
+    "filename": "staff_yjewel_soul.png",
+    "trait": "prop",
+    "label": "Spectre Stone Staff"
+  },
+  {
+    "idx": "287",
+    "filename": "rune_air.png",
+    "trait": "rune",
+    "label": "Soul Rune of Air"
+  },
+  {
+    "idx": "288",
+    "filename": "rune_brass.png",
+    "trait": "rune",
+    "label": "Soul Rune of Brass"
+  },
+  {
+    "idx": "289",
+    "filename": "rune_brimstone.png",
+    "trait": "rune",
+    "label": "Soul Rune of Brimstone"
+  },
+  {
+    "idx": "290",
+    "filename": "rune_cinnabar.png",
+    "trait": "rune",
+    "label": "Soul Rune of Cinnabar"
+  },
+  {
+    "idx": "291",
+    "filename": "rune_down.png",
+    "trait": "rune",
+    "label": "Soul Rune of Down"
+  },
+  {
+    "idx": "292",
+    "filename": "rune_earth.png",
+    "trait": "rune",
+    "label": "Soul Rune of Earth"
+  },
+  {
+    "idx": "293",
+    "filename": "rune_fire.png",
+    "trait": "rune",
+    "label": "Soul Rune of Fire"
+  },
+  {
+    "idx": "294",
+    "filename": "rune_infinity.png",
+    "trait": "rune",
+    "label": "Soul Rune of Infinity"
+  },
+  {
+    "idx": "295",
+    "filename": "rune_jupiter.png",
+    "trait": "rune",
+    "label": "Soul Rune of Jupiter"
+  },
+  {
+    "idx": "296",
+    "filename": "rune_lime.png",
+    "trait": "rune",
+    "label": "Soul Rune of Lime"
+  },
+  {
+    "idx": "297",
+    "filename": "rune_mars.png",
+    "trait": "rune",
+    "label": "Soul Rune of Mars"
+  },
+  {
+    "idx": "298",
+    "filename": "rune_mecury.png",
+    "trait": "rune",
+    "label": "Soul Rune of Mercury"
+  },
+  {
+    "idx": "299",
+    "filename": "rune_neptune.png",
+    "trait": "rune",
+    "label": "Soul Rune of Neptune"
+  },
+  {
+    "idx": "300",
+    "filename": "rune_omega.png",
+    "trait": "rune",
+    "label": "Soul Rune of Omega"
+  },
+  {
+    "idx": "301",
+    "filename": "rune_pluto.png",
+    "trait": "rune",
+    "label": "Soul Rune of Pluto"
+  },
+  {
+    "idx": "302",
+    "filename": "rune_saturn.png",
+    "trait": "rune",
+    "label": "Soul Rune of Up Only"
+  },
+  {
+    "idx": "303",
+    "filename": "rune_sigma.png",
+    "trait": "rune",
+    "label": "Soul Rune of Saturn"
+  },
+  {
+    "idx": "304",
+    "filename": "rune_steel.png",
+    "trait": "rune",
+    "label": "Soul Rune of Sigma"
+  },
+  {
+    "idx": "305",
+    "filename": "rune_sun.png",
+    "trait": "rune",
+    "label": "Soul Rune of Steel"
+  },
+  {
+    "idx": "306",
+    "filename": "rune_up.png",
+    "trait": "rune",
+    "label": "Soul Rune of Sun"
+  },
+  {
+    "idx": "307",
+    "filename": "rune_uranus.png",
+    "trait": "rune",
+    "label": "Soul Rune of Uranus"
+  },
+  {
+    "idx": "308",
+    "filename": "rune_venus.png",
+    "trait": "rune",
+    "label": "Soul Rune of Venus"
+  },
+  {
+    "idx": "309",
+    "filename": "rune_water.png",
+    "trait": "rune",
+    "label": "Soul Rune of Water"
+  },
+  {
+    "idx": "310",
+    "filename": "rune_soul.png",
+    "trait": "rune",
+    "label": "Rune of Souls"
+  },
+  {
+    "idx": "311",
+    "filename": "spiritorb_purple.png",
+    "trait": "undesirable",
+    "label": "Ghost Orb"
+  },
+  {
+    "idx": "312",
+    "filename": "spiritorb_red.png",
+    "trait": "undesirable",
+    "label": "Power Orb"
+  },
+  {
+    "idx": "313",
+    "filename": "spiritorb_yellow.png",
+    "trait": "undesirable",
+    "label": "Meta Orb"
+  },
+  {
+    "idx": "314",
+    "filename": "urn_gold.png",
+    "trait": "undesirable",
+    "label": "Holy Urn"
+  },
+  {
+    "idx": "315",
+    "filename": "urn_purple.png",
+    "trait": "undesirable",
+    "label": "Ethereal Urn"
+  },
+  {
+    "idx": "316",
+    "filename": "urn_white.png",
+    "trait": "undesirable",
+    "label": "Immaculate Urn"
+  },
+  {
+    "idx": "318",
+    "filename": "flower_rose.png",
+    "trait": "undesirable",
+    "label": "Rose on grave"
+  },
+  {
+    "idx": "319",
+    "filename": "flower_tulip.png",
+    "trait": "undesirable",
+    "label": "Tulip on grave"
+  },
+  {
+    "idx": "320",
+    "filename": "ashpile.png",
+    "trait": "undesirable",
+    "label": "Ashpile"
+  },
+  {
+    "idx": "321",
+    "filename": "ashpile_bones.png",
+    "trait": "undesirable",
+    "label": "Ashpile with bones"
+  },
+  {
+    "idx": "322",
+    "filename": "bloodandguts.png",
+    "trait": "undesirable",
+    "label": "Pile of Blood and Guts"
+  },
+  {
+    "idx": "323",
+    "filename": "bonepile.png",
+    "trait": "undesirable",
+    "label": "Pile of Bones"
+  },
+  {
+    "idx": "324",
+    "filename": "coffin_brown.png",
+    "trait": "undesirable",
+    "label": "Brown Coffin"
+  },
+  {
+    "idx": "325",
+    "filename": "coffin_red.png",
+    "trait": "undesirable",
+    "label": "Red Coffin"
+  },
+  {
+    "idx": "326",
+    "filename": "coffin_green.png",
+    "trait": "undesirable",
+    "label": "Green Coffin"
+  },
+  {
+    "idx": "327",
+    "filename": "coffin_purple.png",
+    "trait": "undesirable",
+    "label": "Purple Coffin"
+  },
+  {
+    "idx": "328",
+    "filename": "coffin_blue.png",
+    "trait": "undesirable",
+    "label": "Blue Coffin"
+  },
+  {
+    "idx": "329",
+    "filename": "coffin_white.png",
+    "trait": "undesirable",
+    "label": "White Coffin"
+  },
+  {
+    "idx": "330",
+    "filename": "coffin_yellow.png",
+    "trait": "undesirable",
+    "label": "Yellow Coffin"
+  },
+  {
+    "idx": "331",
+    "filename": "ectoplasm_goop.png",
+    "trait": "undesirable",
+    "label": "Ectoplasm Goop"
+  },
+  {
+    "idx": "332",
+    "filename": "ectoplasm_mist.png",
+    "trait": "undesirable",
+    "label": "Ectoplasm Mist"
+  },
+  {
+    "idx": "333",
+    "filename": "ectoplasm_cloud.png",
+    "trait": "undesirable",
+    "label": "Cloud of Ectoplasm"
+  },
+  {
+    "idx": "334",
+    "filename": "jellydonut_blueberry.png",
+    "trait": "undesirable",
+    "label": "Blueberry Jelly Donut"
+  },
+  {
+    "idx": "335",
+    "filename": "jellydonut_grape.png",
+    "trait": "undesirable",
+    "label": "Grape Jelly Donut"
+  },
+  {
+    "idx": "336",
+    "filename": "jellydonut_raspberry.png",
+    "trait": "undesirable",
+    "label": "Raspberry Jelly Donut"
+  },
+  {
+    "idx": "337",
+    "filename": "slimedonut.png",
+    "trait": "undesirable",
+    "label": "Jelly Donut with Slime"
+  },
+  {
+    "idx": "338",
+    "filename": "void_of_nothingness.png",
+    "trait": "undesirable",
+    "label": "Total Void of Absolute Nothingness"
+  }
+]
