@@ -17,6 +17,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/28"
   },
+  "29": {
+    "id": 29,
+    "name": "Golden Lich LeggoMyGreggo",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/29"
+  },
   "30": {
     "id": 30,
     "name": "Eldritch Horror Great Old One Andolini",
@@ -29,11 +35,23 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/58"
   },
+  "98": {
+    "id": 98,
+    "name": "Ghost Pumpkin Gourdon of Limbo",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/98"
+  },
   "101": {
     "id": 101,
     "name": "Paranormal Phantasm Milton ",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/101"
+  },
+  "110": {
+    "id": 110,
+    "name": "Horned Phantasm Jasper of the Paranormal",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/110"
   },
   "133": {
     "id": 133,
@@ -77,6 +95,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/240"
   },
+  "248": {
+    "id": 248,
+    "name": "Horned Phantasm Uvlius of Phantasmagoria",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/248"
+  },
   "260": {
     "id": 260,
     "name": "Shaded Spectre Eden ",
@@ -88,6 +112,12 @@
     "name": "Wraith Knight Xerxes of the Grim Hallows",
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/271"
+  },
+  "277": {
+    "id": 277,
+    "name": "Gouged Revenant Zelda of the Fetid Ruins",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/277"
   },
   "283": {
     "id": 283,
@@ -257,11 +287,23 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/693"
   },
+  "697": {
+    "id": 697,
+    "name": "Shaded Spectre Sabina of the Ectoplasmic Horizon",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/697"
+  },
   "705": {
     "id": 705,
     "name": "Ethereal Spectre Zaros of the Ethereal Realm",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/705"
+  },
+  "721": {
+    "id": 721,
+    "name": "Ectoplasmic Spectre Salvatore of the Shaded Shores",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/721"
   },
   "810": {
     "id": 810,
@@ -299,11 +341,23 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/928"
   },
+  "955": {
+    "id": 955,
+    "name": "Wraith Knight Zubin of Goblin town",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/955"
+  },
   "965": {
     "id": 965,
     "name": "Putrid Zombie Voidoth of the Spike",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/965"
+  },
+  "988": {
+    "id": 988,
+    "name": "Night Ghoul Maia of Nasty Town",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/988"
   },
   "1001": {
     "id": 1001,
@@ -389,6 +443,12 @@
     "background_color": "1E0200",
     "image": "https://portal.forgottenrunes.com/api/souls/img/1099"
   },
+  "1103": {
+    "id": 1103,
+    "name": "Holy Spectre Gunthor of the ???",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/1103"
+  },
   "1126": {
     "id": 1126,
     "name": "Putrid Zombie Casper of the Nightmare Dominion",
@@ -419,6 +479,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/1195"
   },
+  "1225": {
+    "id": 1225,
+    "name": "Wraith Captain Zane of the Inifinite Nothing",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/1225"
+  },
   "1230": {
     "id": 1230,
     "name": "Night Ghoul Iris of the Death Cloud",
@@ -442,6 +508,12 @@
     "name": "Wraith Deacon Cassius of the Death Cloud",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/1277"
+  },
+  "1282": {
+    "id": 1282,
+    "name": "Lewd Revenant Rita of the Nether Regions",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/1282"
   },
   "1294": {
     "id": 1294,
@@ -509,11 +581,23 @@
     "background_color": "1E0200",
     "image": "https://portal.forgottenrunes.com/api/souls/img/1458"
   },
+  "1466": {
+    "id": 1466,
+    "name": "Houngan Necromancer Auguste of the Eternal Melancholy",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/1466"
+  },
   "1483": {
     "id": 1483,
     "name": "Wraith Deacon Malcom of the Brimstone Havens",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/1483"
+  },
+  "1498": {
+    "id": 1498,
+    "name": "Lewd Revenant Azahl of the Majestic Filth",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/1498"
   },
   "1562": {
     "id": 1562,
@@ -797,6 +881,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2116"
   },
+  "2120": {
+    "id": 2120,
+    "name": "Death Shroom Mushy of the Haze",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2120"
+  },
   "2177": {
     "id": 2177,
     "name": "Blight Zombie Azahl of the Severed Innocence",
@@ -844,6 +934,12 @@
     "name": "Lich Despot Solomon of the Death Cloud",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2226"
+  },
+  "2231": {
+    "id": 2231,
+    "name": "Grim Ghoul Cassius of the Brimstone Havens",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2231"
   },
   "2248": {
     "id": 2248,
@@ -899,6 +995,12 @@
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2372"
   },
+  "2379": {
+    "id": 2379,
+    "name": "Veiled Phantasm Darick of the Gloom",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2379"
+  },
   "2385": {
     "id": 2385,
     "name": "Malodorous Ghoul Alessar of the Brimstone Havens",
@@ -941,6 +1043,12 @@
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2443"
   },
+  "2455": {
+    "id": 2455,
+    "name": "Putrid Zombie Eric of Goblin town",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2455"
+  },
   "2479": {
     "id": 2479,
     "name": "Void Phantasm Celah of the Hell Chamber",
@@ -952,6 +1060,12 @@
     "name": "Ectoplasmic Spectre Rodolfo of the Bubonic Beaches",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2521"
+  },
+  "2527": {
+    "id": 2527,
+    "name": "Houngan Necromancer Marius of Nightmare Paradise",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2527"
   },
   "2532": {
     "id": 2532,
@@ -995,6 +1109,18 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2677"
   },
+  "2685": {
+    "id": 2685,
+    "name": "Grim Ghoul Juniper of the Ethereal Realm",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2685"
+  },
+  "2692": {
+    "id": 2692,
+    "name": "Wraith Knight Astrid of the Bubonic Beaches",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2692"
+  },
   "2700": {
     "id": 2700,
     "name": "Wraith Deacon Nazim of the Majestic Filth",
@@ -1036,6 +1162,12 @@
     "name": "Shaded Spectre Layla of the Shaded Shores",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/2787"
+  },
+  "2811": {
+    "id": 2811,
+    "name": "Wild Zombie Horace of the Dread Tower",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/2811"
   },
   "2839": {
     "id": 2839,
@@ -1133,6 +1265,12 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/3059"
   },
+  "3088": {
+    "id": 3088,
+    "name": "Lich Marquis Lamia of the Abandoned Waste",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/3088"
+  },
   "3115": {
     "id": 3115,
     "name": "Rotten Revenant Jeldor of the Bottomless Grave",
@@ -1187,6 +1325,18 @@
     "background_color": "1E0200",
     "image": "https://portal.forgottenrunes.com/api/souls/img/3224"
   },
+  "3231": {
+    "id": 3231,
+    "name": "Channel 1 Poltergeist Victoria of the Soft Glitch",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/3231"
+  },
+  "3240": {
+    "id": 3240,
+    "name": "Necro Frog Poppy of the Mist",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/3240"
+  },
   "3243": {
     "id": 3243,
     "name": "Meta Orb",
@@ -1222,6 +1372,12 @@
     "name": "Grim Ghoul Astrid of the Death Cloud",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/3265"
+  },
+  "3274": {
+    "id": 3274,
+    "name": "Wraith Devout Azazel of the Royal Wretch",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/3274"
   },
   "3284": {
     "id": 3284,
@@ -1367,6 +1523,12 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/3745"
   },
+  "3774": {
+    "id": 3774,
+    "name": "Wraith Deacon Layla of the Death Cloud",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/3774"
+  },
   "3791": {
     "id": 3791,
     "name": "Death Crow Jay of the Abandoned Waste",
@@ -1469,6 +1631,12 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/4075"
   },
+  "4094": {
+    "id": 4094,
+    "name": "Channel 1 Poltergeist Tengu of the Glowing Box",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/4094"
+  },
   "4121": {
     "id": 4121,
     "name": "Pile of Bones",
@@ -1505,6 +1673,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/4230"
   },
+  "4235": {
+    "id": 4235,
+    "name": "The Lich Emperor Supreme",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/4235"
+  },
   "4241": {
     "id": 4241,
     "name": "Cloud of Ectoplasm",
@@ -1540,6 +1714,12 @@
     "name": "Veiled Phantasm of the Thorn",
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/4464"
+  },
+  "4470": {
+    "id": 4470,
+    "name": "Rotten Revenant Jerret of the Mortal Coil",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/4470"
   },
   "4483": {
     "id": 4483,
@@ -1600,6 +1780,12 @@
     "name": "Holy Spectre Uvlius of Pandemonium",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/4607"
+  },
+  "4613": {
+    "id": 4613,
+    "name": "Lich Marquis Homer of the Majestic Filth",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/4613"
   },
   "4653": {
     "id": 4653,
@@ -1667,6 +1853,12 @@
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/4857"
   },
+  "4865": {
+    "id": 4865,
+    "name": "Wraith Captain Aslan of Goblin town",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/4865"
+  },
   "4870": {
     "id": 4870,
     "name": "Shaded Spectre Nikolas of the Undying Chill",
@@ -1697,6 +1889,12 @@
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/4895"
   },
+  "4944": {
+    "id": 4944,
+    "name": "Channel 3 Poltergeist Iprix of the Soft Glitch",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/4944"
+  },
   "4966": {
     "id": 4966,
     "name": "Rose on grave",
@@ -1720,6 +1918,12 @@
     "name": "Wraith Captain Udor of the Undying Chill",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/5050"
+  },
+  "5055": {
+    "id": 5055,
+    "name": "Void Phantasm Asmodeus of the Ether Veil",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/5055"
   },
   "5064": {
     "id": 5064,
@@ -1787,6 +1991,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/5343"
   },
+  "5348": {
+    "id": 5348,
+    "name": "Rotten Revenant Bayard of the Nether Regions",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/5348"
+  },
   "5349": {
     "id": 5349,
     "name": "Death Shroom Buttons of the Machine",
@@ -1798,6 +2008,12 @@
     "name": "Gangrenous Zombie Solomon of the Bottomless Grave",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/5358"
+  },
+  "5376": {
+    "id": 5376,
+    "name": "Grape Jelly Donut",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/5376"
   },
   "5404": {
     "id": 5404,
@@ -1822,6 +2038,12 @@
     "name": "Wraith Captain Taqi of Goblin town",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/5467"
+  },
+  "5497": {
+    "id": 5497,
+    "name": "Lewd Revenant Ophelia of the Undying Chill",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/5497"
   },
   "5516": {
     "id": 5516,
@@ -1888,6 +2110,12 @@
     "name": "Gangrenous Zombie Onaxx of Torment Manor",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/5663"
+  },
+  "5702": {
+    "id": 5702,
+    "name": "Ghost Flame Burnside of Dread Tower",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/5702"
   },
   "5710": {
     "id": 5710,
@@ -1973,6 +2201,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6006"
   },
+  "6010": {
+    "id": 6010,
+    "name": "Blight Zombie Angus of the Severed Innocence",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6010"
+  },
   "6016": {
     "id": 6016,
     "name": "Shaded Spectre Axel of the XYZ",
@@ -2015,6 +2249,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6076"
   },
+  "6112": {
+    "id": 6112,
+    "name": "Blight Zombie Wizard Lin of the Ice Abyss",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6112"
+  },
   "6137": {
     "id": 6137,
     "name": "Blight Zombie Eronin of the Bubonic Beaches",
@@ -2027,11 +2267,23 @@
     "background_color": "1E0200",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6147"
   },
+  "6163": {
+    "id": 6163,
+    "name": "Channel 3 Poltergeist Arabella of the Asphodel Meadows",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6163"
+  },
   "6167": {
     "id": 6167,
     "name": "Hunted Stag Devin of the Shaded Shores",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6167"
+  },
+  "6223": {
+    "id": 6223,
+    "name": "Lich Despot Orlando of Dread Tower",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6223"
   },
   "6225": {
     "id": 6225,
@@ -2051,6 +2303,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6248"
   },
+  "6283": {
+    "id": 6283,
+    "name": "White Lady",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6283"
+  },
   "6303": {
     "id": 6303,
     "name": "Wraith Deacon Seth of the Death Cloud",
@@ -2062,6 +2320,12 @@
     "name": "Green Coffin",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6308"
+  },
+  "6311": {
+    "id": 6311,
+    "name": "Lecherous Ghoul Nolan of Pandemonium",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6311"
   },
   "6335": {
     "id": 6335,
@@ -2099,11 +2363,23 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6433"
   },
+  "6489": {
+    "id": 6489,
+    "name": "Wraith Devout Remus of Dread Tower",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6489"
+  },
   "6493": {
     "id": 6493,
     "name": "Wraith Deacon Lenora of the Spike",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6493"
+  },
+  "6495": {
+    "id": 6495,
+    "name": "Void Phantasm Homer of Pandemonium",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6495"
   },
   "6518": {
     "id": 6518,
@@ -2303,11 +2579,23 @@
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/6973"
   },
+  "6993": {
+    "id": 6993,
+    "name": "Paranormal Phantasm Sondra of the Fuliginous Fog",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/6993"
+  },
   "7002": {
     "id": 7002,
     "name": "Veiled Phantasm Devon of the Thorn",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/7002"
+  },
+  "7005": {
+    "id": 7005,
+    "name": "Horned Phantasm Caligula of the Smell",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/7005"
   },
   "7019": {
     "id": 7019,
@@ -2356,6 +2644,12 @@
     "name": "Lewd Revenant Tengukensei of the Inifinite Nothing",
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/7159"
+  },
+  "7186": {
+    "id": 7186,
+    "name": "Gangrenous Zombie Ofaris of Nightmare Paradise",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/7186"
   },
   "7226": {
     "id": 7226,
@@ -2429,6 +2723,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/7381"
   },
+  "7384": {
+    "id": 7384,
+    "name": "Channel 3 Poltergeist Judas of the Fuliginous Fog",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/7384"
+  },
   "7387": {
     "id": 7387,
     "name": "Hunted Stag Muntjac of the Haze",
@@ -2483,11 +2783,23 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/7543"
   },
+  "7689": {
+    "id": 7689,
+    "name": "Rotten Revenant Milo of the Majestic Filth",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/7689"
+  },
   "7704": {
     "id": 7704,
     "name": "Consumption Zombie Oberon of the Mortal Coil",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/7704"
+  },
+  "7742": {
+    "id": 7742,
+    "name": "Gangrenous Zombie Larissa of the Pile",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/7742"
   },
   "7743": {
     "id": 7743,
@@ -2518,6 +2830,12 @@
     "name": "Night Ghoul Seth of the Bottomless Grave",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/7824"
+  },
+  "7866": {
+    "id": 7866,
+    "name": "Lich Duke Zhan of the Death Cloud",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/7866"
   },
   "7867": {
     "id": 7867,
@@ -2597,6 +2915,12 @@
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/8085"
   },
+  "8087": {
+    "id": 8087,
+    "name": "Lich Baron Sonja of the Death Cloud",
+    "background_color": "040D04",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/8087"
+  },
   "8099": {
     "id": 8099,
     "name": "Wraith Knight Qasim of the Dread Tower",
@@ -2651,6 +2975,12 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/8213"
   },
+  "8240": {
+    "id": 8240,
+    "name": "Lewd Revenant Gunthor of Phantasmagoria",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/8240"
+  },
   "8248": {
     "id": 8248,
     "name": "Lewd Revenant Isaac of the Majestic Filth",
@@ -2680,6 +3010,12 @@
     "name": "Raspberry Jelly Donut",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/8293"
+  },
+  "8343": {
+    "id": 8343,
+    "name": "Wraith Deacon Iprix of Nasty Town",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/8343"
   },
   "8357": {
     "id": 8357,
@@ -2734,6 +3070,12 @@
     "name": "Lich Marquis Lumos ",
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/8500"
+  },
+  "8506": {
+    "id": 8506,
+    "name": "Wraith Knight Allistair of the Mortal Coil",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/8506"
   },
   "8531": {
     "id": 8531,
@@ -2830,6 +3172,12 @@
     "name": "Rotten Revenant Jahid of the Slime Pits",
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/8793"
+  },
+  "8799": {
+    "id": 8799,
+    "name": "Holy Spectre Artis of the Chasm",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/8799"
   },
   "8800": {
     "id": 8800,
@@ -2951,6 +3299,12 @@
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/9237"
   },
+  "9252": {
+    "id": 9252,
+    "name": "Lich Marquis Celah of the Worms",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/9252"
+  },
   "9316": {
     "id": 9316,
     "name": "Wraith Knight Oberon of the Chasm",
@@ -2963,6 +3317,12 @@
     "background_color": "09071B",
     "image": "https://portal.forgottenrunes.com/api/souls/img/9318"
   },
+  "9343": {
+    "id": 9343,
+    "name": "Ethereal Spectre Silas of the Death Cloud",
+    "background_color": "1E0200",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/9343"
+  },
   "9383": {
     "id": 9383,
     "name": "Grave Robbing Kobold Poppy of the Technicolor Nightmare",
@@ -2974,6 +3334,12 @@
     "name": "Ethereal Spectre Impy of the Death Cloud",
     "background_color": "040D04",
     "image": "https://portal.forgottenrunes.com/api/souls/img/9431"
+  },
+  "9449": {
+    "id": 9449,
+    "name": "Wraith Captain Godfrey of the Chasm",
+    "background_color": "000000",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/9449"
   },
   "9451": {
     "id": 9451,
@@ -2992,6 +3358,12 @@
     "name": "Rotten Revenant Alatar of the Bottomless Grave",
     "background_color": "000000",
     "image": "https://portal.forgottenrunes.com/api/souls/img/9528"
+  },
+  "9561": {
+    "id": 9561,
+    "name": "Ghost Flame Scorch of the Soft Glitch",
+    "background_color": "09071B",
+    "image": "https://portal.forgottenrunes.com/api/souls/img/9561"
   },
   "9592": {
     "id": 9592,

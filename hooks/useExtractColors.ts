@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import convert from "color-convert";
 import { sortBy, toPairs } from "lodash";
+import { IPFS_HTTP_SERVER } from "../components/Lore/IndividualLorePage";
+import { IPFS_SERVER } from "../constants";
 
 const getImageData = function (imageUrl: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -55,8 +57,13 @@ export function useExtractColors(url?: string | null) {
   useEffect(() => {
     async function run() {
       if (!url) return;
-      //
-      const imageData = await getImageData(url);
+
+      let imageData;
+      if (url?.startsWith("ipfs://")) {
+        imageData = url.replace(/^ipfs:\/\//, IPFS_HTTP_SERVER);
+      } else {
+        imageData = url; //base64
+      }
       const image: HTMLImageElement = document.createElement("img");
       image.addEventListener("load", function () {
         const canvas = document.createElement("canvas");
@@ -71,8 +78,10 @@ export function useExtractColors(url?: string | null) {
           width,
           height
         );
+        console.log(extractedBgColor);
         setBgColor(extractedBgColor);
       });
+      image.crossOrigin = "anonymous";
       image.src = imageData;
     }
     run();

@@ -8,6 +8,7 @@ export const loreTextStyles = css`
   h4,
   h5 {
     margin-top: 0.5em;
+    font-family: "Alagard", serif;
   }
 
   h1 {

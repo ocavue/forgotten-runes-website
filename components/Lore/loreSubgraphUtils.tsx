@@ -2,6 +2,8 @@ import client from "../../lib/graphql";
 import { gql } from "@apollo/client";
 import {
   CHARACTER_CONTRACTS,
+  isPoniesContract,
+  isSoulsContract,
   isWizardsContract,
 } from "../../contracts/ForgottenRunesWizardsCultContract";
 import { getLoreUrl } from "./loreUtils";
@@ -10,6 +12,7 @@ import { IndividualLorePageData } from "./types";
 import { hydratePageDataFromMetadata } from "./markdownUtils";
 import { promises as fs } from "fs";
 import * as os from "os";
+import { getContractFromTokenSlug } from "../../lib/nftUtilis";
 
 const COMMON_LORE_FIELDS = `
   id
@@ -23,14 +26,11 @@ const COMMON_LORE_FIELDS = `
   createdAtTimestamp
 `;
 
-export const GRAPH_ID_MATCHER = /^((?:0x).*)-(\d+)-(\d+)$/;
-
-export const NORMALIZED_WIZARD_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_REACT_APP_WIZARDS_CONTRACT_ADDRESS?.toLowerCase();
-
 const LORE_CACHE = path.join(os.tmpdir(), ".lore_cache");
-const WIZARDS_LORE_CACHE = LORE_CACHE + "_wizards";
-const SOULS_LORE_CACHE = LORE_CACHE + "_souls";
+
+const getCacheLocation = (tokenAddress: string) => {
+  return `${LORE_CACHE}_${tokenAddress.toLowerCase()}`;
+};
 
 const WIZARDS_THAT_HAVE_LORE_CACHE = path.join(
   os.tmpdir(),
@@ -38,11 +38,12 @@ const WIZARDS_THAT_HAVE_LORE_CACHE = path.join(
 );
 
 export async function bustLoreCache() {
-  const files = [
-    WIZARDS_LORE_CACHE,
-    SOULS_LORE_CACHE,
-    WIZARDS_THAT_HAVE_LORE_CACHE,
-  ];
+  const files = Object.entries(CHARACTER_CONTRACTS).map(
+    ([tokenSlug, tokenAddress]) => getCacheLocation(tokenAddress)
+  );
+
+  files.push(WIZARDS_THAT_HAVE_LORE_CACHE);
+
   for (let index in files) {
     const file = files[index];
     try {
@@ -63,9 +64,7 @@ export async function getLoreInChapterForm(
   tokenContract: string,
   updateCache: boolean = false
 ) {
-  const cacheFile = isWizardsContract(tokenContract)
-    ? WIZARDS_LORE_CACHE
-    : SOULS_LORE_CACHE;
+  const cacheFile = getCacheLocation(tokenContract);
 
   let results;
 
@@ -94,22 +93,22 @@ export async function getLoreInChapterForm(
       Array.from({ length: serverGraphPagesToFetch }, (_, i) =>
         client.query({
           query: gql`
-          query WizardLore {
-              loreTokens(skip: ${
-                i * 999
-              }, first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${tokenContract}"}) {
-                  tokenContract
-                  tokenId
-                  lore(
-                      where: { struck: false, nsfw: false }
-                      orderBy: id
-                      orderDirection: asc
-                  ) {
-                      ${COMMON_LORE_FIELDS}
+              query WizardLore {
+                  loreTokens(skip: ${
+                    i * 999
+                  }, first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${tokenContract}"}) {
+                      tokenContract
+                      tokenId
+                      lore(
+                          where: { struck: false, nsfw: false }
+                          orderBy: id
+                          orderDirection: asc
+                      ) {
+                          ${COMMON_LORE_FIELDS}
+                      }
                   }
               }
-          }
-      `,
+          `,
           fetchPolicy: "no-cache",
         })
       )
@@ -162,10 +161,7 @@ export async function getLeftRightPages(
   leftPageNum: number,
   rightPageNum: number
 ) {
-  const tokenContract =
-    loreTokenSlug === "wizards"
-      ? CHARACTER_CONTRACTS.wizards
-      : CHARACTER_CONTRACTS.souls;
+  const tokenContract = getContractFromTokenSlug(loreTokenSlug);
   const loreInChapterForm = await getLoreInChapterForm(tokenContract);
 
   const chapterIndexForToken = await getIndexForToken(
@@ -279,6 +275,14 @@ export async function getLeftRightPages(
       if (soulsChapters.length > 0) {
         nextPageRoute = getLoreUrl("souls", soulsChapters[0].tokenId, 0);
       }
+    } else if (loreTokenSlug === "souls") {
+      const poniesChapters = await getLoreInChapterForm(
+        CHARACTER_CONTRACTS.ponies
+      );
+
+      if (poniesChapters.length > 0) {
+        nextPageRoute = getLoreUrl("ponies", poniesChapters[0].tokenId, 0);
+      }
     }
   }
 
@@ -317,11 +321,11 @@ export async function getWizardsWithLore(): Promise<{
     try {
       const { data } = await client.query({
         query: gql`
-          query WizardLore {
-              loreTokens(first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${CHARACTER_CONTRACTS.wizards}"}) {
-                  tokenId
-              }
-          }`,
+            query WizardLore {
+                loreTokens(first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${CHARACTER_CONTRACTS.wizards}"}) {
+                    tokenId
+                }
+            }`,
       });
 
       results = (data?.loreTokens ?? []).reduce(
