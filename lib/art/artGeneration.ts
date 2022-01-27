@@ -162,6 +162,9 @@ export async function extractTokenFrameBuffer({
   partsBuffer?: Buffer;
   frameNum: number;
 }) {
+  if (frameNum === 7777) {
+    return;
+  }
   switch (tokenSlug) {
     default:
     case "wizards": {
@@ -888,11 +891,11 @@ export async function getFamiliarTurnaroundFrameBuffer({
 export async function extractRidingBodyBuffer({
   tokenSlug,
   tokenId,
-  isArm = false,
+  suffix,
 }: {
   tokenSlug: string;
   tokenId: string;
-  isArm: boolean;
+  suffix: string;
 }) {
   const wizardLayerData = await getTokenLayersData({ tokenSlug, tokenId });
   const bodyLayer = await getTokenTraitLayerDescription({
@@ -901,9 +904,7 @@ export async function extractRidingBodyBuffer({
     traitSlug: "body",
   });
   const bodyFrameBasename = path.basename(bodyLayer?.filename || "", ".png");
-  const ridingFrameBasename = `${bodyFrameBasename}_rider${
-    isArm ? "_arm" : ""
-  }.png`;
+  const ridingFrameBasename = `${bodyFrameBasename}${suffix}.png`;
   const ridingFrameFullname = path.join(
     ROOT_PATH,
     `public/static/nfts/${tokenSlug}/wiz_body_rider/${ridingFrameBasename}`
@@ -939,40 +940,47 @@ export async function getRiderOnMountImageBuffer({
     traitSlug: "head",
   });
   const headBuffer =
-    frameNum >= 0
+    frameNum >= 0 && frameNum != 7777
       ? await extractTokenFrameBuffer({
           tokenSlug,
           partsBuffer,
           frameNum,
         })
       : undefined;
+
   const propFrameNum = await getTokenFrameNumber({
     tokenSlug,
     tokenId,
     traitSlug: "prop",
   });
   const propBuffer =
-    propFrameNum >= 0
+    propFrameNum >= 0 && propFrameNum != 7777
       ? await extractTokenFrameBuffer({
           tokenSlug,
           partsBuffer,
           frameNum: propFrameNum,
         })
       : undefined;
+
+  const bodyFrameNum = await getTokenFrameNumber({
+    tokenSlug,
+    tokenId,
+    traitSlug: "body",
+  });
   const bodyBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingBodyBuffer({
           tokenSlug,
           tokenId,
-          isArm: false,
+          suffix: "_rider",
         })
       : undefined;
   const armBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingBodyBuffer({
           tokenSlug,
           tokenId,
-          isArm: true,
+          suffix: "_rider_arm",
         })
       : undefined;
 
