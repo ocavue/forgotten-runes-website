@@ -43,6 +43,8 @@ import fileType from "file-type";
 - http://localhost:3005/api/art/wizards/108.png
 - http://localhost:3005/api/art/wizards/108/sepia.png
 - http://localhost:3005/api/art/wizards/trait/head/Prophet.png?trim=true
+- http://localhost:3005/api/art/wizards/487/riding/pony/123
+- http://localhost:3005/api/art/souls/1001/riding/pony/123
 
 ### TODO
 
@@ -904,10 +906,8 @@ export async function extractRidingBodyBuffer({
   }.png`;
   const ridingFrameFullname = path.join(
     ROOT_PATH,
-    `public/static/nfts/wizards/wiz_body_rider/${ridingFrameBasename}`
+    `public/static/nfts/${tokenSlug}/wiz_body_rider/${ridingFrameBasename}`
   );
-
-  console.log("ridingFrameFullname: ", ridingFrameFullname);
 
   const buffer = await sharp(ridingFrameFullname).png().toBuffer();
   return buffer;
