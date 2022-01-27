@@ -16,7 +16,7 @@ export const tokenGoodiesSettings: { [key: string]: TokenGoodiesSetting } = {
     hasSpritesheet: false,
     hasTurnarounds: false,
     hasFamiliarTurnarounds: false,
-    hasRiderBodies: false,
+    hasRiderBodies: true,
   },
   ponies: {
     hasSpritesheet: false,
