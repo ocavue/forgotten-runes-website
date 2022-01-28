@@ -150,7 +150,7 @@ const LoreSocialContainer = ({
   )}&url=${encodeURIComponent(url)}`;
 
   const gmUrl = `/scenes/gm/${tokenId}`;
-  const downloadUrl = `/api/art/wizards/${tokenId}.zip`;
+  const downloadUrl = `/api/art/${loreTokenSlug}/${tokenId}.zip`;
 
   return (
     <SocialContainer>
