@@ -11,7 +11,7 @@ import {
   WizardList,
 } from "../../components/AddLore/WizardPicker";
 import Spacer from "../../components/Spacer";
-import { useEthers, useGasPrice } from "@usedapp/core";
+import { ChainId, getChainById, useEthers, useGasPrice } from "@usedapp/core";
 import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
 import {
@@ -31,6 +31,7 @@ import "react-toastify/dist/ReactToastify.css";
 import StyledToastContainer from "../../components/StyledToastContainer";
 import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
 import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
+import { NETWORKS } from "../../constants";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
@@ -52,7 +53,7 @@ const WriteLore = ({}: {}) => {
   const { bgColor: firstImageBgColor } = useExtractColors(firstImageUrl);
 
   const router = useRouter();
-  const { library, account } = useEthers();
+  const { library, account, chainId } = useEthers();
   const gas = useGasPrice();
 
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -143,11 +144,17 @@ const WriteLore = ({}: {}) => {
         <>
           <Flex
             flexDirection="column"
-            alignItems={"flex-start"}
+            alignItems={"center"}
             p={6}
             width={"100%"}
           >
             <WizardList onWizardPicked={setPickedToken} />
+            <Spacer pt={6} />
+            <i style={{ fontSize: "12px" }}>
+              Connected to{" "}
+              <strong>{getChainById(chainId as ChainId)?.chainName}</strong>{" "}
+              with address <strong>{account}</strong>
+            </i>
           </Flex>
         </>
       )}

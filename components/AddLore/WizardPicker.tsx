@@ -216,8 +216,8 @@ export function WizardList({
         console.log("err: ", err);
       }
     }
-    if (!tokens && library) run();
-  }, [tokens, library]);
+    if (library && account) run();
+  }, [library, account]);
 
   return <WizardGrid tokens={tokens} onWizardPicked={onWizardPicked} />;
 }
