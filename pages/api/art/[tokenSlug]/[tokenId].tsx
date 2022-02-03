@@ -231,6 +231,57 @@ export default async function handler(
         }
       }
     }
+    // build familiars spritesheets
+    if (tokenGoodiesSettings[tokenSlug as string].hasFamiliarSpritesheet) {
+      const wizardLayerData = await getTokenLayersData({
+        tokenSlug: tokenSlug as string,
+        tokenId,
+      });
+
+      const hasFamiliar =
+        isNumber(parseInt(wizardLayerData.familiar)) &&
+        parseInt(wizardLayerData.familiar) !== 7777;
+
+      if (hasFamiliar) {
+        let genOptions = {
+          tokenSlug: "wizard-familiars" as string,
+          tokenId: tokenId as string,
+          width: 50,
+          image: true,
+        };
+        const { buffer, frameFiles } = await buildSpritesheet(genOptions);
+
+        // resize here
+        for (let i = 0; i < sizes.length; i++) {
+          const size = sizes[i];
+          for (let f = 0; f < frameFiles.length; f++) {
+            const frameFile = frameFiles[f];
+            const { filename, buffer: frameFileBuffer } = frameFile;
+
+            const imgSharp = await sharp(frameFileBuffer);
+            const imgMetadata = await imgSharp.metadata();
+            const newImgWidth = Math.floor(
+              (imgMetadata.width || 50) * scales[i]
+            );
+            const newImgHeight = Math.floor(
+              (imgMetadata.height || 50) * scales[i]
+            );
+
+            const resizedBuffer = await imgSharp
+              .resize(newImgWidth, newImgHeight, {
+                fit: sharp.fit.fill,
+                kernel: sharp.kernel.nearest,
+              })
+              .toBuffer();
+
+            zipFiles.push([
+              bufferToStream(resizedBuffer),
+              { name: `${size}/familiar-spritesheet/${filename}` },
+            ]);
+          }
+        }
+      }
+    }
 
     // build readme
     const readmeText = await buildReadme({
