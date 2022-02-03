@@ -8,6 +8,7 @@ import { compact, groupBy, keyBy, map } from "lodash";
 import fs from "fs";
 import fetch from "node-fetch";
 import fileType from "file-type";
+import Bluebird from "bluebird";
 
 // public/static/nfts/wizards/forgotten-runes-wizards-cult-traits.png
 
@@ -88,7 +89,7 @@ export const wizardLayerNames = [
   "rune",
 ];
 
-export const wizardFamiliarLayernames = ["body"];
+export const wizardFamiliarLayernames = ["familiar"];
 
 export const soulsLayerNames = [
   "background",
@@ -516,17 +517,31 @@ export async function buildSpritesheet({
   // get the familiar slug
   // we can get this two ways, either from the wizzyId or the name as the tokenId
 
-  const wizardLayerData = await getTokenLayersData({ tokenSlug, tokenId });
+  const tokenSlugLookup =
+    tokenSlug === "wizard-familiars" ? "wizards" : tokenSlug;
+
+  const tokenLayerData = await getTokenLayersData({
+    tokenSlug: tokenSlugLookup,
+    tokenId,
+  });
   const bodyLayer = await getTokenTraitLayerDescription({
-    tokenSlug,
+    tokenSlug: tokenSlugLookup,
     tokenId,
     traitSlug: "body",
   });
   const headLayer = await getTokenTraitLayerDescription({
-    tokenSlug,
+    tokenSlug: tokenSlugLookup,
     tokenId,
     traitSlug: "head",
   });
+  const familiarLayer = await getTokenTraitLayerDescription({
+    tokenSlug: tokenSlugLookup,
+    tokenId,
+    traitSlug: "familiar",
+  });
+
+  const layers =
+    tokenSlug === "wizard-familiars" ? [familiarLayer] : [bodyLayer, headLayer];
 
   let img = sharp({
     create: {
@@ -540,7 +555,7 @@ export async function buildSpritesheet({
   let frames: AseSpriteFrames = {};
   let frameTags = [];
   let frameFromIndex = 0;
-  let frameBuffers = [];
+  let frameBuffers: any[] = [];
   let frameFiles: { filename: string; buffer: Buffer }[] = [];
 
   let idx = 0;
@@ -563,52 +578,31 @@ export async function buildSpritesheet({
       frames[frameName] = frame;
 
       if (image) {
-        // body
-        const bodyFrameBasename = path.basename(
-          bodyLayer?.filename || "",
-          ".png"
-        );
-        const bodyFrameBaseUrl = `${bodyFrameBasename}_${tagDescription.name}_${
-          f + 1
-        }.png`;
-        const bodyFramePath = path.join(
-          ROOT_PATH,
-          `public/static/nfts/${tokenSlug}/walkcycles/${bodyFrameBaseUrl}`
-        );
-        const bodyFrameBuffer = await sharp(bodyFramePath).png().toBuffer();
+        await Bluebird.mapSeries(layers, async (layer) => {
+          const frameBasename = path.basename(layer?.filename || "", ".png");
+          const frameBaseUrl = `${frameBasename}_${tagDescription.name}_${
+            f + 1
+          }.png`;
+          const framePath = path.join(
+            ROOT_PATH,
+            `public/static/nfts/${tokenSlug}/walkcycles/${frameBaseUrl}`
+          );
 
-        frameBuffers.push({
-          top: row * HEIGHT,
-          left: column * WIDTH,
-          input: bodyFrameBuffer,
-        });
-        frameFiles.push({
-          filename: `body/${bodyFrameBaseUrl}`,
-          buffer: bodyFrameBuffer,
-        });
+          if (!fs.existsSync(framePath)) {
+            return;
+          }
 
-        // head
-        const headFrameBasename = path.basename(
-          headLayer?.filename || "",
-          ".png"
-        );
-        const headFrameBaseUrl = `${headFrameBasename}_${tagDescription.name}_${
-          f + 1
-        }.png`;
-        const headFramePath = path.join(
-          ROOT_PATH,
-          `public/static/nfts/${tokenSlug}/walkcycles/${headFrameBaseUrl}`
-        );
-        const headFrameBuffer = await sharp(headFramePath).png().toBuffer();
+          const frameBuffer = await sharp(framePath).png().toBuffer();
 
-        frameBuffers.push({
-          top: row * HEIGHT,
-          left: column * WIDTH,
-          input: headFrameBuffer,
-        });
-        frameFiles.push({
-          filename: `head/${headFrameBaseUrl}`,
-          buffer: headFrameBuffer,
+          frameBuffers.push({
+            top: row * HEIGHT,
+            left: column * WIDTH,
+            input: frameBuffer,
+          });
+          frameFiles.push({
+            filename: `${layer?.trait}/${frameBaseUrl}`,
+            buffer: frameBuffer,
+          });
         });
 
         // create a frame that is the head and body combined
@@ -620,9 +614,7 @@ export async function buildSpritesheet({
             background: "rgba(0,0,0,0)",
           },
         })
-          .composite(
-            [bodyFrameBuffer, headFrameBuffer].map((b) => ({ input: b }))
-          )
+          .composite(frameBuffers.map((b) => ({ input: b.input })))
           .png()
           .toBuffer();
         frameFiles.push({
@@ -653,7 +645,7 @@ export async function buildSpritesheet({
     format: "RGBA8888",
     tokenSlug,
     tokenId,
-    tokenName: wizardLayerData.name,
+    tokenName: tokenLayerData.name,
     size: { w: imageWidth, h: imageHeight },
     scale: "1",
     frameTags,
