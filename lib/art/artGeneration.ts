@@ -88,6 +88,8 @@ export const wizardLayerNames = [
   "rune",
 ];
 
+export const wizardFamiliarLayernames = ["body"];
+
 export const soulsLayerNames = [
   "background",
   "body",
@@ -101,6 +103,7 @@ export const soulsLayerNames = [
 export const tokenLayerNames: { [key: string]: string[] } = {
   wizards: wizardLayerNames,
   souls: soulsLayerNames,
+  "wizard-familiars": wizardFamiliarLayernames,
 };
 
 export type TraitsLayerDescription = {
@@ -510,6 +513,9 @@ export async function buildSpritesheet({
   const imageWidth = columns * WIDTH;
   const imageHeight = rows * HEIGHT;
 
+  // get the familiar slug
+  // we can get this two ways, either from the wizzyId or the name as the tokenId
+
   const wizardLayerData = await getTokenLayersData({ tokenSlug, tokenId });
   const bodyLayer = await getTokenTraitLayerDescription({
     tokenSlug,
@@ -565,11 +571,11 @@ export async function buildSpritesheet({
         const bodyFrameBaseUrl = `${bodyFrameBasename}_${tagDescription.name}_${
           f + 1
         }.png`;
-        const bodyFrameUrl = `${frameBaseURL}/${tokenSlug}/${bodyFrameBaseUrl}`;
-
-        const bodyFrameBuffer = await fetchBufferFromUrlCached({
-          url: bodyFrameUrl,
-        });
+        const bodyFramePath = path.join(
+          ROOT_PATH,
+          `public/static/nfts/${tokenSlug}/walkcycles/${bodyFrameBaseUrl}`
+        );
+        const bodyFrameBuffer = await sharp(bodyFramePath).png().toBuffer();
 
         frameBuffers.push({
           top: row * HEIGHT,
@@ -589,11 +595,11 @@ export async function buildSpritesheet({
         const headFrameBaseUrl = `${headFrameBasename}_${tagDescription.name}_${
           f + 1
         }.png`;
-        const headFrameUrl = `${frameBaseURL}/${tokenSlug}/${headFrameBaseUrl}`;
-
-        const headFrameBuffer = await fetchBufferFromUrlCached({
-          url: headFrameUrl,
-        });
+        const headFramePath = path.join(
+          ROOT_PATH,
+          `public/static/nfts/${tokenSlug}/walkcycles/${headFrameBaseUrl}`
+        );
+        const headFrameBuffer = await sharp(headFramePath).png().toBuffer();
 
         frameBuffers.push({
           top: row * HEIGHT,
@@ -1208,6 +1214,12 @@ export async function getMountImageBuffer({
 // lets us have secret nft drops behind quantum API which checks for permissions
 // and making sure something is minted.
 let __frameBufferCache: { [key: string]: Buffer } = {};
+
+/* 
+example:
+ const headFrameUrl = `${frameBaseURL}/${tokenSlug}/${headFrameBaseUrl}`;
+ const headFrameBuffer = await fetchBufferFromUrlCached({ url: headFrameUrl })
+*/
 
 export async function fetchBufferFromUrlCached({
   url,
