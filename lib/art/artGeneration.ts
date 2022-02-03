@@ -578,6 +578,7 @@ export async function buildSpritesheet({
       frames[frameName] = frame;
 
       if (image) {
+        let singleFrameBuffers: any[] = [];
         await Bluebird.mapSeries(layers, async (layer) => {
           const frameBasename = path.basename(layer?.filename || "", ".png");
           const frameBaseUrl = `${frameBasename}_${tagDescription.name}_${
@@ -603,6 +604,7 @@ export async function buildSpritesheet({
             filename: `${layer?.trait}/${frameBaseUrl}`,
             buffer: frameBuffer,
           });
+          singleFrameBuffers.push({ input: frameBuffer });
         });
 
         // create a frame that is the head and body combined
@@ -614,7 +616,7 @@ export async function buildSpritesheet({
             background: "rgba(0,0,0,0)",
           },
         })
-          .composite(frameBuffers.map((b) => ({ input: b.input })))
+          .composite(singleFrameBuffers.map((b) => ({ input: b.input })))
           .png()
           .toBuffer();
         frameFiles.push({
