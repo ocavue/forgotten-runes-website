@@ -906,12 +906,14 @@ export async function extractRidingTraitBuffer({
     tokenId,
     traitSlug,
   });
+  console.log("traitLayer: ", traitLayer);
   const frameBasename = path.basename(traitLayer?.filename || "", ".png");
   const ridingFrameBasename = `${frameBasename}${suffix}.png`;
   const ridingFrameFullname = path.join(
     ROOT_PATH,
     `public/static/nfts/${tokenSlug}/wiz_body_rider/${ridingFrameBasename}`
   );
+  console.log("ridingFrameFullname: ", ridingFrameFullname);
 
   if (fs.existsSync(ridingFrameFullname)) {
     const buffer = await sharp(ridingFrameFullname).png().toBuffer();
@@ -992,6 +994,11 @@ export async function getRiderOnMountImageBuffer({
     tokenId,
     traitSlug: "body",
   });
+  const undesirableFrameNum = await getTokenFrameNumber({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
   const bodyBuffer =
     parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingTraitBuffer({
@@ -1008,6 +1015,17 @@ export async function getRiderOnMountImageBuffer({
           tokenId,
           traitSlug: "body",
           suffix: "_rider_arm",
+        })
+      : undefined;
+  const undesirableBuffer =
+    parseInt(tokenId) >= 0 &&
+    undesirableFrameNum >= 0 &&
+    undesirableFrameNum != 7777
+      ? await extractRidingTraitBuffer({
+          tokenSlug,
+          tokenId,
+          traitSlug: "undesirable",
+          suffix: "_rider",
         })
       : undefined;
 
@@ -1053,6 +1071,16 @@ export async function getRiderOnMountImageBuffer({
       input: await sharp(headBuffer).resize(400, 400, resizeArgs).toBuffer(),
       top: 0,
       left: 6 * scale,
+    });
+  }
+
+  if (undesirableBuffer) {
+    buffers.push({
+      input: await sharp(undesirableBuffer)
+        .resize(472, 472, resizeArgs)
+        .toBuffer(),
+      top: 0,
+      left: 0,
     });
   }
 
@@ -1131,6 +1159,15 @@ export async function getRidingTokenBodyBuffer({
           suffix: "_rider_arm",
         })
       : undefined;
+  const undesirableBuffer =
+    parseInt(tokenId) >= 0
+      ? await extractRidingTraitBuffer({
+          tokenSlug,
+          tokenId,
+          traitSlug: "undesirable",
+          suffix: "_rider",
+        })
+      : undefined;
 
   const newImgWidth = Math.floor(59 * scale);
   const newImgHeight = Math.floor(59 * scale);
@@ -1167,6 +1204,16 @@ export async function getRidingTokenBodyBuffer({
         .toBuffer(),
       top: 0,
       left: Math.floor(6 * scale),
+    });
+  }
+
+  if (undesirableBuffer) {
+    buffers.push({
+      input: await sharp(undesirableBuffer)
+        .resize(newImgWidth, newImgHeight, resizeArgs)
+        .toBuffer(),
+      top: 0,
+      left: 0,
     });
   }
 
