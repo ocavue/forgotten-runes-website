@@ -5,16 +5,13 @@ import { motion } from "framer-motion";
 import { isWizardsContract } from "../contracts/ForgottenRunesWizardsCultContract";
 import { getTokenImageSrc } from "../lib/nftUtilis";
 
-const CardStyle = styled.div<{ isHovering: boolean }>`
-  /* opacity: ${(props) => (props.isHovering ? 1 : 0.7)}; */
+const CardStyle = styled.div<{ isHovering?: boolean }>`
   transition: all 0.1s ease-in;
   max-width: 100%;
   position: relative;
 
   &:after {
-    content: "";
     display: block;
-    /* padding-bottom: 100%; */
   }
 `;
 
@@ -76,16 +73,9 @@ const WizardCard = ({
   name: string;
   onWizardPicked?: (wizardConfiguration: WizardConfiguration) => void;
 }) => {
-  const [isHovering, setIsHovering] = useState(false);
-
   return (
-    <CardStyle
-      isHovering={isHovering}
-      onMouseOver={() => setIsHovering(true)}
-      onMouseOut={() => setIsHovering(false)}
-    >
+    <CardStyle>
       <WizardFrame
-        className="wizardFrame"
         onClick={
           onWizardPicked
             ? () => {

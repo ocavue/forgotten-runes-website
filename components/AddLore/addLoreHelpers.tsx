@@ -422,7 +422,8 @@ export const onSubmitAddLoreForm = async ({
 
 export const useExistingLoreData = () => {
   const router = useRouter();
-  const editLoreIndex = router?.query.loreIndex;
+
+  const editLoreIndex = router.query?.loreIndex;
   const editTokenId = router.query?.tokenId;
   const editTokenAddress = router.query?.tokenAddress;
 

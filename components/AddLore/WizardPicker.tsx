@@ -186,14 +186,12 @@ export function WizardList({
 
         poniesTokens = poniesTokens.filter((value: any) => value);
 
-        console.log(poniesTokens);
-
         const [wizardTokens, soulsTokens] = await Promise.all([
           wizardsContract.tokensOfOwner(account),
           soulsContract.tokensOfOwner(account),
         ]);
 
-        setTokens({
+        const tokensDict = {
           [wizardsContract.address.toLowerCase()]: wizardTokens.map(
             (id: BigNumber) => ({
               ...wizData[id.toNumber()],
@@ -211,7 +209,11 @@ export function WizardList({
               ...poniesData[id.toNumber()],
               id: id.toNumber().toString(),
             })),
-        });
+        };
+
+        console.log(tokensDict);
+
+        setTokens(tokensDict);
       } catch (err) {
         console.log("err: ", err);
       }
