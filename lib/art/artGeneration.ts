@@ -492,11 +492,13 @@ export type AseSpriteFrames = {
 };
 
 export const MountZIndex = {
+  bg: 0,
   arm: 10,
   prop: 20,
   mount: 30,
   body: 40,
   head: 50,
+  fg: 60,
 };
 
 const frameBaseURL = `https://nftz.forgottenrunes.com/frames`;
@@ -918,14 +920,12 @@ export async function extractRidingTraitBuffer({
     tokenId,
     traitSlug,
   });
-  console.log("traitLayer: ", traitLayer);
   const frameBasename = path.basename(traitLayer?.filename || "", ".png");
   const ridingFrameBasename = `${frameBasename}${suffix}.png`;
   const ridingFrameFullname = path.join(
     ROOT_PATH,
     `public/static/nfts/${tokenSlug}/wiz_body_rider/${ridingFrameBasename}`
   );
-  console.log("ridingFrameFullname: ", ridingFrameFullname);
 
   if (fs.existsSync(ridingFrameFullname)) {
     const buffer = await sharp(ridingFrameFullname).png().toBuffer();
@@ -1023,11 +1023,29 @@ export async function getRidingBodyBuffers({
   scale: number;
 }): Promise<ExtendedSharpBuffer[]> {
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
+
+  const bodyFrameNum = await getTokenFrameNumber({
+    tokenSlug,
+    tokenId,
+    traitSlug: "body",
+  });
   const headFrameNum = await getTokenFrameNumber({
     tokenSlug,
     tokenId,
     traitSlug: "head",
   });
+  const undesirableFrameNum = await getTokenFrameNumber({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
+  const undesirableLayer = await getTokenTraitLayerDescription({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
+  console.log("undesirableLayer: ", undesirableLayer);
+
   const ridingHeadBuffer =
     parseInt(tokenId) >= 0 && headFrameNum >= 0 && headFrameNum != 7777
       ? await extractRidingTraitBuffer({
@@ -1050,7 +1068,7 @@ export async function getRidingBodyBuffers({
   const headBuffer = ridingHeadBuffer || defaultHeadBuffer;
 
   const bodyBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingTraitBuffer({
           tokenSlug,
           tokenId,
@@ -1059,7 +1077,7 @@ export async function getRidingBodyBuffers({
         })
       : undefined;
   const armBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingTraitBuffer({
           tokenSlug,
           tokenId,
@@ -1068,7 +1086,9 @@ export async function getRidingBodyBuffers({
         })
       : undefined;
   const undesirableBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 &&
+    undesirableFrameNum >= 0 &&
+    undesirableFrameNum != 7777
       ? await extractRidingTraitBuffer({
           tokenSlug,
           tokenId,
@@ -1118,14 +1138,21 @@ export async function getRidingBodyBuffers({
     });
   }
 
-  if (undesirableBuffer) {
+  if (undesirableBuffer && undesirableLayer) {
+    //
+    // exceptions because art
+    //
+    const undesirableZIndex = undesirableLayer.filename.match(/spiritorb/)
+      ? MountZIndex.bg
+      : MountZIndex.fg;
+
     buffers.push({
       input: await sharp(undesirableBuffer)
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: 0,
-      zIndex: MountZIndex.head + 10, // depends
+      left: Math.floor(2 * scale),
+      zIndex: undesirableZIndex,
     });
   }
   return buffers;
@@ -1140,7 +1167,7 @@ export async function getRidingTokenBodyBuffer({
   tokenId: string;
   scale: number;
 }) {
-  const buffers = getRidingBodyBuffers({ tokenSlug, tokenId, scale });
+  const buffers = await getRidingBodyBuffers({ tokenSlug, tokenId, scale });
   const newImgWidth = Math.floor(59 * scale);
   const newImgHeight = Math.floor(59 * scale);
 
