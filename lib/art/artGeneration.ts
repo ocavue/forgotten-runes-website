@@ -196,6 +196,8 @@ export async function extractTokenFrameBuffer({
   }
 }
 
+const MOUNT_OFFSET = -2; // ugh
+
 export async function extractWizardFrame({
   partsBuffer,
   frameNum,
@@ -991,13 +993,15 @@ export async function getRiderOnMountImageBuffer({
     buffers.push({
       input: await sharp(propBuffer).resize(400, 400, resizeArgs).toBuffer(),
       top: 0,
-      left: 6 * scale,
+      left: (6 + MOUNT_OFFSET) * scale,
       zIndex: MountZIndex.prop,
     });
   }
 
   buffers.push({
     input: mountBuffer,
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
     zIndex: MountZIndex.mount,
   });
 
@@ -1111,7 +1115,7 @@ export async function getRidingBodyBuffers({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(3 * scale),
+      left: Math.floor((3 + MOUNT_OFFSET) * scale),
       zIndex: MountZIndex.arm,
     });
   }
@@ -1122,7 +1126,7 @@ export async function getRidingBodyBuffers({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(3 * scale),
+      left: Math.floor((3 + MOUNT_OFFSET) * scale),
       zIndex: MountZIndex.body,
     });
   }
@@ -1133,7 +1137,7 @@ export async function getRidingBodyBuffers({
         .resize(Math.floor(50 * scale), Math.floor(50 * scale), resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(6 * scale),
+      left: Math.floor((6 + MOUNT_OFFSET) * scale),
       zIndex: MountZIndex.head,
     });
   }
@@ -1151,7 +1155,7 @@ export async function getRidingBodyBuffers({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(2 * scale),
+      left: Math.floor((2 + MOUNT_OFFSET) * scale),
       zIndex: undesirableZIndex,
     });
   }
