@@ -17,7 +17,7 @@ import { ethers } from "ethers";
 import { getLoreUrl } from "../Lore/loreUtils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { WizardConfiguration } from "./WizardPicker";
+import { TokenConfiguration } from "./WizardPicker";
 import { useEthers } from "@usedapp/core";
 import { getTokenName } from "../../lib/nftUtilis";
 import { fetchFromIpfs } from "../../lib/web3Utils";
@@ -430,7 +430,7 @@ export const useExistingLoreData = () => {
   const isEditMode = editTokenId && editLoreIndex && editTokenAddress;
 
   const [existingLoreToken, setExistingLoreToken] =
-    useState<WizardConfiguration>();
+    useState<TokenConfiguration>();
   const [existingLore, setExistingLore] = useState<string>();
   const [existingLoreBgColor, setExistingLoreBgColor] = useState<string>();
   const [existingLoreError, setExistingLoreError] = useState<string>();

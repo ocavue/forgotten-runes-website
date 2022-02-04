@@ -1,8 +1,6 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { WizardConfiguration } from "./AddLore/WizardPicker";
+import { TokenConfiguration } from "./AddLore/WizardPicker";
 import { motion } from "framer-motion";
-import { isWizardsContract } from "../contracts/ForgottenRunesWizardsCultContract";
 import { getTokenImageSrc } from "../lib/nftUtilis";
 
 const CardStyle = styled.div<{ isHovering?: boolean }>`
@@ -71,7 +69,7 @@ const WizardCard = ({
   tokenAddress: string;
   id: string;
   name: string;
-  onWizardPicked?: (wizardConfiguration: WizardConfiguration) => void;
+  onWizardPicked?: (wizardConfiguration: TokenConfiguration) => void;
 }) => {
   return (
     <CardStyle>
@@ -79,7 +77,7 @@ const WizardCard = ({
         onClick={
           onWizardPicked
             ? () => {
-                const wizardPicked: WizardConfiguration = {
+                const wizardPicked: TokenConfiguration = {
                   tokenAddress: tokenAddress,
                   tokenId: id,
                   name: name ?? id,

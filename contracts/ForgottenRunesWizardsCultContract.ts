@@ -33,6 +33,14 @@ export const FORGOTTEN_PONIES_ADDRESS: { [chainId: number]: string } = {
   1: `0xf55b615B479482440135Ebf1b907fD4c37eD9420`,
 };
 
+export const getAllCharacterContracts = (chainId: number) => {
+  return [
+    WIZARDS_CONTRACT_ADDRESS[chainId].toLowerCase(),
+    FORGOTTEN_SOULS_ADDRESS[chainId].toLowerCase(),
+    FORGOTTEN_PONIES_ADDRESS[chainId].toLowerCase(),
+  ];
+};
+
 export async function getWizardsContract({
   provider,
   chainId,
@@ -46,7 +54,7 @@ export async function getWizardsContract({
     chainId = resolvedChainId;
   }
 
-  const wizardsAddress = WIZARDS_CONTRACT_ADDRESS[chainId];
+  const wizardsAddress = WIZARDS_CONTRACT_ADDRESS[chainId].toLowerCase();
   if (!wizardsAddress) {
     throw new Error("Specify contract address");
   }
@@ -56,7 +64,7 @@ export async function getWizardsContract({
 export async function getBookOfLoreContract({ provider }: { provider: any }) {
   const { chainId } = await provider.getNetwork();
   return new ethers.Contract(
-    BOOK_OF_LORE_ADDRESS[chainId as number],
+    BOOK_OF_LORE_ADDRESS[chainId as number].toLowerCase(),
     BOOK_OF_LORE_ABI,
     provider
   );
@@ -99,7 +107,7 @@ export async function getSoulsContract({
     chainId = resolvedChainId;
   }
   return new ethers.Contract(
-    FORGOTTEN_SOULS_ADDRESS[chainId as number],
+    FORGOTTEN_SOULS_ADDRESS[chainId as number].toLowerCase(),
     SOULS_ABI,
     provider
   );
@@ -119,7 +127,7 @@ export async function getPoniesContract({
   }
 
   return new ethers.Contract(
-    FORGOTTEN_PONIES_ADDRESS[chainId as number],
+    FORGOTTEN_PONIES_ADDRESS[chainId as number].toLowerCase(),
     PONIES_ABI,
     provider
   );
