@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
 import styled from "@emotion/styled";
 
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
   theme?: "light" | "dark";
 };
 
-const ButtonElement = styled.a<Props>`
+export const ButtonElement = styled.a<Props>`
   display: inline-block;
   text-align: center;
   text-decoration: none;

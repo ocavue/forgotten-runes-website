@@ -19,7 +19,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { TokenConfiguration } from "./WizardPicker";
 import { useEthers } from "@usedapp/core";
-import { getTokenName } from "../../lib/nftUtilis";
+import { getSlugFromContract, getTokenName } from "../../lib/nftUtilis";
 import { fetchFromIpfs } from "../../lib/web3Utils";
 
 export const pinFileToIPFS = async (
@@ -913,7 +913,7 @@ export const getPendingLoreTxHashRedirection = async ({
     return {
       redirect: {
         destination: getLoreUrl(
-          isWizardsContract(tokenAddress) ? "wizards" : "souls",
+          getSlugFromContract(tokenAddress),
           parseInt(tokenId),
           0
         ),

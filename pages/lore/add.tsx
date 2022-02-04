@@ -62,7 +62,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (context.query?.waitForTxHash && context.query?.tokenId) {
     if (!context.query?.client) {
       console.log("Server side checking pending...");
-
+      console.log(context.query.tokenAddress as string);
       const pendingLoreProps = await getPendingLoreTxHashRedirection({
         waitForTxHash: context.query.waitForTxHash as string,
         tokenAddress: context.query.tokenAddress as string,

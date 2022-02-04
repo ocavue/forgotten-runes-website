@@ -23,7 +23,7 @@ export function typeSetter({
   tokenId,
   lorePageData,
 }: {
-  loreTokenSlug: "wizards" | "souls";
+  loreTokenSlug: "wizards" | "souls" | "ponies";
   tokenId: number;
   lorePageData: LorePageData;
 }) {
