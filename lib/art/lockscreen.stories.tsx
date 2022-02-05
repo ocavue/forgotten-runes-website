@@ -53,7 +53,7 @@ const LockscreenRenderGroup = ({}) => {
         tokenSlug="wizards"
         tokenId="1225"
         ridingTokenSlug="ponies"
-        ridingTokenId="123"
+        ridingTokenId="32"
         device="iPhone 4"
       />
     </LockscreenContainer>

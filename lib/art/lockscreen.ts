@@ -4,6 +4,7 @@ import sharp, { Sharp } from "sharp";
 import { DEVICE_ASPECT_RATIOS } from "../util/devices";
 import {
   ExtendedSharpBuffer,
+  getRiderOnMountImageBuffer,
   getStyledTokenBuffer,
   getTokenLayersData,
   getTokenTraitLayerDescription,
@@ -76,11 +77,19 @@ export async function getLockscreenImageBuffer({
 
   {
     // now let's place the wizard or rider
-    let tokenBuffer = await getStyledTokenBuffer({
-      tokenSlug,
-      tokenId,
-      layers: ["body", "familiar", "head", "prop", "undesirable"],
-    });
+    let tokenBuffer = ridingTokenSlug
+      ? await getRiderOnMountImageBuffer({
+          tokenSlug,
+          tokenId,
+          ridingTokenSlug,
+          ridingTokenId,
+          width: 400,
+        })
+      : await getStyledTokenBuffer({
+          tokenSlug,
+          tokenId,
+          layers: ["body", "familiar", "head", "prop", "undesirable"],
+        });
 
     tokenBuffer = await (await trimTransparent(sharp(tokenBuffer)))
       .png()
@@ -179,6 +188,10 @@ export async function getLockscreenImageBuffer({
     let newScale = isLandscape
       ? (res.h * 0.5) / oldHeight
       : (res.w * 0.8) / oldWidth;
+
+    if (oldWidth * newScale > res.w * 0.8) {
+      newScale = (res.w * 0.8) / oldWidth;
+    }
 
     // resize the width
     const newWidth = Math.round(oldWidth * newScale);
