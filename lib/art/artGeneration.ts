@@ -1276,7 +1276,7 @@ export async function getRidingBodyBuffers({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor((3 + MOUNT_OFFSET) * scale),
+      left: Math.floor((2 + MOUNT_OFFSET) * scale),
       zIndex: MountZIndex.arm,
     });
   }
@@ -1287,7 +1287,7 @@ export async function getRidingBodyBuffers({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor((3 + MOUNT_OFFSET) * scale),
+      left: Math.floor((2 + MOUNT_OFFSET) * scale),
       zIndex: MountZIndex.body,
     });
   }
@@ -1298,7 +1298,7 @@ export async function getRidingBodyBuffers({
         .resize(Math.floor(50 * scale), Math.floor(50 * scale), resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor((6 + MOUNT_OFFSET) * scale),
+      left: Math.floor((5 + MOUNT_OFFSET) * scale),
       zIndex: MountZIndex.head,
     });
   }
