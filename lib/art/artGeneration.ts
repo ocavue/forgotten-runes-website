@@ -937,12 +937,154 @@ export async function extractRidingTraitBuffer({
   }
 }
 
-// This is different than getRidingTokenBodyBuffer, unfortunately, because when
-// we mount the rider on a mount, there are several z-index changes required e.g. to put
-// the prop behind the mount
+export async function getMountInCasketImageBuffer({
+  tokenSlug,
+  tokenId,
+  ridingTokenSlug,
+  ridingTokenId,
+  width,
+  scale,
+}: {
+  tokenSlug: string;
+  tokenId: string;
+  ridingTokenSlug: string;
+  ridingTokenId: string;
+  width: number;
+  scale: number;
+  trim?: boolean;
+}) {
+  let buffers: ExtendedSharpBuffer[] = [];
+  let resizeArgs = { fit: sharp.fit.fill, kernel: sharp.kernel.nearest };
+  // get mount
+  let mountBuffer = await getMountImageBuffer({
+    tokenId: ridingTokenId,
+    tokenSlug: ridingTokenSlug,
+  });
+
+  const mountSharp = await sharp(mountBuffer);
+  const imgMetadata = await mountSharp.metadata();
+  const newImgWidth = Math.floor(imgMetadata.width || 59);
+  const newImgHeight = Math.floor(imgMetadata.height || 59);
+  console.log("imgMetadata: ", imgMetadata);
+
+  let maskBuffer = await sharp(
+    path.join(
+      ROOT_PATH,
+      `public/static/nfts/souls/wiz_body_rider/bg_coffin_mask_black.png`
+    )
+  )
+    .resize(newImgWidth, newImgHeight, resizeArgs)
+    .png()
+    .toBuffer();
+
+  mountBuffer = await sharp({
+    create: {
+      width: newImgWidth,
+      height: newImgHeight,
+      channels: 4,
+      background: "rgba(0,0,0,0)",
+    },
+  })
+    .composite([
+      {
+        input: await sharp(mountBuffer).flip().png().toBuffer(),
+        top: 27 * scale,
+        left: 0,
+      },
+    ])
+    .png()
+    .toBuffer();
+
+  let newBuffer = await sharp({
+    create: {
+      width: newImgWidth,
+      height: newImgHeight,
+      channels: 4,
+      background: "rgba(0,0,0,0)",
+    },
+  })
+    .composite([
+      {
+        input: await sharp(maskBuffer).png().toBuffer(),
+        top: 0,
+        left: 0,
+      },
+    ])
+    .boolean(await sharp(mountBuffer).png().toBuffer(), "and")
+    .png()
+    .toBuffer();
+
+  mountBuffer = await sharp(mountBuffer)
+    .boolean(await sharp(newBuffer).png().toBuffer(), "eor")
+    .png()
+    .toBuffer();
+
+  buffers.push({
+    input: mountBuffer,
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: 10,
+  });
+
+  const undesirableLayer = await getTokenTraitLayerDescription({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
+  console.log("undesirableLayer: ", undesirableLayer);
+
+  const undesirableBottomBuffer = await extractRidingTraitBuffer({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+    suffix: "_bottom",
+  });
+  buffers.push({
+    input: await sharp(undesirableBottomBuffer)
+      .resize(newImgWidth, newImgHeight, resizeArgs)
+      .toBuffer(),
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: 0,
+  });
+
+  const undesirableTopBuffer = await extractRidingTraitBuffer({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+    suffix: "_top",
+  });
+  buffers.push({
+    input: await sharp(undesirableTopBuffer)
+      .resize(newImgWidth, newImgHeight, resizeArgs)
+      .toBuffer(),
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: 20,
+  });
+
+  // buffers.push({
+  //   input: maskBuffer,
+  //   top: 0,
+  //   left: MOUNT_OFFSET * scale,
+  //   zIndex: 60,
+  // });
+
+  const canvas = await sharp({
+    create: {
+      width: newImgWidth,
+      height: newImgHeight,
+      channels: 4,
+      background: "rgba(0,0,0,0)",
+    },
+  }).composite(sortBy(buffers, (b) => b.zIndex));
+
+  return canvas.png().toBuffer();
+}
+
+// This is for getting a rider/mount pair
 //
-// But in getRidingTokenBodyBuffer we "simplify" the rider together to make it a
-// flat rider image for the zip download
+// getRidingTokenBodyBuffer is for the zip download and we "simplify" the rider together to make it a flat image
 export async function getRiderOnMountImageBuffer({
   tokenSlug,
   tokenId,
@@ -958,6 +1100,26 @@ export async function getRiderOnMountImageBuffer({
   trim?: boolean;
 }) {
   const scale = 8;
+
+  {
+    // special case for coffins because art
+    const undesirableLayer = await getTokenTraitLayerDescription({
+      tokenSlug,
+      tokenId,
+      traitSlug: "undesirable",
+    });
+    if (undesirableLayer && undesirableLayer.filename.match(/coffin/)) {
+      return getMountInCasketImageBuffer({
+        tokenSlug,
+        tokenId,
+        ridingTokenSlug,
+        ridingTokenId,
+        width,
+        scale,
+      });
+    }
+  }
+
   let buffers = await getRidingBodyBuffers({ tokenSlug, tokenId, scale });
 
   // get mount
@@ -1048,7 +1210,6 @@ export async function getRidingBodyBuffers({
     tokenId,
     traitSlug: "undesirable",
   });
-  console.log("undesirableLayer: ", undesirableLayer);
 
   const ridingHeadBuffer =
     parseInt(tokenId) >= 0 && headFrameNum >= 0 && headFrameNum != 7777
