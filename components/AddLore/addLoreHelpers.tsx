@@ -17,9 +17,9 @@ import { ethers } from "ethers";
 import { getLoreUrl } from "../Lore/loreUtils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { WizardConfiguration } from "./WizardPicker";
+import { TokenConfiguration } from "./WizardPicker";
 import { useEthers } from "@usedapp/core";
-import { getTokenName } from "../../lib/nftUtilis";
+import { getSlugFromContract, getTokenName } from "../../lib/nftUtilis";
 import { fetchFromIpfs } from "../../lib/web3Utils";
 
 export const pinFileToIPFS = async (
@@ -422,14 +422,15 @@ export const onSubmitAddLoreForm = async ({
 
 export const useExistingLoreData = () => {
   const router = useRouter();
-  const editLoreIndex = router?.query.loreIndex;
+
+  const editLoreIndex = router.query?.loreIndex;
   const editTokenId = router.query?.tokenId;
   const editTokenAddress = router.query?.tokenAddress;
 
   const isEditMode = editTokenId && editLoreIndex && editTokenAddress;
 
   const [existingLoreToken, setExistingLoreToken] =
-    useState<WizardConfiguration>();
+    useState<TokenConfiguration>();
   const [existingLore, setExistingLore] = useState<string>();
   const [existingLoreBgColor, setExistingLoreBgColor] = useState<string>();
   const [existingLoreError, setExistingLoreError] = useState<string>();
@@ -912,7 +913,7 @@ export const getPendingLoreTxHashRedirection = async ({
     return {
       redirect: {
         destination: getLoreUrl(
-          isWizardsContract(tokenAddress) ? "wizards" : "souls",
+          getSlugFromContract(tokenAddress),
           parseInt(tokenId),
           0
         ),

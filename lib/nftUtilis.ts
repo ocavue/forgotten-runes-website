@@ -83,6 +83,19 @@ export function getContractFromTokenSlug(slug: string) {
     : "0xunknown";
 }
 
+export function getSlugFromContract(tokenAddress: string) {
+  if (isWizardsContract(tokenAddress)) {
+    // we always have a wiz name (even for burnt)
+    return "wizards";
+  } else if (isSoulsContract(tokenAddress)) {
+    return "souls";
+  } else if (isPoniesContract(tokenAddress)) {
+    return "ponies";
+  }
+
+  return "unknown";
+}
+
 export function getTokenName(tokenId: string, tokenAddress: string) {
   if (isWizardsContract(tokenAddress)) {
     // we always have a wiz name (even for burnt)

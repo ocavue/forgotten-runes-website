@@ -9,7 +9,7 @@ export function getERC721Contract({
   provider: any;
 }) {
   return new ethers.Contract(
-    contractAddress,
+    contractAddress.toLowerCase(),
     WIZARDS_ABI, // :joy: - it _is_ an ERC721, so close enough for now
     provider
   );

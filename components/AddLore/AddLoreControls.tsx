@@ -4,7 +4,7 @@ import productionWizardData from "../../data/nfts-prod.json";
 import productionSoulsData from "../../data/souls-prod.json";
 import stagingSoulsData from "../../data/souls-staging.json";
 
-import Button from "../ui/Button";
+import { ButtonElement } from "../ui/Button";
 import { BackgroundColorPickerField, NSFWField } from "./AddLoreFields";
 import { LoreNameWrapper } from "../Lore/BookSharedComponents";
 import {
@@ -55,7 +55,7 @@ const NextPageContainer = styled.div`
   padding-left: 1em;
 `;
 
-export const WriteButton = styled(Button)`
+export const WriteButton = styled(ButtonElement)`
   background-color: #27222f;
   border-radius: 5px;
   cursor: pointer;

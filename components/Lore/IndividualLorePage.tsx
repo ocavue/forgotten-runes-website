@@ -122,7 +122,7 @@ export const EmptyLorePage = ({
   tokenId,
 }: {
   pageNum: number;
-  loreTokenSlug: "wizards" | "souls";
+  loreTokenSlug: "wizards" | "souls" | "ponies";
   tokenId: number;
 }) => {
   const furtherOrAny = pageNum < 1 ? "" : " further";

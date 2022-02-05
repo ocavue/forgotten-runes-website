@@ -1,20 +1,15 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { WizardConfiguration } from "./AddLore/WizardPicker";
+import { TokenConfiguration } from "./AddLore/WizardPicker";
 import { motion } from "framer-motion";
-import { isWizardsContract } from "../contracts/ForgottenRunesWizardsCultContract";
 import { getTokenImageSrc } from "../lib/nftUtilis";
 
-const CardStyle = styled.div<{ isHovering: boolean }>`
-  /* opacity: ${(props) => (props.isHovering ? 1 : 0.7)}; */
+const CardStyle = styled.div<{ isHovering?: boolean }>`
   transition: all 0.1s ease-in;
   max-width: 100%;
   position: relative;
 
   &:after {
-    content: "";
     display: block;
-    /* padding-bottom: 100%; */
   }
 `;
 
@@ -74,22 +69,15 @@ const WizardCard = ({
   tokenAddress: string;
   id: string;
   name: string;
-  onWizardPicked?: (wizardConfiguration: WizardConfiguration) => void;
+  onWizardPicked?: (wizardConfiguration: TokenConfiguration) => void;
 }) => {
-  const [isHovering, setIsHovering] = useState(false);
-
   return (
-    <CardStyle
-      isHovering={isHovering}
-      onMouseOver={() => setIsHovering(true)}
-      onMouseOut={() => setIsHovering(false)}
-    >
+    <CardStyle>
       <WizardFrame
-        className="wizardFrame"
         onClick={
           onWizardPicked
             ? () => {
-                const wizardPicked: WizardConfiguration = {
+                const wizardPicked: TokenConfiguration = {
                   tokenAddress: tokenAddress,
                   tokenId: id,
                   name: name ?? id,
