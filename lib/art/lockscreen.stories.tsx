@@ -49,6 +49,7 @@ const LockscreenRenderGroup = ({}) => {
       />
       <LockScreenImg tokenSlug="wizards" tokenId="1222" device="iPhone 6" />
       <LockScreenImg tokenSlug="wizards" tokenId="1223" device="iPhone 7" />
+      <LockScreenImg tokenSlug="wizards" tokenId="76" device="iPhone 7" />
       <LockScreenImg
         tokenSlug="wizards"
         tokenId="1225"

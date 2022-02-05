@@ -1,0 +1,37 @@
+import React, { useState } from "react";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
+import styled from "@emotion/styled";
+import { keys } from "lodash";
+import TokenSelector from "./TokenSelector";
+
+const Container = styled.div`
+  display: flex;
+`;
+
+const a = 2;
+
+const RenderGroup = ({}) => {
+  const [currentToken, setCurrentToken] = useState();
+  return (
+    <Container>
+      <TokenSelector onChange={setCurrentToken} />
+      {/* <pre>{JSON.stringify(tokenTypeOption, null, 2)}</pre> */}
+      <pre>{JSON.stringify(currentToken, null, 2)}</pre>
+    </Container>
+  );
+};
+
+export default {
+  title: "Wizards/TokenSelector",
+  component: RenderGroup,
+  argTypes: {
+    backgroundColor: { control: "color" },
+  },
+} as ComponentMeta<typeof RenderGroup>;
+
+const Template: ComponentStory<typeof RenderGroup> = (args) => (
+  <RenderGroup {...args} />
+);
+
+export const Primary = Template.bind({});
+Primary.args = {};

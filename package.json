@@ -143,6 +143,7 @@
     "react-pageflip": "^2.0.3",
     "react-player": "^2.9.0",
     "react-redux": "^7.2.2",
+    "react-select": "^5.2.2",
     "react-spring": "^8.0.27",
     "react-switch": "^6.0.0",
     "react-textarea-autosize": "^8.3.3",
@@ -168,7 +169,7 @@
     "webfontloader": "^1.6.28",
     "webpack-merge": "^5.8.0",
     "yargs": "^17.0.1",
-    "yup": "^0.32.9",
+    "yup": "^0.32.11",
     "zip": "^1.2.0"
   },
   "devDependencies": {
