@@ -1,4 +1,4 @@
-import { keyBy, sortBy } from "lodash";
+import { constant, keyBy, sortBy, times } from "lodash";
 import sharp, { Sharp } from "sharp";
 import { DEVICE_ASPECT_RATIOS } from "../util/devices";
 import {
@@ -67,7 +67,7 @@ export async function getLockscreenImageBuffer({
       .png()
       .toBuffer();
 
-    buffers.push({ input: backgroundBuffer });
+    buffers.push({ input: backgroundBuffer, zIndex: 0 });
   }
 
   {
@@ -103,7 +103,7 @@ export async function getLockscreenImageBuffer({
 
     const top = res.h - newHeight - Math.floor(newHeight * 0.1);
     const left = Math.floor(res.w / 2 - newWidth / 2);
-    buffers.push({ input: tokenBuffer, top, left });
+    buffers.push({ input: tokenBuffer, top, left, zIndex: 20 });
   }
 
   const runeLayer = await getTokenTraitLayerDescription({
@@ -119,13 +119,6 @@ export async function getLockscreenImageBuffer({
       tokenId,
       layers: ["rune"],
     });
-    // let tokenBuffer = await getTraitLayerBufferForTokenId({
-    //   tokenSlug,
-    //   tokenId,
-    //   traitSlug: "rune",
-    // });
-
-    console.log("RUNE =========================");
 
     tokenBuffer = await (await trimTransparent(sharp(tokenBuffer)))
       .png()
@@ -144,6 +137,26 @@ export async function getLockscreenImageBuffer({
     const newWidth = Math.round(oldWidth * newScale);
     console.log("newWidth: ", newWidth);
     const newHeight = Math.round(oldHeight * newScale);
+
+    const width = newWidth;
+    const height = newHeight;
+
+    const thirtyPercentTransparency = new Buffer(
+      //   width * height,
+      times(
+        width * height * 1,
+        constant([
+          Math.round(0.3 * 255),
+          Math.round(0.3 * 255),
+          Math.round(0.3 * 255),
+          Math.round(0.3 * 255),
+        ])
+      )
+    );
+
+    tokenBuffer = await setOpacity(sharp(tokenBuffer), 32);
+
+    // https://github.com/lovell/sharp/issues/859
     tokenBuffer = await sharp(tokenBuffer)
       .resize(newWidth, newHeight, {
         fit: sharp.fit.fill,
@@ -152,11 +165,9 @@ export async function getLockscreenImageBuffer({
       .png()
       .toBuffer();
 
-    // const top = res.h - newHeight - Math.floor(newHeight * 0.1);
-    // const left = Math.floor(res.w / 2 - newWidth / 2);
-    const top = 0;
-    const left = 0;
-    buffers.push({ input: tokenBuffer, top, left });
+    const top = Math.floor(res.h / 2 - newHeight / 2);
+    const left = Math.floor(res.w / 2 - newWidth / 2);
+    buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
   }
 
   const canvas = await sharp({
@@ -169,6 +180,23 @@ export async function getLockscreenImageBuffer({
   }).composite(sortBy(buffers, (b) => b.zIndex));
 
   return canvas.png().toBuffer();
+}
+
+async function setOpacity(pipeline: Sharp, alpha: number) {
+  return await pipeline
+    .composite([
+      {
+        input: Buffer.from([255, 255, 255, alpha]),
+        raw: {
+          width: 1,
+          height: 1,
+          channels: 4,
+        },
+        tile: true,
+        blend: "dest-in",
+      },
+    ])
+    .toBuffer();
 }
 
 async function trimTransparent(pipeline: Sharp) {
@@ -214,9 +242,8 @@ function getTrimAlphaInfo(
       let leftStatus: boolean = true;
       let rightStatus: boolean = true;
 
-      let h: number = Math.ceil(height / 2);
-      const w: number = Math.ceil(width / 2);
-      console.log("first", { w, h });
+      let h: number = height;
+      const w: number = width;
 
       for (let i = 0; i < h; i++) {
         for (let j = 0; j < width; j++) {
@@ -238,7 +265,6 @@ function getTrimAlphaInfo(
       }
 
       if (topTrim + bottomTrim >= height) {
-        // console.log("Is empty image.");
         return {
           trimOffsetLeft: width * -1,
           trimOffsetTop: height * -1,
@@ -248,11 +274,9 @@ function getTrimAlphaInfo(
       }
 
       h = height - bottomTrim;
-      console.log({ w, h });
 
       for (let i = 0; i < w; i++) {
         for (let j = topTrim; j < h; j++) {
-          console.log({ i, j, px: data[width * j + i] > 0 });
           if (leftStatus && data[width * j + i] > 0) {
             leftStatus = false;
           }
