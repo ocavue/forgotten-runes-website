@@ -24,6 +24,7 @@ module.exports = {
     "../stories/**/*.stories.mdx",
     "../stories/**/*.stories.@(js|jsx|ts|tsx)",
     "../components/**/*.stories.@(js|jsx|ts|tsx)",
+    "../lib/**/*.stories.@(js|jsx|ts|tsx)",
   ],
   addons: [
     "storybook-addon-next-router",

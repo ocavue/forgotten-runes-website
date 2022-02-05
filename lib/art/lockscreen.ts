@@ -38,6 +38,7 @@ export async function getLockscreenImageBuffer({
       DEVICES_BY_NAME[device as string].height *
         DEVICES_BY_NAME[device as string].ratio,
   };
+  console.log("res: ", res);
 
   const tokenData = await getTokenLayersData({ tokenSlug, tokenId });
   console.log("tokenData: ", tokenData);
