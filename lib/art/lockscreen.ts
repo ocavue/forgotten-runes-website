@@ -1,3 +1,4 @@
+import path from "path";
 import { constant, keyBy, sortBy, times } from "lodash";
 import sharp, { Sharp } from "sharp";
 import { DEVICE_ASPECT_RATIOS } from "../util/devices";
@@ -7,6 +8,7 @@ import {
   getTokenLayersData,
   getTokenTraitLayerDescription,
   getTraitLayerBufferForTokenId,
+  ROOT_PATH,
 } from "./artGeneration";
 
 const DEVICES_BY_NAME = keyBy(DEVICE_ASPECT_RATIOS, "name");
@@ -39,6 +41,8 @@ export async function getLockscreenImageBuffer({
       DEVICES_BY_NAME[device as string].height *
         DEVICES_BY_NAME[device as string].ratio,
   };
+  let tokenHeight = res.h / 2;
+  let tokenTop = tokenHeight;
 
   const isLandscape = res.w > res.h ? true : false;
 
@@ -90,6 +94,11 @@ export async function getLockscreenImageBuffer({
       ? (res.h * 0.5) / oldHeight
       : (res.w * 0.8) / oldWidth;
 
+    //
+    if (oldHeight * newScale > res.h * 0.5) {
+      newScale = (res.h * 0.5) / oldHeight;
+    }
+
     // resize the width
     const newWidth = Math.round(oldWidth * newScale);
     const newHeight = Math.round(oldHeight * newScale);
@@ -104,6 +113,9 @@ export async function getLockscreenImageBuffer({
     const top = res.h - newHeight - Math.floor(newHeight * 0.1);
     const left = Math.floor(res.w / 2 - newWidth / 2);
     buffers.push({ input: tokenBuffer, top, left, zIndex: 20 });
+
+    tokenHeight = newHeight;
+    tokenTop = top;
   }
 
   const runeLayer = await getTokenTraitLayerDescription({
@@ -127,36 +139,19 @@ export async function getLockscreenImageBuffer({
     const imgMetadata = await sharp(tokenBuffer).metadata();
     const oldWidth = imgMetadata.width as number;
     const oldHeight = imgMetadata.height as number;
-    console.log("oldWidth: ", oldWidth);
 
     let newScale = isLandscape
-      ? (res.h * 1) / oldHeight
-      : (res.w * 1) / oldWidth;
+      ? (res.h * 0.8) / oldHeight
+      : (res.w * 0.8) / oldWidth;
 
     // resize the width
     const newWidth = Math.round(oldWidth * newScale);
-    console.log("newWidth: ", newWidth);
     const newHeight = Math.round(oldHeight * newScale);
 
     const width = newWidth;
     const height = newHeight;
 
-    const thirtyPercentTransparency = new Buffer(
-      //   width * height,
-      times(
-        width * height * 1,
-        constant([
-          Math.round(0.3 * 255),
-          Math.round(0.3 * 255),
-          Math.round(0.3 * 255),
-          Math.round(0.3 * 255),
-        ])
-      )
-    );
-
     tokenBuffer = await setOpacity(sharp(tokenBuffer), 32);
-
-    // https://github.com/lovell/sharp/issues/859
     tokenBuffer = await sharp(tokenBuffer)
       .resize(newWidth, newHeight, {
         fit: sharp.fit.fill,
@@ -166,6 +161,42 @@ export async function getLockscreenImageBuffer({
       .toBuffer();
 
     const top = Math.floor(res.h / 2 - newHeight / 2);
+    const left = Math.floor(res.w / 2 - newWidth / 2);
+    buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
+  }
+  {
+    // logo
+    const framePath = path.join(
+      ROOT_PATH,
+      `public/static/img/logo/frwc-logo-yellow.png`
+    );
+    let tokenBuffer = await sharp(framePath).png().toBuffer();
+
+    const imgMetadata = await sharp(tokenBuffer).metadata();
+    const oldWidth = imgMetadata.width as number;
+    const oldHeight = imgMetadata.height as number;
+
+    let newScale = isLandscape
+      ? (res.h * 0.5) / oldHeight
+      : (res.w * 0.8) / oldWidth;
+
+    // resize the width
+    const newWidth = Math.round(oldWidth * newScale);
+    const newHeight = Math.round(oldHeight * newScale);
+
+    const width = newWidth;
+    const height = newHeight;
+
+    // tokenBuffer = await setOpacity(sharp(tokenBuffer), 32);
+    tokenBuffer = await sharp(tokenBuffer)
+      .resize(newWidth, newHeight, {
+        fit: sharp.fit.fill,
+        kernel: sharp.kernel.nearest,
+      })
+      .png()
+      .toBuffer();
+
+    const top = Math.floor(tokenTop - newHeight - res.h * 0.05);
     const left = Math.floor(res.w / 2 - newWidth / 2);
     buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
   }
@@ -205,7 +236,6 @@ async function trimTransparent(pipeline: Sharp) {
   const oldHeight = imgMetadata.height as number;
 
   const info = await getTrimAlphaInfo(pipeline, oldWidth, oldHeight);
-  console.log("info: ", info);
   const crop = {
     left: -(info?.trimOffsetLeft as number) || 0,
     top: -(info?.trimOffsetTop as number) || 0,
