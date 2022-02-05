@@ -284,14 +284,14 @@ export async function getTokenFrameNumber({
 export async function getTraitLayerBufferForTokenId({
   tokenSlug,
   tokenId,
-  width,
   traitSlug,
+  width,
   trim,
 }: {
   tokenSlug: string;
   tokenId: string;
-  width: number;
   traitSlug: string;
+  width?: number;
   trim?: boolean;
 }) {
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
@@ -308,9 +308,13 @@ export async function getTraitLayerBufferForTokenId({
     frameNum,
   });
 
-  const size = width;
-  let buffer = await sharp(layerPartBuffer)
-    .resize(size, size, {
+  let layerPartBufferSharp = await sharp(layerPartBuffer);
+  const imgMetadata = await layerPartBufferSharp.metadata();
+  const newWidth = width || imgMetadata.width;
+  const newHeight = width || imgMetadata.height;
+
+  let buffer = await layerPartBufferSharp
+    .resize(newWidth, newHeight, {
       fit: sharp.fit.fill,
       kernel: sharp.kernel.nearest,
     })
@@ -364,11 +368,11 @@ export async function getTraitLayerBuffer({
 export type GetStyledTokenBufferProps = {
   tokenSlug: string;
   tokenId: string;
-  width: number;
-  //   style?: string;
+  width?: number;
   trim?: boolean;
   noBg?: boolean;
   sepia?: boolean;
+  layers?: string[];
 };
 
 export const VALID_TOKEN_STYLES = ["default", "nobg", "sepia"];
@@ -376,15 +380,15 @@ export async function getStyledTokenBuffer({
   tokenSlug,
   tokenId,
   width,
-  //   style,
   trim,
   noBg,
   sepia,
+  layers,
 }: GetStyledTokenBufferProps) {
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
   // const wizardLayerData = await getTokenLayersData({ tokenSlug, tokenId });
 
-  const layerNames = tokenLayerNames[tokenSlug];
+  const layerNames = layers || tokenLayerNames[tokenSlug];
 
   let buffers: Buffer[] = [];
 
@@ -421,12 +425,16 @@ export async function getStyledTokenBuffer({
 
   let [bgBuffer, ...rest] = buffers;
 
+  let bgSharp = await sharp(bgBuffer);
+  const imgMetadata = await bgSharp.metadata();
+  const newWidth = width || imgMetadata.width;
+  const newHeight = width || imgMetadata.height;
+
   const restBuffers = rest.map((r: any) => ({ input: r }));
   const canvas = await sharp(bgBuffer).composite(restBuffers).png().toBuffer();
 
-  const size = width;
   let buffer = await sharp(canvas)
-    .resize(size, size, {
+    .resize(newWidth, newHeight, {
       fit: sharp.fit.fill,
       kernel: sharp.kernel.nearest,
     })
