@@ -33,6 +33,8 @@ const LockscreenContainer = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 `;
 
+const a = 2;
+
 const LockscreenRenderGroup = ({}) => {
   return (
     <LockscreenContainer>
