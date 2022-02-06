@@ -44,6 +44,8 @@ export default async function handler(
     bufferStream.end(buffer);
     return bufferStream.pipe(res);
   } catch (err) {
+    console.log(err);
+    console.log((err as any)?.stack);
     return res.status(500).json({ error: err, stack: (err as any)?.stack });
   }
 }
