@@ -9,8 +9,7 @@ const Img = styled.img`
   image-rendering: pixelated;
 `;
 
-// const baseURL = `/api/art/lockscreen`;
-const baseURL = `/api/lockscreen`;
+const baseURL = `/api/art/lockscreen`;
 
 export const LockscreenImg = (props: {
   tokenSlug: string;
