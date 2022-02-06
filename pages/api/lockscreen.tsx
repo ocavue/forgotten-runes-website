@@ -4,8 +4,8 @@ import fs from "fs";
 import * as os from "os";
 import stream from "stream";
 import sharp from "sharp";
-import { getRiderOnMountImageBuffer } from "../../../lib/art/artGeneration";
-import { getLockscreenImageBuffer } from "../../../lib/art/lockscreen";
+import { getRiderOnMountImageBuffer } from "../../lib/art/artGeneration";
+import { getLockscreenImageBuffer } from "../../lib/art/lockscreen";
 
 export default async function handler(
   req: NextApiRequest,
