@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import styled from "@emotion/styled";
 import { keys } from "lodash";
 import TokenSelector from "./TokenSelector";
+import ResolutionSelector from "./ResolutionSelector";
 
 const Container = styled.div`
   display: flex;
@@ -35,3 +36,13 @@ const Template: ComponentStory<typeof RenderGroup> = (args) => (
 
 export const Primary = Template.bind({});
 Primary.args = {};
+
+export const ResolutionSelectorGroup = ({}) => {
+  const [currentToken, setCurrentToken] = useState();
+  return (
+    <Container>
+      <ResolutionSelector onChange={setCurrentToken} />
+      <pre>{JSON.stringify(currentToken, null, 2)}</pre>
+    </Container>
+  );
+};
