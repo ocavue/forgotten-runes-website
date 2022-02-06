@@ -14,9 +14,9 @@ type Props = {
   onChange: any;
 };
 
-const TokenSelectorElement = styled.div``;
+const ResolutionSelectorElement = styled.div``;
 
-export default function TokenSelector({ onChange }: Props) {
+export default function ResolutionSelector({ onChange }: Props) {
   const [resolutionOption, setResolutionOption] = useState(
     resolutionOptions.find((r: any) => r.label.match(/iPhone 8/))
   );
@@ -26,7 +26,7 @@ export default function TokenSelector({ onChange }: Props) {
   }, [resolutionOption]);
 
   return (
-    <TokenSelectorElement>
+    <ResolutionSelectorElement>
       <Select
         styles={customSelectStyles}
         options={resolutionOptions}
@@ -35,6 +35,6 @@ export default function TokenSelector({ onChange }: Props) {
         onChange={setResolutionOption as any}
         isSearchable={true}
       />
-    </TokenSelectorElement>
+    </ResolutionSelectorElement>
   );
 }

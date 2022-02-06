@@ -58,20 +58,46 @@ const fuzzyOptions = {
 export const customSelectStyles: any = {
   container: (provided: any) => ({
     ...provided,
-    width: "max-content",
-    minWidth: "100%",
+    minWidth: "98%",
+    maxWidth: "98%",
+    margin: "5px",
   }),
-  option: (provided: any) => ({
+  valueContainer: (provided: any) => ({
     ...provided,
-    color: "black",
+    backgroundColor: "#171818",
+  }),
+  input: (provided: any) => ({
+    ...provided,
+    // backgroundColor: "#171818",
+    color: "white",
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    backgroundColor: "#171818",
+    color: "white",
+  }),
+  option: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: state.isSelected
+      ? "#350a49"
+      : state.isFocused
+      ? "#092953"
+      : "#171818",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#212222",
+    },
   }),
   control: (provided: any) => ({
     ...provided,
-    color: "black",
+    backgroundColor: "#171818",
+    color: "white",
+    borderColor: "#3D3F3E",
   }),
   singleValue: (provided: any) => ({
     ...provided,
-    color: "black",
+    backgroundColor: "#171818",
+    color: "white",
   }),
 };
 

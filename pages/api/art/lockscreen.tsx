@@ -11,8 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("lockscreen api");
-
   // if (req.method !== "GET") {
   //   return res.status(404);
   // }
