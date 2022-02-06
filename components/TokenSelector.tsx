@@ -2,12 +2,14 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import Select from "react-select";
+import AyncSelect from "react-select/async";
 
 import wizardLayers from "../public/static/nfts/wizards/wizards-layers.json";
 import soulLayers from "../public/static/nfts/souls/souls-layers.json";
 import ponyLayers from "../public/static/nfts/ponies/ponies-layers.json";
 
 import { keyBy, sortBy } from "lodash";
+import FuzzyReactSelect from "./FuzzyReactSelect";
 
 const wizardOptions = wizardLayers.map((w) => {
   const name = `Wizard #${w.idx} ${w.name}`;
@@ -32,6 +34,7 @@ const poniesOptions = sortBy(
 
 type Props = {
   onChange: any;
+  includeMounts?: boolean;
 };
 
 const TokenSelectorElement = styled.div``;
@@ -42,13 +45,27 @@ const tokenTypeOptions = [
   { value: "ponies", label: "Pony" },
 ];
 
-export default function TokenSelector({ onChange }: Props) {
+// fuze.js options
+const fuzzyOptions = {
+  keys: [{ name: "label", weight: 0.7 }],
+  valueKey: "value",
+  maxPatternLength: 8,
+  includeScore: true,
+  maxResults: 25,
+  threshold: 0.3,
+};
+
+export default function TokenSelector({
+  onChange,
+  includeMounts = true,
+}: Props) {
   const [tokenTypeOption, setTokenTypeOption] = useState(tokenTypeOptions[0]);
   const [tokenOption, setTokenOption] = useState(wizardOptions[0]);
   const [tokenOptionsSet, setTokenOptionsSet] = useState(wizardOptions);
 
+  const [riderTokenOption, setRiderTokenOption] = useState();
+
   useEffect(() => {
-    console.log("yo");
     if (tokenTypeOption) {
       setTokenOptionsSet(
         tokenTypeOption.value === "wizards"
@@ -72,25 +89,37 @@ export default function TokenSelector({ onChange }: Props) {
   }, [tokenTypeOption]);
 
   useEffect(() => {
-    onChange({ tokenTypeOption, tokenOption });
-  }, [tokenTypeOption, tokenOption]);
+    onChange({ tokenTypeOption, tokenOption, riderTokenOption });
+  }, [tokenTypeOption, tokenOption, riderTokenOption]);
+
+  // TODO
+  // _now_ if you have a pony selected, you can also select another wizard or soul
+  // maybe don't be too clever: just reimplement and abstract
+  let typeOptions = includeMounts
+    ? tokenTypeOptions
+    : tokenTypeOptions.filter((t) => t.value !== "ponies");
 
   return (
     <TokenSelectorElement>
       <Select
-        options={tokenTypeOptions}
+        options={typeOptions}
         defaultValue={tokenTypeOption}
         value={tokenTypeOption}
         onChange={setTokenTypeOption as any}
       />
 
-      <Select
+      <FuzzyReactSelect
         options={tokenOptionsSet}
-        defaultValue={tokenOptionsSet[0]}
-        value={tokenOption}
-        onChange={setTokenOption as any}
-        isSearchable={true}
+        fuzzyOptions={fuzzyOptions}
+        onChange={setTokenOption}
       />
+
+      {tokenTypeOption.value === "ponies" && (
+        <TokenSelector
+          onChange={setRiderTokenOption as any}
+          includeMounts={false}
+        />
+      )}
     </TokenSelectorElement>
   );
 }
