@@ -4,22 +4,30 @@ import styled from "@emotion/styled";
 import TokenSelector from "./TokenSelector";
 import ResolutionSelector from "./ResolutionSelector";
 import { LockscreenImg } from "./LockscreenImg";
+import { saveAs } from "file-saver";
 
 type Props = {};
 
 const LockscreenPickerElement = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const Controls = styled.div`
-  flex: 50%;
-  margin: 0.5em;
+  @media (min-width: 768px) {
+    flex: 50%;
+    margin: 0.5em;
+  }
 `;
 const Preview = styled.div`
-  flex: 50%;
   margin: 0.5em;
-  margin-left: 2em;
+  @media (min-width: 768px) {
+    flex: 50%;
+    margin-left: 2em;
+  }
 `;
 const ImgFrame = styled.div`
   background-color: white;
@@ -48,6 +56,10 @@ export default function LockscreenPicker({}: Props) {
     };
   }
 
+  const downloadImage = () => {
+    saveAs("image_url", "image.jpg"); // Put your image url here.
+  };
+
   return (
     <LockscreenPickerElement>
       <Controls>
@@ -57,6 +69,7 @@ export default function LockscreenPicker({}: Props) {
         <ResolutionSelector onChange={setCurrentResolution} />
         {/* <pre>{JSON.stringify(currentToken, null, 2)}</pre>
         <pre>{JSON.stringify(currentResolution, null, 2)}</pre> */}
+        {/* <Button onClick={downloadImage}>Download!</Button> */}
       </Controls>
 
       <Preview>
