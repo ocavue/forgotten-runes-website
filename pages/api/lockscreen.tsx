@@ -11,40 +11,38 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "GET") {
-    return res.status(404);
-  }
+  console.log("lockscreen api");
+  return res.status(200).json({ name: "John Doe" });
 
-  let {
-    tokenSlug,
-    tokenId,
-    ridingTokenSlug,
-    ridingTokenId,
-    width,
-    height,
-    device,
-  } = req.query;
+  // if (req.method !== "GET") {
+  //   return res.status(404);
+  // }
 
-  let buffer = await getLockscreenImageBuffer({
-    tokenSlug: tokenSlug as string,
-    tokenId: tokenId as string,
-    ridingTokenSlug: ridingTokenSlug as string,
-    ridingTokenId: ridingTokenId as string,
-    width: parseInt(width as string),
-    height: parseInt(height as string),
-    device: (device as string) || "iPhone 8",
-  });
+  // let {
+  //   tokenSlug,
+  //   tokenId,
+  //   ridingTokenSlug,
+  //   ridingTokenId,
+  //   width,
+  //   height,
+  //   device,
+  // } = req.query;
 
-  buffer = await sharp(buffer)
-    // .resize(500, 500, {
-    //   fit: sharp.fit.fill,
-    //   kernel: sharp.kernel.nearest,
-    // })
-    .toBuffer();
+  // let buffer = await getLockscreenImageBuffer({
+  //   tokenSlug: tokenSlug as string,
+  //   tokenId: tokenId as string,
+  //   ridingTokenSlug: ridingTokenSlug as string,
+  //   ridingTokenId: ridingTokenId as string,
+  //   width: parseInt(width as string),
+  //   height: parseInt(height as string),
+  //   device: (device as string) || "iPhone 8",
+  // });
 
-  var bufferStream = new stream.PassThrough();
-  bufferStream.end(buffer);
-  return bufferStream.pipe(res);
+  // buffer = await sharp(buffer).toBuffer();
+
+  // var bufferStream = new stream.PassThrough();
+  // bufferStream.end(buffer);
+  // return bufferStream.pipe(res);
 }
 
 // http://localhost:3005/api/art/wizards/487/riding/pony/123
