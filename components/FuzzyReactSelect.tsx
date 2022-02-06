@@ -18,6 +18,7 @@ const FuzzyReactSelect = ({
   fuzzyOptions: any;
   wait?: number;
   onChange: any;
+  [_rest: string]: any;
 }) => {
   const [fuse, setFuse] = useState<any>(null);
 

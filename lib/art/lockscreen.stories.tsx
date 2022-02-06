@@ -2,31 +2,8 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import styled from "@emotion/styled";
 import { keys } from "lodash";
-
-const Img = styled.img`
-  width: 100%;
-  height: auto;
-  image-rendering: pixelated;
-`;
-
-const baseURL = `http://localhost:3005/api/art/lockscreen`;
-
-const LockScreenImg = (props: {
-  tokenSlug: string;
-  tokenId: string;
-  device?: string;
-  ridingTokenSlug?: string;
-  ridingTokenId?: string;
-  width?: number;
-  height?: number;
-}) => {
-  // ?tokenSlug=wizards&tokenId=6044
-  const queryParams = keys(props)
-    .map((a) => `${a}=${(props as any)[a]}`)
-    .join("&");
-  const src = baseURL + `?` + queryParams;
-  return <Img src={src} />;
-};
+import LockscreenPicker from "../../components/LockscreenPicker";
+import { LockscreenImg } from "../../components/LockscreenImg";
 
 const LockscreenContainer = styled.div`
   display: grid;
@@ -39,18 +16,18 @@ const a = 2;
 const LockscreenRenderGroup = ({}) => {
   return (
     <LockscreenContainer>
-      <LockScreenImg tokenSlug="wizards" tokenId="6044" />
-      <LockScreenImg tokenSlug="souls" tokenId="6044" device="iPhone SE" />
-      <LockScreenImg tokenSlug="wizards" tokenId="1234" device="iPhone X" />
-      <LockScreenImg
+      <LockscreenImg tokenSlug="wizards" tokenId="6044" />
+      <LockscreenImg tokenSlug="souls" tokenId="6044" device="iPhone SE" />
+      <LockscreenImg tokenSlug="wizards" tokenId="1234" device="iPhone X" />
+      <LockscreenImg
         tokenSlug="wizards"
         tokenId="8888"
         device="Desktop - Large"
       />
-      <LockScreenImg tokenSlug="wizards" tokenId="1222" device="iPhone 6" />
-      <LockScreenImg tokenSlug="wizards" tokenId="1223" device="iPhone 7" />
-      <LockScreenImg tokenSlug="wizards" tokenId="76" device="iPhone 7" />
-      <LockScreenImg
+      <LockscreenImg tokenSlug="wizards" tokenId="1222" device="iPhone 6" />
+      <LockscreenImg tokenSlug="wizards" tokenId="1223" device="iPhone 7" />
+      <LockscreenImg tokenSlug="wizards" tokenId="76" device="iPhone 7" />
+      <LockscreenImg
         tokenSlug="wizards"
         tokenId="1225"
         ridingTokenSlug="ponies"
@@ -75,3 +52,7 @@ const Template: ComponentStory<typeof LockscreenRenderGroup> = (args) => (
 
 export const Primary = Template.bind({});
 Primary.args = {};
+
+export const LockscreenPickerStory = ({}) => {
+  return <LockscreenPicker />;
+};

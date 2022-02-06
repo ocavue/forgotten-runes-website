@@ -55,6 +55,26 @@ const fuzzyOptions = {
   threshold: 0.3,
 };
 
+export const customSelectStyles: any = {
+  container: (provided: any) => ({
+    ...provided,
+    width: "max-content",
+    minWidth: "100%",
+  }),
+  option: (provided: any) => ({
+    ...provided,
+    color: "black",
+  }),
+  control: (provided: any) => ({
+    ...provided,
+    color: "black",
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    color: "black",
+  }),
+};
+
 export default function TokenSelector({
   onChange,
   includeMounts = true,
@@ -102,6 +122,7 @@ export default function TokenSelector({
   return (
     <TokenSelectorElement>
       <Select
+        styles={customSelectStyles}
         options={typeOptions}
         defaultValue={tokenTypeOption}
         value={tokenTypeOption}
@@ -109,16 +130,27 @@ export default function TokenSelector({
       />
 
       <FuzzyReactSelect
+        styles={customSelectStyles}
+        theme={(theme: any) => ({
+          ...theme,
+          colors: {
+            ...theme.colors,
+          },
+        })}
         options={tokenOptionsSet}
         fuzzyOptions={fuzzyOptions}
-        onChange={setTokenOption}
+        onChange={setTokenOption as any}
+        placeholder="Search..."
       />
 
       {tokenTypeOption.value === "ponies" && (
-        <TokenSelector
-          onChange={setRiderTokenOption as any}
-          includeMounts={false}
-        />
+        <>
+          <h3>Pick a rider</h3>
+          <TokenSelector
+            onChange={setRiderTokenOption as any}
+            includeMounts={false}
+          />
+        </>
       )}
     </TokenSelectorElement>
   );
