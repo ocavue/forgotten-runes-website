@@ -12,37 +12,40 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.log("lockscreen api");
-  return res.status(200).json({ name: "John Doe" });
 
   // if (req.method !== "GET") {
   //   return res.status(404);
   // }
 
-  // let {
-  //   tokenSlug,
-  //   tokenId,
-  //   ridingTokenSlug,
-  //   ridingTokenId,
-  //   width,
-  //   height,
-  //   device,
-  // } = req.query;
+  try {
+    let {
+      tokenSlug,
+      tokenId,
+      ridingTokenSlug,
+      ridingTokenId,
+      width,
+      height,
+      device,
+    } = req.query;
 
-  // let buffer = await getLockscreenImageBuffer({
-  //   tokenSlug: tokenSlug as string,
-  //   tokenId: tokenId as string,
-  //   ridingTokenSlug: ridingTokenSlug as string,
-  //   ridingTokenId: ridingTokenId as string,
-  //   width: parseInt(width as string),
-  //   height: parseInt(height as string),
-  //   device: (device as string) || "iPhone 8",
-  // });
+    let buffer = await getLockscreenImageBuffer({
+      tokenSlug: tokenSlug as string,
+      tokenId: tokenId as string,
+      ridingTokenSlug: ridingTokenSlug as string,
+      ridingTokenId: ridingTokenId as string,
+      width: parseInt(width as string),
+      height: parseInt(height as string),
+      device: (device as string) || "iPhone 8",
+    });
 
-  // buffer = await sharp(buffer).toBuffer();
+    buffer = await sharp(buffer).toBuffer();
 
-  // var bufferStream = new stream.PassThrough();
-  // bufferStream.end(buffer);
-  // return bufferStream.pipe(res);
+    var bufferStream = new stream.PassThrough();
+    bufferStream.end(buffer);
+    return bufferStream.pipe(res);
+  } catch (err) {
+    return res.status(500).json({ error: err, stack: (err as any)?.stack });
+  }
 }
 
 // http://localhost:3005/api/art/wizards/487/riding/pony/123
