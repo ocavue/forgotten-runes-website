@@ -48,10 +48,12 @@ export async function getLockscreenImageBuffer({
   const isLandscape = res.w > res.h ? true : false;
 
   const tokenData = await getTokenLayersData({ tokenSlug, tokenId });
+  console.log("tokenData: ", tokenData);
 
   let buffers: ExtendedSharpBuffer[] = [];
 
   {
+    console.log("generating background");
     // the background needs to fill the bigger dimension
     let bgSize = Math.max(res.w, res.h);
 
@@ -76,6 +78,7 @@ export async function getLockscreenImageBuffer({
   }
 
   {
+    console.log("generating wiz or rider");
     // now let's place the wizard or rider
     let tokenBuffer = ridingTokenSlug
       ? await getRiderOnMountImageBuffer({
@@ -134,6 +137,7 @@ export async function getLockscreenImageBuffer({
   });
 
   if (runeLayer) {
+    console.log("generating rune");
     // now the rune, if any
     let tokenBuffer = await getStyledTokenBuffer({
       tokenSlug,
@@ -174,6 +178,8 @@ export async function getLockscreenImageBuffer({
     buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
   }
   {
+    console.log("generating logo");
+
     // logo
     const framePath = path.join(
       ROOT_PATH,
@@ -214,6 +220,7 @@ export async function getLockscreenImageBuffer({
     buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
   }
 
+  console.log("done");
   const canvas = await sharp({
     create: {
       width: res.w,
