@@ -9,8 +9,9 @@ import {
   getTokenLayersData,
   getTokenTraitLayerDescription,
   getTraitLayerBufferForTokenId,
-  ROOT_PATH,
 } from "./artGeneration";
+
+const ROOT_PATH = path.join(process.cwd());
 
 const DEVICES_BY_NAME = keyBy(DEVICE_ASPECT_RATIOS, "name");
 export async function getLockscreenImageBuffer({
@@ -185,6 +186,7 @@ export async function getLockscreenImageBuffer({
       ROOT_PATH,
       `public/static/img/logo/frwc-logo-yellow.png`
     );
+    console.log("framePath: ", framePath);
     let tokenBuffer = await sharp(framePath).png().toBuffer();
 
     const imgMetadata = await sharp(tokenBuffer).metadata();
