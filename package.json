@@ -42,6 +42,10 @@
     "@react-hook/window-size": "^3.0.7",
     "@react-leaflet/core": "1.0.2",
     "@reduxjs/toolkit": "^1.5.0",
+    "@remirror/extension-file": "0.3.10",
+    "@remirror/pm": "1.0.11",
+    "@remirror/react": "1.0.21",
+    "@remirror/styles": "1.1.2",
     "@storybook/addon-postcss": "^2.0.0",
     "@svgr/webpack": "^5.5.0",
     "@types/archiver": "^5.1.1",
@@ -84,6 +88,7 @@
     "cross-fetch": "^3.1.4",
     "data-urls": "^3.0.0",
     "dayjs": "^1.10.7",
+    "domino": "2.1.6",
     "draft-js": "^0.11.7",
     "draft-js-markdown-shortcuts-plugin": "^0.6.1",
     "eth-hooks": "^1.1.2",
@@ -96,6 +101,7 @@
     "gray-matter": "^4.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jazzicon": "^1.5.0",
+    "jsdom": "19.0.0",
     "leaflet": "^1.7.1",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "lodash": "^4.17.21",
@@ -123,6 +129,7 @@
     "phaser3-rex-plugins": "^1.1.53",
     "polished": "^4.0.5",
     "qrcode.react": "^1.0.1",
+    "querystringify": "2.2.0",
     "react": "16.14.0",
     "react-blockies": "^1.4.1",
     "react-codepen-embed": "^1.0.2",
@@ -153,9 +160,11 @@
     "react-virtualized": "^9.22.3",
     "rebass": "^4.0.7",
     "redux-localstorage-simple": "^2.3.1",
+    "refractor": "^3.4.0",
     "rehype-autolink-headings": "^6.1.0",
     "rehype-slug": "^5.0.0",
     "remark-gfm": "^1.0.0",
+    "remirror": "1.0.63",
     "request": "^2.88.2",
     "seedrandom": "^3.0.5",
     "storybook-addon-next-router": "^3.0.7",
@@ -173,6 +182,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-decorators": "7.17.0",
     "@emotion/babel-plugin": "11.0.0",
     "@nrwl/cli": "^11.0.20",
     "@storybook/addon-actions": "^6.3.7",
@@ -195,15 +205,16 @@
     "typescript": "4.3.2",
     "xwind": "0.7.2"
   },
+  "engines": {
+    "node": "^14"
+  },
   "resolutions": {
     "react": "16.14.0",
-    "**/react": "16.14.0",
     "react-leaflet/@react-leaflet/core": "1.0.2"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
+    "since 2017"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@1.22.17"
 }
