@@ -7,7 +7,12 @@ import { LockscreenImg } from "./LockscreenImg";
 import { saveAs } from "file-saver";
 import { useRouter } from "next/router";
 
-type Props = {};
+type Props = {
+  tokenSlug: string;
+  tokenId: string;
+  ridingTokenSlug?: string;
+  ridingTokenId?: string;
+};
 
 const LockscreenPickerElement = styled.div`
   display: flex;
@@ -37,24 +42,31 @@ const ImgFrame = styled.div`
   border-radius: 5px;
 `;
 
-export default function LockscreenPicker({}: Props) {
+export default function LockscreenPicker({
+  tokenSlug,
+  tokenId,
+  ridingTokenSlug,
+  ridingTokenId,
+}: Props) {
   const router = useRouter();
   console.log(router.query);
 
   const defaultToken =
     router?.query?.tokenType === "ponies"
       ? {
-          tokenTypeOption: router?.query?.ridingTokenSlug,
-          tokenOption: router?.query?.ridingTokenId,
-          riderTokenOption: router?.query?.tokenSlug,
-          riderTokenId: router?.query?.tokenId,
+          tokenTypeOption: ridingTokenSlug || router?.query?.ridingTokenSlug,
+          tokenOption: ridingTokenId || router?.query?.ridingTokenId,
+          riderTokenOption: tokenSlug || router?.query?.tokenSlug,
+          riderTokenId: tokenId || router?.query?.tokenId,
         }
       : {
-          tokenTypeOption: router?.query?.tokenSlug,
-          tokenOption: router?.query?.tokenId,
+          tokenTypeOption: tokenSlug || router?.query?.tokenSlug,
+          tokenOption: tokenId || router?.query?.tokenId,
         };
+  console.log("defaultToken: ", defaultToken);
 
   const [currentToken, setCurrentToken] = useState<any>(defaultToken);
+  console.log("currentToken: ", currentToken);
   const [currentResolution, setCurrentResolution] = useState<any>();
 
   const buildTokenOptions = (currentToken: any) => {
@@ -77,12 +89,13 @@ export default function LockscreenPicker({}: Props) {
   };
 
   const currentTokenChanged = (newCurrentToken: any) => {
-    setCurrentToken(newCurrentToken);
-
-    let newQueryParams = buildTokenOptions(newCurrentToken);
-    router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {
-      shallow: true,
-    });
+    if (newCurrentToken && newCurrentToken?.tokenOption?.value) {
+      setCurrentToken(newCurrentToken);
+      let newQueryParams = buildTokenOptions(newCurrentToken);
+      router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {
+        shallow: true,
+      });
+    }
   };
 
   let lockscreenImgProps = buildTokenOptions(currentToken);
@@ -91,11 +104,15 @@ export default function LockscreenPicker({}: Props) {
   //     saveAs("image_url", "image.jpg"); // Put your image url here.
   //   };
 
+  console.log("lockscreenImgProps: ", lockscreenImgProps);
   return (
     <LockscreenPickerElement>
       <Controls>
         <h2>Pick a Wizard</h2>
-        <TokenSelector onChange={currentTokenChanged} />
+        <TokenSelector
+          onChange={currentTokenChanged}
+          defaultTokens={lockscreenImgProps}
+        />
         <h2>Pick a Resolution</h2>
         <ResolutionSelector onChange={setCurrentResolution} />
         {/* <pre>{JSON.stringify(currentToken, null, 2)}</pre>

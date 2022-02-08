@@ -35,6 +35,12 @@ const poniesOptions = sortBy(
 type Props = {
   onChange: any;
   includeMounts?: boolean;
+  defaultTokens?: {
+    tokenSlug?: string;
+    tokenId?: string;
+    ridingTokenSlug?: string;
+    ridingTokenId?: string;
+  };
 };
 
 const TokenSelectorElement = styled.div``;
@@ -104,12 +110,25 @@ export const customSelectStyles: any = {
 export default function TokenSelector({
   onChange,
   includeMounts = true,
+  defaultTokens = {},
 }: Props) {
-  const [tokenTypeOption, setTokenTypeOption] = useState(tokenTypeOptions[0]);
-  const [tokenOption, setTokenOption] = useState(wizardOptions[0]);
+  const [tokenTypeOption, setTokenTypeOption] = useState(
+    defaultTokens?.tokenSlug
+      ? { value: defaultTokens?.tokenSlug }
+      : tokenTypeOptions[0]
+  );
+  const [tokenOption, setTokenOption] = useState(
+    defaultTokens?.tokenId
+      ? { value: defaultTokens?.tokenId }
+      : wizardOptions[0]
+  );
   const [tokenOptionsSet, setTokenOptionsSet] = useState(wizardOptions);
 
-  const [riderTokenOption, setRiderTokenOption] = useState();
+  const [riderTokenOption, setRiderTokenOption] = useState(
+    defaultTokens?.ridingTokenId
+      ? { value: defaultTokens?.ridingTokenId }
+      : null
+  );
 
   useEffect(() => {
     if (tokenTypeOption) {
@@ -164,6 +183,7 @@ export default function TokenSelector({
           },
         })}
         options={tokenOptionsSet}
+        defaultValue={tokenOption?.value}
         fuzzyOptions={fuzzyOptions}
         onChange={setTokenOption as any}
         placeholder="Search..."
