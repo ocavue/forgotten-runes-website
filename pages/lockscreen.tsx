@@ -45,8 +45,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {
       tokenId: context.query?.tokenId || null,
       tokenSlug: context.query?.tokenSlug || null,
-      tokenOption: context.query?.tokenOption || null,
-      tokenTypeOption: context.query?.tokenTypeOption || null,
+      ridingTokenSlug: context.query?.ridingTokenSlug || null,
+      ridingTokenId: context.query?.ridingTokenId || null,
     },
   };
 }

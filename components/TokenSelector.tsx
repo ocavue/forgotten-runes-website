@@ -11,12 +11,17 @@ import ponyLayers from "../public/static/nfts/ponies/ponies-layers.json";
 import { keyBy, sortBy } from "lodash";
 import FuzzyReactSelect from "./FuzzyReactSelect";
 
-const wizardOptions = wizardLayers.map((w) => {
+export type TokenSelectOption = {
+  value: any;
+  label: string;
+};
+
+const wizardOptions: TokenSelectOption[] = wizardLayers.map((w) => {
   const name = `Wizard #${w.idx} ${w.name}`;
   return { value: w.idx, label: name };
 });
 
-const soulsOptions = sortBy(
+const soulsOptions: TokenSelectOption[] = sortBy(
   soulLayers.map((w) => {
     const name = `Soul #${w.idx} ${w.name}`;
     return { value: w.idx, label: name };
@@ -24,7 +29,7 @@ const soulsOptions = sortBy(
   (w) => parseInt(w.value)
 );
 
-const poniesOptions = sortBy(
+const poniesOptions: TokenSelectOption[] = sortBy(
   ponyLayers.map((w) => {
     const name = `Pony #${w.idx} ${w.name}`;
     return { value: w.idx, label: name };
@@ -32,20 +37,9 @@ const poniesOptions = sortBy(
   (w) => parseInt(w.value)
 );
 
-type Props = {
-  onChange: any;
-  includeMounts?: boolean;
-  defaultTokens?: {
-    tokenSlug?: string;
-    tokenId?: string;
-    ridingTokenSlug?: string;
-    ridingTokenId?: string;
-  };
-};
-
 const TokenSelectorElement = styled.div``;
 
-const tokenTypeOptions = [
+const tokenTypeOptions: TokenSelectOption[] = [
   { value: "wizards", label: "Wizard" },
   { value: "souls", label: "Soul" },
   { value: "ponies", label: "Pony" },
@@ -107,28 +101,55 @@ export const customSelectStyles: any = {
   }),
 };
 
+// export type LockscreenTokenSelectOptions = {
+//   tokenTypeOption: TokenSelectOption;
+//   tokenOption: TokenSelectOption;
+//   riderTokenOption?: TokenSelectOption | null;
+// };
+
+export type TokenSelectTokenSpec = {
+  tokenSlug: string;
+  tokenId: string;
+  ridingTokenSlug?: string;
+  ridingTokenId?: string;
+};
+
+type Props = {
+  onChange: (options: TokenSelectTokenSpec) => void;
+  includeMounts?: boolean;
+  defaultTokens?: TokenSelectTokenSpec;
+};
+
 export default function TokenSelector({
   onChange,
+  defaultTokens,
   includeMounts = true,
-  defaultTokens = {},
 }: Props) {
-  const [tokenTypeOption, setTokenTypeOption] = useState(
+  const [tokenTypeOption, setTokenTypeOption] = useState<TokenSelectOption>(
     defaultTokens?.tokenSlug
-      ? { value: defaultTokens?.tokenSlug }
+      ? { value: defaultTokens?.tokenSlug, label: "" }
       : tokenTypeOptions[0]
   );
-  const [tokenOption, setTokenOption] = useState(
+  const [tokenOption, setTokenOption] = useState<TokenSelectOption>(
     defaultTokens?.tokenId
-      ? { value: defaultTokens?.tokenId }
+      ? { value: defaultTokens?.tokenId, label: "" }
       : wizardOptions[0]
   );
-  const [tokenOptionsSet, setTokenOptionsSet] = useState(wizardOptions);
+  const [ridingTokenTypeOption, setRidingTokenTypeOption] =
+    useState<TokenSelectOption | null>(
+      defaultTokens?.ridingTokenSlug
+        ? { value: defaultTokens?.ridingTokenSlug, label: "" }
+        : null
+    );
+  const [ridingTokenOption, setRidingTokenOption] =
+    useState<TokenSelectOption | null>(
+      defaultTokens?.ridingTokenId
+        ? { value: defaultTokens?.ridingTokenId, label: "" }
+        : null
+    );
 
-  const [riderTokenOption, setRiderTokenOption] = useState(
-    defaultTokens?.ridingTokenId
-      ? { value: defaultTokens?.ridingTokenId }
-      : null
-  );
+  const [tokenOptionsSet, setTokenOptionsSet] =
+    useState<TokenSelectOption[]>(wizardOptions);
 
   useEffect(() => {
     if (tokenTypeOption) {
@@ -141,28 +162,67 @@ export default function TokenSelector({
           ? poniesOptions
           : wizardOptions
       );
-      setTokenOption(
-        tokenTypeOption.value === "wizards"
-          ? wizardOptions[0]
-          : tokenTypeOption.value === "souls"
-          ? soulsOptions[0]
-          : tokenTypeOption.value === "ponies"
-          ? poniesOptions[0]
-          : wizardOptions[0]
-      );
+      //   if (!tokenOption?.value) {
+      //     setTokenOption(
+      //       tokenTypeOption.value === "wizards"
+      //         ? wizardOptions[0]
+      //         : tokenTypeOption.value === "souls"
+      //         ? soulsOptions[0]
+      //         : tokenTypeOption.value === "ponies"
+      //         ? poniesOptions[0]
+      //         : wizardOptions[0]
+      //     );
+      //   }
     }
   }, [tokenTypeOption]);
 
   useEffect(() => {
-    onChange({ tokenTypeOption, tokenOption, riderTokenOption });
-  }, [tokenTypeOption, tokenOption, riderTokenOption]);
+    if (tokenTypeOption?.value && tokenOption?.value) {
+      //   console.log("TokenSelector - useEffect, onChange", {
+      //     tokenTypeOption,
+      //     tokenOption,
+      //     riderTokenOption,
+      //   });
+      //   onChange({
+      //     tokenTypeOption,
+      //     tokenOption,
+      //     riderTokenOption,
+      //   });
 
-  // TODO
-  // _now_ if you have a pony selected, you can also select another wizard or soul
-  // maybe don't be too clever: just reimplement and abstract
+      let onChangeArgs =
+        tokenTypeOption.value === "ponies"
+          ? {
+              tokenSlug: tokenTypeOption.value,
+              tokenId: tokenOption.value,
+              ridingTokenSlug: ridingTokenTypeOption?.value,
+              ridingTokenId: ridingTokenOption?.value,
+            }
+          : {
+              tokenSlug: tokenTypeOption.value,
+              tokenId: tokenOption.value,
+            };
+
+      onChange(onChangeArgs);
+    }
+  }, [tokenTypeOption, tokenOption, ridingTokenTypeOption, ridingTokenOption]);
+
   let typeOptions = includeMounts
     ? tokenTypeOptions
     : tokenTypeOptions.filter((t) => t.value !== "ponies");
+
+  const onFuzzyReactSelectChanged = (newValue: any) => {
+    console.log("onFuzzyReactSelectChanged: ", newValue);
+    setTokenOption(newValue);
+  };
+
+  const onRiderTokenChanged = (newValue: TokenSelectTokenSpec) => {
+    if (newValue) {
+      // TODO this is a problem because you do want a label
+      // maybe pass both as args?
+      setRidingTokenTypeOption({ value: newValue.ridingTokenSlug, label: "" });
+      setRidingTokenOption({ value: newValue.ridingTokenId, label: "" });
+    }
+  };
 
   return (
     <TokenSelectorElement>
@@ -183,19 +243,16 @@ export default function TokenSelector({
           },
         })}
         options={tokenOptionsSet}
-        defaultValue={tokenOption?.value}
+        defaultValue={tokenOption}
         fuzzyOptions={fuzzyOptions}
-        onChange={setTokenOption as any}
+        onChange={onFuzzyReactSelectChanged}
         placeholder="Search..."
       />
 
       {tokenTypeOption.value === "ponies" && (
         <>
           <h3>Pick a rider</h3>
-          <TokenSelector
-            onChange={setRiderTokenOption as any}
-            includeMounts={false}
-          />
+          <TokenSelector onChange={onRiderTokenChanged} includeMounts={false} />
         </>
       )}
     </TokenSelectorElement>

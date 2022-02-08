@@ -1,7 +1,10 @@
 import * as React from "react";
 import { useState } from "react";
 import styled from "@emotion/styled";
-import TokenSelector from "./TokenSelector";
+import TokenSelector, {
+  TokenSelectOption,
+  TokenSelectTokenSpec,
+} from "./TokenSelector";
 import ResolutionSelector from "./ResolutionSelector";
 import { LockscreenImg } from "./LockscreenImg";
 import { saveAs } from "file-saver";
@@ -50,68 +53,78 @@ export default function LockscreenPicker({
 }: Props) {
   const router = useRouter();
   console.log(router.query);
+  //   const defaultToken: LockscreenTokenSelectOptions =
+  //     router?.query?.tokenType === "ponies"
+  //       ? {
+  //           tokenTypeOption: {
+  //             value: ridingTokenSlug || router?.query?.ridingTokenSlug,
+  //             label: "",
+  //           },
+  //           tokenOption: { value: ridingTokenId || router?.query?.ridingTokenId },
+  //           riderTokenOption: { value: tokenSlug || router?.query?.tokenSlug },
+  //           riderTokenId: { value: tokenId || router?.query?.tokenId },
+  //         }
+  //       : {
+  //           tokenTypeOption: { value: tokenSlug || router?.query?.tokenSlug },
+  //           tokenOption: { value: tokenId || router?.query?.tokenId },
+  //         };
+  //   console.log("defaultToken: ", defaultToken);
+  const defaultToken: TokenSelectTokenSpec = {
+    tokenSlug,
+    tokenId,
+    ridingTokenSlug,
+    ridingTokenId,
+  };
 
-  const defaultToken =
-    router?.query?.tokenType === "ponies"
-      ? {
-          tokenTypeOption: ridingTokenSlug || router?.query?.ridingTokenSlug,
-          tokenOption: ridingTokenId || router?.query?.ridingTokenId,
-          riderTokenOption: tokenSlug || router?.query?.tokenSlug,
-          riderTokenId: tokenId || router?.query?.tokenId,
-        }
-      : {
-          tokenTypeOption: tokenSlug || router?.query?.tokenSlug,
-          tokenOption: tokenId || router?.query?.tokenId,
-        };
-  console.log("defaultToken: ", defaultToken);
+  const [currentToken, setCurrentToken] =
+    useState<TokenSelectTokenSpec>(defaultToken);
 
-  const [currentToken, setCurrentToken] = useState<any>(defaultToken);
   console.log("currentToken: ", currentToken);
   const [currentResolution, setCurrentResolution] = useState<any>();
 
-  const buildTokenOptions = (currentToken: any) => {
-    let lockscreenImgProps;
-    if (currentToken?.tokenTypeOption?.value === "ponies") {
-      lockscreenImgProps = {
-        ridingTokenSlug: currentToken?.tokenTypeOption?.value,
-        ridingTokenId: currentToken?.tokenOption?.value,
+  //   const buildTokenOptions = (currentToken: any) => {
+  //     let lockscreenImgProps;
+  //     if (currentToken?.tokenTypeOption?.value === "ponies") {
+  //       lockscreenImgProps = {
+  //         ridingTokenSlug: currentToken?.tokenTypeOption?.value,
+  //         ridingTokenId: currentToken?.tokenOption?.value,
 
-        tokenSlug: currentToken?.riderTokenOption?.tokenTypeOption?.value,
-        tokenId: currentToken?.riderTokenOption?.tokenOption?.value,
-      };
-    } else {
-      lockscreenImgProps = {
-        tokenSlug: currentToken?.tokenTypeOption?.value,
-        tokenId: currentToken?.tokenOption?.value,
-      };
-    }
-    return lockscreenImgProps;
-  };
+  //         tokenSlug: currentToken?.riderTokenOption?.tokenTypeOption?.value,
+  //         tokenId: currentToken?.riderTokenOption?.tokenOption?.value,
+  //       };
+  //     } else {
+  //       lockscreenImgProps = {
+  //         tokenSlug: currentToken?.tokenTypeOption?.value,
+  //         tokenId: currentToken?.tokenOption?.value,
+  //       };
+  //     }
+  //     return lockscreenImgProps;
+  //   };
 
-  const currentTokenChanged = (newCurrentToken: any) => {
-    if (newCurrentToken && newCurrentToken?.tokenOption?.value) {
-      setCurrentToken(newCurrentToken);
-      let newQueryParams = buildTokenOptions(newCurrentToken);
+  const currentTokenChanged = (newToken: TokenSelectTokenSpec) => {
+    const { tokenSlug, tokenId, ridingTokenSlug, ridingTokenId } = newToken;
+    if (newToken && tokenId) {
+      console.log("currentTokenChanged: ", newToken);
+      setCurrentToken(newToken);
+      //   let newQueryParams = buildTokenOptions(newToken);
+      let newQueryParams = newToken;
       router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {
         shallow: true,
       });
     }
   };
 
-  let lockscreenImgProps = buildTokenOptions(currentToken);
-
   //   const downloadImage = () => {
   //     saveAs("image_url", "image.jpg"); // Put your image url here.
   //   };
 
-  console.log("lockscreenImgProps: ", lockscreenImgProps);
   return (
     <LockscreenPickerElement>
       <Controls>
         <h2>Pick a Wizard</h2>
         <TokenSelector
           onChange={currentTokenChanged}
-          defaultTokens={lockscreenImgProps}
+          defaultTokens={currentToken}
         />
         <h2>Pick a Resolution</h2>
         <ResolutionSelector onChange={setCurrentResolution} />
@@ -123,7 +136,7 @@ export default function LockscreenPicker({
       <Preview>
         <ImgFrame>
           <LockscreenImg
-            {...lockscreenImgProps}
+            {...currentToken}
             device={currentResolution?.resolutionOption?.value?.name}
             width={currentResolution?.resolutionOption?.value?.width}
             height={currentResolution?.resolutionOption?.value?.height}
