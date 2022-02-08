@@ -21,6 +21,7 @@ export async function getLockscreenImageBuffer({
   ridingTokenId,
   width,
   height,
+  ratio,
   device,
 }: {
   tokenSlug: string;
@@ -29,18 +30,19 @@ export async function getLockscreenImageBuffer({
   ridingTokenId: string;
   width?: number;
   height?: number;
+  ratio?: number;
   device?: string;
 }) {
   //
 
   const res = {
-    w:
-      width ||
-      DEVICES_BY_NAME[device as string].width *
+    w: width
+      ? width * (ratio || 1)
+      : DEVICES_BY_NAME[device as string].width *
         DEVICES_BY_NAME[device as string].ratio,
-    h:
-      height ||
-      DEVICES_BY_NAME[device as string].height *
+    h: height
+      ? height * (ratio || 1)
+      : DEVICES_BY_NAME[device as string].height *
         DEVICES_BY_NAME[device as string].ratio,
   };
   let tokenHeight = res.h / 2;
@@ -49,12 +51,12 @@ export async function getLockscreenImageBuffer({
   const isLandscape = res.w > res.h ? true : false;
 
   const tokenData = await getTokenLayersData({ tokenSlug, tokenId });
-  console.log("tokenData: ", tokenData);
+  //   console.log("tokenData: ", tokenData);
 
   let buffers: ExtendedSharpBuffer[] = [];
 
   {
-    console.log("generating background");
+    // console.log("generating background");
     // the background needs to fill the bigger dimension
     let bgSize = Math.max(res.w, res.h);
 
@@ -79,7 +81,7 @@ export async function getLockscreenImageBuffer({
   }
 
   {
-    console.log("generating wiz or rider");
+    // console.log("generating wiz or rider");
     // now let's place the wizard or rider
     let tokenBuffer = ridingTokenSlug
       ? await getRiderOnMountImageBuffer({
@@ -138,7 +140,7 @@ export async function getLockscreenImageBuffer({
   });
 
   if (runeLayer) {
-    console.log("generating rune");
+    // console.log("generating rune");
     // now the rune, if any
     let tokenBuffer = await getStyledTokenBuffer({
       tokenSlug,
@@ -179,14 +181,14 @@ export async function getLockscreenImageBuffer({
     buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
   }
   {
-    console.log("generating logo");
+    // console.log("generating logo");
 
     // logo
     const framePath = path.join(
       ROOT_PATH,
       `public/static/img/logo/frwc-logo-yellow.png`
     );
-    console.log("framePath: ", framePath);
+    // console.log("framePath: ", framePath);
     let tokenBuffer = await sharp(framePath).png().toBuffer();
 
     const imgMetadata = await sharp(tokenBuffer).metadata();
@@ -222,7 +224,7 @@ export async function getLockscreenImageBuffer({
     buffers.push({ input: tokenBuffer, top, left, zIndex: 10 });
   }
 
-  console.log("done");
+  //   console.log("done");
   const canvas = await sharp({
     create: {
       width: res.w,

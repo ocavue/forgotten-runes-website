@@ -5,6 +5,7 @@ import TokenSelector from "./TokenSelector";
 import ResolutionSelector from "./ResolutionSelector";
 import { LockscreenImg } from "./LockscreenImg";
 import { saveAs } from "file-saver";
+import { useRouter } from "next/router";
 
 type Props = {};
 
@@ -37,34 +38,64 @@ const ImgFrame = styled.div`
 `;
 
 export default function LockscreenPicker({}: Props) {
-  const [currentToken, setCurrentToken] = useState<any>();
+  const router = useRouter();
+  console.log(router.query);
+
+  const defaultToken =
+    router?.query?.tokenType === "ponies"
+      ? {
+          tokenTypeOption: router?.query?.ridingTokenSlug,
+          tokenOption: router?.query?.ridingTokenId,
+          riderTokenOption: router?.query?.tokenSlug,
+          riderTokenId: router?.query?.tokenId,
+        }
+      : {
+          tokenTypeOption: router?.query?.tokenSlug,
+          tokenOption: router?.query?.tokenId,
+        };
+
+  const [currentToken, setCurrentToken] = useState<any>(defaultToken);
   const [currentResolution, setCurrentResolution] = useState<any>();
 
-  let lockscreenImgProps;
-  if (currentToken?.tokenTypeOption?.value === "ponies") {
-    lockscreenImgProps = {
-      ridingTokenSlug: currentToken?.tokenTypeOption?.value,
-      ridingTokenId: currentToken?.tokenOption?.value,
+  const buildTokenOptions = (currentToken: any) => {
+    let lockscreenImgProps;
+    if (currentToken?.tokenTypeOption?.value === "ponies") {
+      lockscreenImgProps = {
+        ridingTokenSlug: currentToken?.tokenTypeOption?.value,
+        ridingTokenId: currentToken?.tokenOption?.value,
 
-      tokenSlug: currentToken?.riderTokenOption?.tokenTypeOption?.value,
-      tokenId: currentToken?.riderTokenOption?.tokenOption?.value,
-    };
-  } else {
-    lockscreenImgProps = {
-      tokenSlug: currentToken?.tokenTypeOption?.value,
-      tokenId: currentToken?.tokenOption?.value,
-    };
-  }
-
-  const downloadImage = () => {
-    saveAs("image_url", "image.jpg"); // Put your image url here.
+        tokenSlug: currentToken?.riderTokenOption?.tokenTypeOption?.value,
+        tokenId: currentToken?.riderTokenOption?.tokenOption?.value,
+      };
+    } else {
+      lockscreenImgProps = {
+        tokenSlug: currentToken?.tokenTypeOption?.value,
+        tokenId: currentToken?.tokenOption?.value,
+      };
+    }
+    return lockscreenImgProps;
   };
+
+  const currentTokenChanged = (newCurrentToken: any) => {
+    setCurrentToken(newCurrentToken);
+
+    let newQueryParams = buildTokenOptions(newCurrentToken);
+    router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {
+      shallow: true,
+    });
+  };
+
+  let lockscreenImgProps = buildTokenOptions(currentToken);
+
+  //   const downloadImage = () => {
+  //     saveAs("image_url", "image.jpg"); // Put your image url here.
+  //   };
 
   return (
     <LockscreenPickerElement>
       <Controls>
         <h2>Pick a Wizard</h2>
-        <TokenSelector onChange={setCurrentToken} />
+        <TokenSelector onChange={currentTokenChanged} />
         <h2>Pick a Resolution</h2>
         <ResolutionSelector onChange={setCurrentResolution} />
         {/* <pre>{JSON.stringify(currentToken, null, 2)}</pre>
@@ -77,6 +108,9 @@ export default function LockscreenPicker({}: Props) {
           <LockscreenImg
             {...lockscreenImgProps}
             device={currentResolution?.resolutionOption?.value?.name}
+            width={currentResolution?.resolutionOption?.value?.width}
+            height={currentResolution?.resolutionOption?.value?.height}
+            ratio={currentResolution?.resolutionOption?.value?.ratio}
           />
         </ImgFrame>
       </Preview>

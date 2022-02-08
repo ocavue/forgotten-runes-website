@@ -23,6 +23,7 @@ export default async function handler(
       ridingTokenId,
       width,
       height,
+      ratio,
       device,
     } = req.query;
 
@@ -33,6 +34,7 @@ export default async function handler(
       ridingTokenId: ridingTokenId as string,
       width: parseInt(width as string),
       height: parseInt(height as string),
+      ratio: parseInt(ratio as string),
       device: (device as string) || "iPhone 8",
     });
 

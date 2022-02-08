@@ -19,6 +19,7 @@ export const LockscreenImg = (props: {
   ridingTokenId?: string;
   width?: number;
   height?: number;
+  ratio?: number;
 }) => {
   // ?tokenSlug=wizards&tokenId=6044
   const queryParams = keys(props)
