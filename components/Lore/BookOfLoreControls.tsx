@@ -151,6 +151,7 @@ const LoreSocialContainer = ({
 
   const gmUrl = `/scenes/gm/${tokenId}`;
   const downloadUrl = `/api/art/${loreTokenSlug}/${tokenId}.zip`;
+  const lockscreenUrl = `/lockscreen?tokenSlug=${loreTokenSlug}&tokenId=${tokenId}`;
 
   return (
     <SocialContainer>
@@ -179,6 +180,11 @@ const LoreSocialContainer = ({
       <SocialItem>
         <a href={downloadUrl} className="icon-link" target="_blank">
           <ResponsivePixelImg src="/static/img/icons/social_download_default_w.png" />
+        </a>
+      </SocialItem>
+      <SocialItem>
+        <a href={lockscreenUrl} className="icon-link" target="_blank">
+          <ResponsivePixelImg src="/static/img/icons/social_phone_default.png" />
         </a>
       </SocialItem>
     </SocialContainer>
