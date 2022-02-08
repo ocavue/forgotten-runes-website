@@ -52,7 +52,7 @@ export default function LockscreenPicker({
   ridingTokenId,
 }: Props) {
   const router = useRouter();
-  console.log(router.query);
+  //   console.log(router.query);
   const defaultToken: TokenSelectTokenSpec = {
     tokenSlug,
     tokenId,
@@ -69,7 +69,7 @@ export default function LockscreenPicker({
   const currentTokenChanged = (newToken: TokenSelectTokenSpec) => {
     const { tokenSlug, tokenId, ridingTokenSlug, ridingTokenId } = newToken;
     if (newToken && tokenId) {
-      console.log("currentTokenChanged: ", newToken);
+      //   console.log("currentTokenChanged: ", newToken);
       setCurrentToken(newToken);
       let newQueryParams = newToken;
       router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {

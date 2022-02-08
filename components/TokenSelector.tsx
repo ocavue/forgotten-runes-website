@@ -211,7 +211,7 @@ export default function TokenSelector({
     : tokenTypeOptions.filter((t) => t.value !== "ponies");
 
   const onFuzzyReactSelectChanged = (newValue: any) => {
-    console.log("onFuzzyReactSelectChanged: ", newValue);
+    // console.log("onFuzzyReactSelectChanged: ", newValue);
     setTokenOption(newValue);
   };
 

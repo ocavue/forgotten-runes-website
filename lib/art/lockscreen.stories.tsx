@@ -54,5 +54,6 @@ export const Primary = Template.bind({});
 Primary.args = {};
 
 export const LockscreenPickerStory = ({}) => {
-  return <LockscreenPicker />;
+  //   return <LockscreenPicker  />;
+  return <div />;
 };
