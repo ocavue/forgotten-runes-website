@@ -1,13 +1,21 @@
 import * as React from "react";
 import { useState } from "react";
 import styled from "@emotion/styled";
-import TokenSelector from "./TokenSelector";
+import TokenSelector, {
+  TokenSelectOption,
+  TokenSelectTokenSpec,
+} from "./TokenSelector";
 import ResolutionSelector from "./ResolutionSelector";
 import { LockscreenImg } from "./LockscreenImg";
 import { saveAs } from "file-saver";
 import { useRouter } from "next/router";
 
-type Props = {};
+type Props = {
+  tokenSlug: string;
+  tokenId: string;
+  ridingTokenSlug?: string;
+  ridingTokenId?: string;
+};
 
 const LockscreenPickerElement = styled.div`
   display: flex;
@@ -37,55 +45,38 @@ const ImgFrame = styled.div`
   border-radius: 5px;
 `;
 
-export default function LockscreenPicker({}: Props) {
+export default function LockscreenPicker({
+  tokenSlug,
+  tokenId,
+  ridingTokenSlug,
+  ridingTokenId,
+}: Props) {
   const router = useRouter();
   console.log(router.query);
+  const defaultToken: TokenSelectTokenSpec = {
+    tokenSlug,
+    tokenId,
+    ridingTokenSlug,
+    ridingTokenId,
+  };
 
-  const defaultToken =
-    router?.query?.tokenType === "ponies"
-      ? {
-          tokenTypeOption: router?.query?.ridingTokenSlug,
-          tokenOption: router?.query?.ridingTokenId,
-          riderTokenOption: router?.query?.tokenSlug,
-          riderTokenId: router?.query?.tokenId,
-        }
-      : {
-          tokenTypeOption: router?.query?.tokenSlug,
-          tokenOption: router?.query?.tokenId,
-        };
+  const [currentToken, setCurrentToken] =
+    useState<TokenSelectTokenSpec>(defaultToken);
 
-  const [currentToken, setCurrentToken] = useState<any>(defaultToken);
+  //   console.log("currentToken: ", currentToken);
   const [currentResolution, setCurrentResolution] = useState<any>();
 
-  const buildTokenOptions = (currentToken: any) => {
-    let lockscreenImgProps;
-    if (currentToken?.tokenTypeOption?.value === "ponies") {
-      lockscreenImgProps = {
-        ridingTokenSlug: currentToken?.tokenTypeOption?.value,
-        ridingTokenId: currentToken?.tokenOption?.value,
-
-        tokenSlug: currentToken?.riderTokenOption?.tokenTypeOption?.value,
-        tokenId: currentToken?.riderTokenOption?.tokenOption?.value,
-      };
-    } else {
-      lockscreenImgProps = {
-        tokenSlug: currentToken?.tokenTypeOption?.value,
-        tokenId: currentToken?.tokenOption?.value,
-      };
+  const currentTokenChanged = (newToken: TokenSelectTokenSpec) => {
+    const { tokenSlug, tokenId, ridingTokenSlug, ridingTokenId } = newToken;
+    if (newToken && tokenId) {
+      console.log("currentTokenChanged: ", newToken);
+      setCurrentToken(newToken);
+      let newQueryParams = newToken;
+      router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {
+        shallow: true,
+      });
     }
-    return lockscreenImgProps;
   };
-
-  const currentTokenChanged = (newCurrentToken: any) => {
-    setCurrentToken(newCurrentToken);
-
-    let newQueryParams = buildTokenOptions(newCurrentToken);
-    router.push({ path: "/lockscreen", query: newQueryParams }, undefined, {
-      shallow: true,
-    });
-  };
-
-  let lockscreenImgProps = buildTokenOptions(currentToken);
 
   //   const downloadImage = () => {
   //     saveAs("image_url", "image.jpg"); // Put your image url here.
@@ -95,7 +86,10 @@ export default function LockscreenPicker({}: Props) {
     <LockscreenPickerElement>
       <Controls>
         <h2>Pick a Wizard</h2>
-        <TokenSelector onChange={currentTokenChanged} />
+        <TokenSelector
+          onChange={currentTokenChanged}
+          defaultTokens={currentToken}
+        />
         <h2>Pick a Resolution</h2>
         <ResolutionSelector onChange={setCurrentResolution} />
         {/* <pre>{JSON.stringify(currentToken, null, 2)}</pre>
@@ -106,7 +100,7 @@ export default function LockscreenPicker({}: Props) {
       <Preview>
         <ImgFrame>
           <LockscreenImg
-            {...lockscreenImgProps}
+            {...currentToken}
             device={currentResolution?.resolutionOption?.value?.name}
             width={currentResolution?.resolutionOption?.value?.width}
             height={currentResolution?.resolutionOption?.value?.height}
