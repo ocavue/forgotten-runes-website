@@ -37,6 +37,12 @@ const poniesOptions: TokenSelectOption[] = sortBy(
   (w) => parseInt(w.value)
 );
 
+const optionSets: { [key: string]: TokenSelectOption[] } = {
+  wizards: wizardOptions,
+  souls: soulsOptions,
+  ponies: poniesOptions,
+};
+
 const TokenSelectorElement = styled.div``;
 
 const tokenTypeOptions: TokenSelectOption[] = [
@@ -101,12 +107,6 @@ export const customSelectStyles: any = {
   }),
 };
 
-// export type LockscreenTokenSelectOptions = {
-//   tokenTypeOption: TokenSelectOption;
-//   tokenOption: TokenSelectOption;
-//   riderTokenOption?: TokenSelectOption | null;
-// };
-
 export type TokenSelectTokenSpec = {
   tokenSlug: string;
   tokenId: string;
@@ -114,11 +114,22 @@ export type TokenSelectTokenSpec = {
   ridingTokenId?: string;
 };
 
+export type TokenSelectFields = {
+  tokenTypeOption: TokenSelectOption;
+  tokenOption: TokenSelectOption;
+  ridingTokenTypeOption?: TokenSelectOption | null;
+  ridingTokenOption?: TokenSelectOption | null;
+};
+
 type Props = {
-  onChange: (options: TokenSelectTokenSpec) => void;
+  onChange: (options: TokenSelectTokenSpec, fields: TokenSelectFields) => void;
   includeMounts?: boolean;
   defaultTokens?: TokenSelectTokenSpec;
 };
+
+function findOptionByValue(optionSet: TokenSelectOption[], value: any) {
+  return optionSet.find((f) => f.value === value) || { value: null, label: "" };
+}
 
 export default function TokenSelector({
   onChange,
@@ -127,24 +138,30 @@ export default function TokenSelector({
 }: Props) {
   const [tokenTypeOption, setTokenTypeOption] = useState<TokenSelectOption>(
     defaultTokens?.tokenSlug
-      ? { value: defaultTokens?.tokenSlug, label: "" }
+      ? findOptionByValue(tokenTypeOptions, defaultTokens?.tokenSlug)
       : tokenTypeOptions[0]
   );
   const [tokenOption, setTokenOption] = useState<TokenSelectOption>(
     defaultTokens?.tokenId
-      ? { value: defaultTokens?.tokenId, label: "" }
+      ? findOptionByValue(
+          optionSets[tokenTypeOption?.value as string] || [],
+          defaultTokens?.tokenId
+        )
       : wizardOptions[0]
   );
   const [ridingTokenTypeOption, setRidingTokenTypeOption] =
     useState<TokenSelectOption | null>(
       defaultTokens?.ridingTokenSlug
-        ? { value: defaultTokens?.ridingTokenSlug, label: "" }
+        ? findOptionByValue(tokenTypeOptions, defaultTokens?.ridingTokenSlug)
         : null
     );
   const [ridingTokenOption, setRidingTokenOption] =
     useState<TokenSelectOption | null>(
       defaultTokens?.ridingTokenId
-        ? { value: defaultTokens?.ridingTokenId, label: "" }
+        ? findOptionByValue(
+            optionSets[ridingTokenTypeOption?.value as string] || [],
+            defaultTokens?.ridingTokenId
+          )
         : null
     );
 
@@ -162,33 +179,11 @@ export default function TokenSelector({
           ? poniesOptions
           : wizardOptions
       );
-      //   if (!tokenOption?.value) {
-      //     setTokenOption(
-      //       tokenTypeOption.value === "wizards"
-      //         ? wizardOptions[0]
-      //         : tokenTypeOption.value === "souls"
-      //         ? soulsOptions[0]
-      //         : tokenTypeOption.value === "ponies"
-      //         ? poniesOptions[0]
-      //         : wizardOptions[0]
-      //     );
-      //   }
     }
   }, [tokenTypeOption]);
 
   useEffect(() => {
     if (tokenTypeOption?.value && tokenOption?.value) {
-      //   console.log("TokenSelector - useEffect, onChange", {
-      //     tokenTypeOption,
-      //     tokenOption,
-      //     riderTokenOption,
-      //   });
-      //   onChange({
-      //     tokenTypeOption,
-      //     tokenOption,
-      //     riderTokenOption,
-      //   });
-
       let onChangeArgs =
         tokenTypeOption.value === "ponies"
           ? {
@@ -202,7 +197,12 @@ export default function TokenSelector({
               tokenId: tokenOption.value,
             };
 
-      onChange(onChangeArgs);
+      onChange(onChangeArgs, {
+        tokenTypeOption,
+        tokenOption,
+        ridingTokenTypeOption,
+        ridingTokenOption,
+      });
     }
   }, [tokenTypeOption, tokenOption, ridingTokenTypeOption, ridingTokenOption]);
 
@@ -215,12 +215,13 @@ export default function TokenSelector({
     setTokenOption(newValue);
   };
 
-  const onRiderTokenChanged = (newValue: TokenSelectTokenSpec) => {
-    if (newValue) {
-      // TODO this is a problem because you do want a label
-      // maybe pass both as args?
-      setRidingTokenTypeOption({ value: newValue.ridingTokenSlug, label: "" });
-      setRidingTokenOption({ value: newValue.ridingTokenId, label: "" });
+  const onRiderTokenChanged = (
+    newValue: TokenSelectTokenSpec,
+    newSelects: TokenSelectFields
+  ) => {
+    if (newValue?.tokenId) {
+      setRidingTokenTypeOption(newSelects.tokenTypeOption);
+      setRidingTokenOption(newSelects.tokenOption);
     }
   };
 
@@ -252,7 +253,14 @@ export default function TokenSelector({
       {tokenTypeOption.value === "ponies" && (
         <>
           <h3>Pick a rider</h3>
-          <TokenSelector onChange={onRiderTokenChanged} includeMounts={false} />
+          <TokenSelector
+            onChange={onRiderTokenChanged}
+            includeMounts={false}
+            defaultTokens={{
+              tokenId: ridingTokenOption?.value,
+              tokenSlug: ridingTokenTypeOption?.value,
+            }}
+          />
         </>
       )}
     </TokenSelectorElement>

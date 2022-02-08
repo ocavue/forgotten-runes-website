@@ -11,19 +11,51 @@ const Img = styled.img`
 
 const baseURL = `/api/art/lockscreen`;
 
+const rideables = ["ponies"];
+
 export const LockscreenImg = (props: {
   tokenSlug: string;
   tokenId: string;
-  device?: string;
   ridingTokenSlug?: string;
   ridingTokenId?: string;
+  device?: string;
   width?: number;
   height?: number;
   ratio?: number;
 }) => {
+  const {
+    tokenSlug,
+    tokenId,
+    ridingTokenSlug,
+    ridingTokenId,
+    device,
+    width,
+    height,
+    ratio,
+  } = props;
+
+  const baseProps = {
+    device,
+    width,
+    height,
+    ratio,
+  };
+
+  // we want to be able to get a pony aloney so
+  // the tokenSlug in that case is "pony"
+  let queryProps = rideables.includes(tokenSlug)
+    ? {
+        ...baseProps,
+        ridingTokenSlug: tokenSlug,
+        ridingTokenId: tokenId,
+        tokenSlug: ridingTokenSlug,
+        tokenId: ridingTokenId,
+      }
+    : props;
+
   // ?tokenSlug=wizards&tokenId=6044
-  const queryParams = keys(props)
-    .map((a) => `${a}=${(props as any)[a]}`)
+  const queryParams = keys(queryProps)
+    .map((a) => `${a}=${(queryProps as any)[a]}`)
     .join("&");
   const src = baseURL + `?` + queryParams;
   return <Img src={src} />;
