@@ -10,4 +10,4 @@ category: announcements
 
 The founders Elf and Dotta and team give a weekly "AmA" dubbed _Wizard Wednesdays_ **every week** on Twitter Spaces. To listen in, follow [@forgottenrunes](https://twitter.com/forgottenrunes) on Twitter.
 
-We also have recordings of all past weeks [on our Soundcloud](https://soundcloud.com/forgottenrunes)
+We also have recordings of all past weeks [on our Soundcloud](https://soundcloud.com/forgottenrunes).
