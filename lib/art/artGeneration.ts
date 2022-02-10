@@ -513,6 +513,39 @@ export const MountZIndex = {
 
 const frameBaseURL = `https://nftz.forgottenrunes.com/frames`;
 const turnaroundsBaseURL = `https://nftz.forgottenrunes.com/turnarounds`;
+
+const defaultSpritesheetSettings = {
+  tags: [
+    { name: "front", frames: 4 },
+    { name: "left", frames: 4 },
+    { name: "back", frames: 4 },
+    { name: "right", frames: 4 },
+  ],
+  width: 50,
+  height: 50,
+  duration: 200,
+  columns: 4,
+  rows: 4,
+};
+
+const familiarSpritesheetSettings = {
+  tags: [
+    { name: "front", frames: 4 },
+    { name: "front_idle", frames: 4 },
+    { name: "left", frames: 4 },
+    { name: "left_idle", frames: 4 },
+    { name: "back", frames: 4 },
+    { name: "back_idle", frames: 4 },
+    { name: "right", frames: 4 },
+    { name: "right_idle", frames: 4 },
+  ],
+  width: 50,
+  height: 50,
+  duration: 200,
+  columns: 4,
+  rows: 8,
+};
+
 export async function buildSpritesheet({
   tokenSlug,
   tokenId,
@@ -524,25 +557,24 @@ export async function buildSpritesheet({
   json?: boolean;
   image?: boolean;
 }) {
-  const tags = [
-    { name: "front", frames: 4 },
-    { name: "left", frames: 4 },
-    { name: "back", frames: 4 },
-    { name: "right", frames: 4 },
-  ];
-  const WIDTH = 50;
-  const HEIGHT = 50;
-  const DURATION = 200;
-  const columns = 4;
-  const rows = 4;
+  const tokenSlugLookup =
+    tokenSlug === "wizard-familiars" ? "wizards" : tokenSlug;
+
+  const settings =
+    tokenSlug === "wizard-familiars"
+      ? familiarSpritesheetSettings
+      : defaultSpritesheetSettings;
+
+  const { tags, width, height, duration, columns, rows } = settings;
+
+  const WIDTH = width;
+  const HEIGHT = height;
+  const DURATION = duration;
   const imageWidth = columns * WIDTH;
   const imageHeight = rows * HEIGHT;
 
   // get the familiar slug
   // we can get this two ways, either from the wizzyId or the name as the tokenId
-
-  const tokenSlugLookup =
-    tokenSlug === "wizard-familiars" ? "wizards" : tokenSlug;
 
   const tokenLayerData = await getTokenLayersData({
     tokenSlug: tokenSlugLookup,
@@ -654,7 +686,8 @@ export async function buildSpritesheet({
     }
 
     frameTags.push({
-      name: `${tokenSlug}-${tokenId}-${tagDescription.name}`,
+      // name: `${tokenSlug}-${tokenId}-${tagDescription.name}`,
+      name: `${tagDescription.name}`,
       from: frameFromIndex,
       to: frameFromIndex + tagDescription.frames - 1,
       direction: "forward",
