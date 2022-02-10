@@ -3800,6 +3800,16 @@
     "rune": "57"
   },
   {
+    "idx": "440",
+    "name": "Milo the Dutiful",
+    "background": "2",
+    "pony": "17",
+    "clothes": "27",
+    "head": "47",
+    "mouth": "7777",
+    "rune": "7777"
+  },
+  {
     "idx": "45",
     "name": "Fru-Fru the Lazy",
     "background": "1",

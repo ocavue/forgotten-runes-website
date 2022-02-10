@@ -4,6 +4,9 @@ import wizardLayers from "../../public/static/nfts/wizards/wizards-layers.json";
 import wizardTraits from "../../public/static/nfts/wizards/wizards-traits.json";
 import soulLayers from "../../public/static/nfts/souls/souls-layers.json";
 import soulTraits from "../../public/static/nfts/souls/souls-traits.json";
+import ponyLayers from "../../public/static/nfts/ponies/ponies-layers.json";
+import ponyTraits from "../../public/static/nfts/ponies/ponies-traits.json";
+
 import { compact, groupBy, keyBy, map, sortBy } from "lodash";
 import fs from "fs";
 import fetch from "node-fetch";
@@ -69,6 +72,7 @@ export const wizardLayersIdx: { [key: string]: any } = keyBy(
   "idx"
 );
 export const soulLayersIdx: { [key: string]: any } = keyBy(soulLayers, "idx");
+export const poniesLayersIdx: { [key: string]: any } = keyBy(ponyLayers, "idx");
 
 export async function getWizardPartsBuffer() {
   return sharp(
@@ -101,9 +105,19 @@ export const soulsLayerNames = [
   "undesirable",
 ];
 
+const poniesLayerNames = [
+  "background",
+  "pony",
+  "clothes",
+  "head",
+  "mouth",
+  "rune",
+];
+
 export const tokenLayerNames: { [key: string]: string[] } = {
   wizards: wizardLayerNames,
   souls: soulsLayerNames,
+  ponies: poniesLayerNames,
   "wizard-familiars": wizardFamiliarLayernames,
 };
 
@@ -136,6 +150,9 @@ const wizardsTraitsLayerDescriptionByLabel: {
 const soulsTraitsLayerDescriptionByLabel: {
   [trait: string]: { [label: string]: TraitsLayerDescription };
 } = doubleKeyBy(soulTraits, "trait", "label");
+const poniesTraitsLayerDescriptionByLabel: {
+  [trait: string]: { [label: string]: TraitsLayerDescription };
+} = doubleKeyBy(ponyTraits, "trait", "label");
 
 export const tokenTraitsByLabel: {
   [tokenSlug: string]: {
@@ -144,6 +161,7 @@ export const tokenTraitsByLabel: {
 } = {
   wizards: wizardsTraitsLayerDescriptionByLabel,
   souls: soulsTraitsLayerDescriptionByLabel,
+  ponies: poniesTraitsLayerDescriptionByLabel,
 };
 
 const wizardTraitsLayerDescriptionByIndex: {
@@ -152,6 +170,9 @@ const wizardTraitsLayerDescriptionByIndex: {
 const soulTraitsLayerDescriptionByIndex: {
   [idx: string]: TraitsLayerDescription;
 } = keyBy(soulTraits, "idx");
+const ponyTraitsLayerDescriptionByIndex: {
+  [idx: string]: TraitsLayerDescription;
+} = keyBy(ponyTraits, "idx");
 
 export const tokenTraitsByIndex: {
   [tokenSlug: string]: {
@@ -160,6 +181,7 @@ export const tokenTraitsByIndex: {
 } = {
   wizards: wizardTraitsLayerDescriptionByIndex,
   souls: soulTraitsLayerDescriptionByIndex,
+  ponies: ponyTraitsLayerDescriptionByIndex,
 };
 
 export async function extractTokenFrameBuffer({
@@ -182,16 +204,18 @@ export async function extractTokenFrameBuffer({
         frameNum,
       });
     }
-    case "souls": {
+    case "souls":
+    case "ponies": {
       const filename = tokenTraitsByIndex[tokenSlug][frameNum].filename;
-      return sharp(
-        path.join(
-          ROOT_PATH,
-          `public/static/nfts/${tokenSlug}/layers/${filename}`
-        )
-      )
-        .png()
-        .toBuffer();
+      const fullFilename = path.join(
+        ROOT_PATH,
+        `public/static/nfts/${tokenSlug}/layers/${filename}`
+      );
+      if (!fs.existsSync(fullFilename)) {
+        console.log("can't find: ", fullFilename);
+      }
+
+      return sharp(fullFilename).png().toBuffer();
     }
   }
 }
@@ -255,6 +279,9 @@ export async function getTokenLayersData({
     }
     case "souls": {
       return soulLayersIdx[tokenId];
+    }
+    case "ponies": {
+      return poniesLayersIdx[tokenId];
     }
   }
 }
@@ -404,6 +431,7 @@ export async function getStyledTokenBuffer({
       continue;
     }
 
+    // console.log({ tokenSlug, tokenId, frameNum });
     const layerPartBuffer = await extractTokenFrameBuffer({
       tokenSlug,
       partsBuffer,
