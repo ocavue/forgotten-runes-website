@@ -58,9 +58,15 @@ export const BlogPostImgWrap = styled.div`
     transform: scale(1.1);
   }
 `;
-export const BlogPostImgWrapInner = styled.div<{pixelated?: boolean; cover?: boolean}>`
+export const BlogPostImgWrapInner = styled.div<{
+  pixelated?: boolean;
+  cover?: boolean;
+}>`
   img {
-    image-rendering: ${(props) => props.pixelated === undefined || props.pixelated ? "pixelated" : "inherit"};
+    image-rendering: ${(props) =>
+      props.pixelated === undefined || props.pixelated
+        ? "pixelated"
+        : "inherit"};
     position: absolute;
     left: 0;
     top: 0;
@@ -68,7 +74,8 @@ export const BlogPostImgWrapInner = styled.div<{pixelated?: boolean; cover?: boo
     bottom: 0;
     width: 100%;
     height: 100%;
-    object-fit: ${(props) => props.cover == undefined || props.cover ? "cover" : "contain"};;
+    object-fit: ${(props) =>
+      props.cover == undefined || props.cover ? "cover" : "contain"};
     border-radius: 5px;
   }
 `;
