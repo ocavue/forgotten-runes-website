@@ -208,7 +208,7 @@ export const LogoToggleRow = styled.div`
   flex-direction: row;
   align-items: center;
   flex: 1;
-  
+
   .toggle-menu {
     min-width: 10px;
   }
@@ -241,44 +241,44 @@ export default function SiteNav({
           </ul>
         </LogoToggleRow>
         {!hideNavItems && (
-            <SiteNavRow>
-              <ul className={"menu" + (isOpen ? " active" : "")}>
-                <li className="item">
-                  <a href="/">The Secret Tower</a>
-                </li>
-                <li className="item">
-                  <Link as={"/wtf"} href={"/wtf"} passHref={true}>
-                    Start Here
-                  </Link>
-                </li>
+          <SiteNavRow>
+            <ul className={"menu" + (isOpen ? " active" : "")}>
+              <li className="item">
+                <a href="/">The Secret Tower</a>
+              </li>
+              <li className="item">
+                <Link as={"/wtf"} href={"/wtf"} passHref={true}>
+                  Start Here
+                </Link>
+              </li>
 
-                <li className="item">
-                  <Link as={"/lore"} href={"/lore"} passHref={true}>
-                    <a>Lore</a>
-                  </Link>
-                </li>
+              <li className="item">
+                <Link as={"/lore"} href={"/lore"} passHref={true}>
+                  <a>Lore</a>
+                </Link>
+              </li>
 
-                <li className="item">
-                  <Link as={"/map"} href={"/map"} passHref={true}>
-                    <a>Map</a>
-                  </Link>
-                </li>
+              <li className="item">
+                <Link as={"/map"} href={"/map"} passHref={true}>
+                  <a>Map</a>
+                </Link>
+              </li>
 
-                <li className="item">
-                  <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-                    <a>Gallery</a>
-                  </Link>
-                </li>
+              <li className="item">
+                <Link as={"/gallery"} href={"/gallery"} passHref={true}>
+                  <a>Gallery</a>
+                </Link>
+              </li>
 
-                <li className="item">
-                  <Link as={"/posts"} href={"/posts"} passHref={true}>
-                    <a>Blog</a>
-                  </Link>
-                </li>
-              </ul>
-            </SiteNavRow>
+              <li className="item">
+                <Link as={"/posts"} href={"/posts"} passHref={true}>
+                  <a>Blog</a>
+                </Link>
+              </li>
+            </ul>
+          </SiteNavRow>
         )}
-        <ul className={"menu" + (isOpen ? " active" : "")} style={{flex: 1}}>
+        <ul className={"menu" + (isOpen ? " active" : "")} style={{ flex: 1 }}>
           <li className="item">
             <a
               href="https://opensea.io/collection/forgottenruneswizardscult"
@@ -307,7 +307,6 @@ export default function SiteNav({
           </li>
         </ul>
       </SiteNavTopRow>
-
     </SiteNavElement>
   );
 }

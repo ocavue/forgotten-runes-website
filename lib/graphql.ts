@@ -44,8 +44,8 @@ export const client = new ApolloClient({
           console.warn(`Checking if to retry GraphQL error: ${err.message}`);
 
           if (
-              err.message ===
-              "panic processing query: Once instance has previously been poisoned"
+            err.message ===
+            "panic processing query: Once instance has previously been poisoned"
           ) {
             console.info("Retrying panic error...");
             return forward(operation);
@@ -63,5 +63,3 @@ export const client = new ApolloClient({
     new HttpLink({ uri: process.env.GRAPHQL_ENDPOINT as string }),
   ]),
 });
-
-
