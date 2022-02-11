@@ -15,7 +15,7 @@ const SiteNavElement = styled.nav`
   align-items: center;
   justify-content: center;
 
-  padding: 0 15px;
+  padding: 12px 12px;
 
   li.highlighted a {
     background-color: #1f200d;
@@ -174,8 +174,8 @@ const SiteNavRow = styled.div`
 
   .logo {
     @media (min-width: 960px) {
-      max-width: 260px;
-      width: 260px;
+      max-width: 200px;
+      width: 200px;
     }
   }
 `;
@@ -183,9 +183,10 @@ const SiteNavRow = styled.div`
 const SiteNavTopRow = styled(SiteNavRow)`
   display: flex;
   justify-content: space-between;
-  max-width: 1100px;
+  //max-width: 1100px;
   min-width: 80vw;
   flex-direction: column;
+  align-items: center;
 
   @media (min-width: 960px) {
     flex-direction: row;
@@ -197,7 +198,7 @@ const SiteNavTopRow = styled(SiteNavRow)`
 `;
 
 export const BrandedLogoImg = styled.img`
-  width: 100%;
+  width: 200px;
   height: auto;
   image-rendering: pixelated;
 `;
@@ -205,9 +206,11 @@ export const BrandedLogoImg = styled.img`
 export const LogoToggleRow = styled.div`
   display: flex;
   flex-direction: row;
-
+  align-items: center;
+  flex: 1;
+  
   .toggle-menu {
-    min-width: 40px;
+    min-width: 10px;
   }
 `;
 
@@ -237,7 +240,45 @@ export default function SiteNav({
             </li>
           </ul>
         </LogoToggleRow>
-        <ul className={"menu" + (isOpen ? " active" : "")}>
+        {!hideNavItems && (
+            <SiteNavRow>
+              <ul className={"menu" + (isOpen ? " active" : "")}>
+                <li className="item">
+                  <a href="/">The Secret Tower</a>
+                </li>
+                <li className="item">
+                  <Link as={"/wtf"} href={"/wtf"} passHref={true}>
+                    Start Here
+                  </Link>
+                </li>
+
+                <li className="item">
+                  <Link as={"/lore"} href={"/lore"} passHref={true}>
+                    <a>Lore</a>
+                  </Link>
+                </li>
+
+                <li className="item">
+                  <Link as={"/map"} href={"/map"} passHref={true}>
+                    <a>Map</a>
+                  </Link>
+                </li>
+
+                <li className="item">
+                  <Link as={"/gallery"} href={"/gallery"} passHref={true}>
+                    <a>Gallery</a>
+                  </Link>
+                </li>
+
+                <li className="item">
+                  <Link as={"/posts"} href={"/posts"} passHref={true}>
+                    <a>Blog</a>
+                  </Link>
+                </li>
+              </ul>
+            </SiteNavRow>
+        )}
+        <ul className={"menu" + (isOpen ? " active" : "")} style={{flex: 1}}>
           <li className="item">
             <a
               href="https://opensea.io/collection/forgottenruneswizardscult"
@@ -266,44 +307,7 @@ export default function SiteNav({
           </li>
         </ul>
       </SiteNavTopRow>
-      {!hideNavItems && (
-        <SiteNavRow>
-          <ul className={"menu" + (isOpen ? " active" : "")}>
-            <li className="item">
-              <a href="/">The Secret Tower</a>
-            </li>
-            <li className="item">
-              <Link as={"/wtf"} href={"/wtf"} passHref={true}>
-                Start Here
-              </Link>
-            </li>
 
-            <li className="item">
-              <Link as={"/lore"} href={"/lore"} passHref={true}>
-                <a>Book of Lore</a>
-              </Link>
-            </li>
-
-            <li className="item">
-              <Link as={"/map"} href={"/map"} passHref={true}>
-                <a>Map</a>
-              </Link>
-            </li>
-
-            <li className="item">
-              <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-                <a>All Wizards</a>
-              </Link>
-            </li>
-
-            <li className="item">
-              <Link as={"/posts"} href={"/posts"} passHref={true}>
-                <a>Blog</a>
-              </Link>
-            </li>
-          </ul>
-        </SiteNavRow>
-      )}
     </SiteNavElement>
   );
 }

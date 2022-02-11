@@ -1,9 +1,5 @@
 import * as React from "react";
 import styled from "@emotion/styled";
-import productionWizardData from "../../data/nfts-prod.json";
-import productionSoulsData from "../../data/souls-prod.json";
-import productionPoniesData from "../../data/ponies-prod.json";
-import stagingSoulsData from "../../data/souls-staging.json";
 
 import ReactMarkdown from "react-markdown";
 import { WriteButton } from "./BookOfLoreControls";
@@ -12,21 +8,13 @@ import { motion } from "framer-motion";
 import { ResponsivePixelImg } from "../ResponsivePixelImg";
 import { loreTextStyles } from "./loreStyles";
 import { IPFS_SERVER } from "../../constants";
-import {
-  isPoniesContract,
-  isSoulsContract,
-  isWizardsContract,
-} from "../../contracts/ForgottenRunesWizardsCultContract";
-import Spacer from "../Spacer";
-import LoreMarkdownRenderer from "./LoreMarkdownRenderer";
 
-const wizData = productionWizardData as { [wizardId: string]: any };
-const soulsData = (
-  parseInt(process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID ?? "1") === 4
-    ? stagingSoulsData
-    : productionSoulsData
-) as { [soulId: string]: any };
-const poniesData = productionPoniesData as { [id: string]: any };
+import Spacer from "../Spacer";
+import LoreMarkdownRenderer, {
+  getCloudfrontedImageSrc,
+} from "./LoreMarkdownRenderer";
+import truncateEthAddress from "truncate-eth-address";
+import { Flex } from "rebass";
 
 export const TextPage = styled.div<{
   alignSelf?: string;
@@ -89,29 +77,55 @@ export function BookOfLorePage({ bg, children }: BookOfLorePageProps) {
 export const CoreCharacterPage = ({
   tokenId,
   tokenAddress,
+  tokenName,
+  tokenImage,
+  tokenBg,
+  currentOwner,
 }: {
   tokenId: string;
   tokenAddress: string;
+  tokenName: string;
+  tokenImage: string;
+  tokenBg?: string;
+  currentOwner?: string;
 }) => {
-  let bg;
-  let imageUrl;
-  if (isWizardsContract(tokenAddress)) {
-    const wizardData: any = wizData[tokenId.toString()];
-    bg = "#" + wizardData.background_color;
-    imageUrl = `https://nftz.forgottenrunes.com/wizards/alt/400-nobg/wizard-${tokenId}.png`;
-  } else if (isSoulsContract(tokenAddress)) {
-    const soulData: any = soulsData[tokenId.toString()];
-    bg = "#" + +soulData?.background_color ?? "000000";
-    imageUrl = `${process.env.NEXT_PUBLIC_SOULS_API}/api/souls/img/${tokenId}.png`;
-  } else if (isPoniesContract(tokenAddress)) {
-    const data: any = poniesData[tokenId.toString()];
-    bg = "#" + +data?.background_color ?? "000000";
-    imageUrl = `${process.env.NEXT_PUBLIC_SOULS_API}/api/shadowfax/img/${tokenId}.png`;
-  }
-
+  const { newSrc, fallbackSrc } = getCloudfrontedImageSrc(tokenImage);
   return (
-    <BookOfLorePage bg={bg as string}>
-      <ResponsivePixelImg src={imageUrl} style={{ maxWidth: "480px" }} />
+    <BookOfLorePage bg={tokenBg ? "#" + tokenBg : "#000000"}>
+      <Flex
+        flexDirection={"column"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <div />
+        <ResponsivePixelImg src={newSrc} style={{ maxWidth: "480px" }} />
+        {currentOwner &&
+        currentOwner.toLowerCase() !==
+          "0x0000000000000000000000000000000000000000" ? (
+          <h4>
+            Owner:{" "}
+            <Link href={`https://opensea.io/${currentOwner}`}>
+              {truncateEthAddress(currentOwner)}
+            </Link>
+          </h4>
+        ) : (
+          <div />
+        )}
+      </Flex>
+    </BookOfLorePage>
+  );
+};
+
+export const NsfwOrStruckLorePage = ({ nsfw }: { nsfw?: boolean }) => {
+  return (
+    <BookOfLorePage bg={"#000000"}>
+      <TextPage alignSelf="center" alignChildren="center">
+        <ReactMarkdown>
+          {nsfw
+            ? `This lore entry has been marked as NSFW and is therefore not shown.`
+            : `This lore entry has been struck and is therefore not shown`}
+        </ReactMarkdown>
+      </TextPage>
     </BookOfLorePage>
   );
 };
@@ -146,8 +160,9 @@ export const EmptyLorePage = ({
   );
 };
 
+export const CLOUDINARY_SERVER = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD}/image/fetch/f_auto/`;
 export const IPFS_HTTP_SERVER = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD
-  ? `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD}/image/fetch/f_auto/${IPFS_SERVER}/`
+  ? `${CLOUDINARY_SERVER}${IPFS_SERVER}/`
   : `${IPFS_SERVER}/`;
 
 export default function IndividualLorePage({

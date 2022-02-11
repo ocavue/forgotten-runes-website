@@ -3,7 +3,11 @@ import { IPFS_SERVER } from "../../constants";
 import ReactMarkdown, { uriTransformer } from "react-markdown";
 import { useState } from "react";
 import * as React from "react";
-import { IPFS_HTTP_SERVER, TextPage } from "./IndividualLorePage";
+import {
+  CLOUDINARY_SERVER,
+  IPFS_HTTP_SERVER,
+  TextPage,
+} from "./IndividualLorePage";
 import Link from "next/link";
 import productionWizardData from "../../data/nfts-prod.json";
 import { getContrast } from "../../lib/colorUtils";
@@ -14,6 +18,26 @@ import {
 } from "../../lib/nftUtilis";
 
 const TOKEN_TAG_REGEX = /\@(wizard|soul|pony)([0-9]+)/gm;
+
+export function getCloudfrontedImageSrc(src?: string) {
+  let fallbackSrc: string;
+  let newSrc: string;
+  if (src?.startsWith("ipfs://")) {
+    newSrc = src.replace(/^ipfs:\/\//, IPFS_HTTP_SERVER);
+    // We fall back to IPFS CDN if we get error (e.g. in case being over limit with Cloudinary)
+    fallbackSrc = src.replace(/^ipfs:\/\//, `${IPFS_SERVER}/`);
+  } else if (src?.startsWith("https://") || src?.startsWith("http://")) {
+    newSrc = `${CLOUDINARY_SERVER}${src}`;
+    fallbackSrc = newSrc;
+  } else if (src?.startsWith("data")) {
+    newSrc = src;
+    fallbackSrc = src;
+  } else {
+    newSrc = uriTransformer(src as string);
+    fallbackSrc = newSrc;
+  }
+  return { fallbackSrc, newSrc };
+}
 
 const LoreMarkdownRenderer = ({
   markdown,
@@ -101,19 +125,7 @@ const LoreMarkdownRenderer = ({
             );
           },
           img: ({ node, src, ...props }) => {
-            let fallbackSrc: string;
-            let newSrc: string;
-            if (src?.startsWith("ipfs://")) {
-              newSrc = src.replace(/^ipfs:\/\//, IPFS_HTTP_SERVER);
-              // We fall back to IPFS CDN if we get error (e.g. in case being over limit with Cloudinary)
-              fallbackSrc = src.replace(/^ipfs:\/\//, `${IPFS_SERVER}/`);
-            } else if (src?.startsWith("data")) {
-              newSrc = src;
-              fallbackSrc = src;
-            } else {
-              newSrc = uriTransformer(src as string);
-              fallbackSrc = newSrc;
-            }
+            let { fallbackSrc, newSrc } = getCloudfrontedImageSrc(src);
 
             const [imgSrc, setImgSrc] = useState<string>(newSrc);
             const onError = () => setImgSrc(fallbackSrc);

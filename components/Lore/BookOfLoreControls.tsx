@@ -8,24 +8,15 @@ import Button from "../ui/Button";
 import { ResponsivePixelImg } from "../ResponsivePixelImg";
 import { LoreNameWrapper } from "./BookSharedComponents";
 
-import productionWizardData from "../../data/nfts-prod.json";
-import productionSoulsData from "../../data/souls-prod.json";
-import stagingSoulsData from "../../data/souls-staging.json";
 import { useEthers } from "@usedapp/core";
 import { ConnectWalletButton } from "../web3/ConnectWalletButton";
 import { CHARACTER_CONTRACTS } from "../../contracts/ForgottenRunesWizardsCultContract";
 import { Flex } from "rebass";
 
-const wizData = productionWizardData as { [wizardId: string]: any };
-const soulsData = (
-  parseInt(process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID ?? "1") === 4
-    ? stagingSoulsData
-    : productionSoulsData
-) as { [soulId: string]: any };
-
 type Props = {
-  loreTokenSlug: "wizards" | "souls";
+  loreTokenSlug: "wizards" | "souls" | "ponies" | "narrative";
   tokenId: number;
+  tokenName: string;
   nextPageRoute: string | null;
   previousPageRoute: string | null;
   leftPageLoreIndex?: number;
@@ -131,22 +122,20 @@ export const SocialItem = styled.div`
 const LoreSocialContainer = ({
   loreTokenSlug,
   tokenId,
+  tokenName,
 }: {
   loreTokenSlug: string;
   tokenId: number;
+  tokenName: string;
 }) => {
   if (loreTokenSlug === "narrative") {
     return null;
   }
 
-  const data: any =
-    loreTokenSlug == "wizards"
-      ? wizData[tokenId.toString()]
-      : soulsData?.[tokenId.toString()] ?? {};
   const url = typeof window !== "undefined" ? window?.location?.href : "";
 
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    `The Lore of ${data?.name ?? "a Soul"} (#${tokenId})`
+    `The Lore of ${tokenName} (#${tokenId})`
   )}&url=${encodeURIComponent(url)}`;
 
   const gmUrl = `/scenes/gm/${tokenId}`;
@@ -193,6 +182,7 @@ const LoreSocialContainer = ({
 export default function BookOfLoreControls({
   loreTokenSlug,
   tokenId,
+  tokenName,
   nextPageRoute,
   previousPageRoute,
   leftPageLoreIndex,
@@ -227,9 +217,6 @@ export default function BookOfLoreControls({
   // const { web3Settings } = useMst();
   // const walletConnected = web3Settings.injectedProvider;
   const { account } = useEthers();
-  console.log(
-    `creator ${rightPageCreator?.toLowerCase()} ${account?.toLowerCase()}`
-  );
 
   const canEditRightPage =
     account &&
@@ -249,13 +236,18 @@ export default function BookOfLoreControls({
             <LoreSocialContainer
               loreTokenSlug={loreTokenSlug}
               tokenId={tokenId}
+              tokenName={tokenName}
             />
           )}
           {account &&
             leftPageLoreIndex &&
             leftPageCreator?.toLowerCase() === account.toLowerCase() && (
               <Link
-                href={`/lore/write?tokenId=${tokenId}&tokenAddress=${CHARACTER_CONTRACTS[loreTokenSlug]}&loreIndex=${leftPageLoreIndex}`}
+                href={`/lore/write?tokenId=${tokenId}&tokenAddress=${
+                  CHARACTER_CONTRACTS[
+                    loreTokenSlug as "wizards" | "souls" | "ponies"
+                  ]
+                }&loreIndex=${leftPageLoreIndex}`}
                 passHref={true}
               >
                 <WriteButton size="medium">Edit Left Page</WriteButton>
@@ -279,12 +271,8 @@ export default function BookOfLoreControls({
             )}
           </PreviousPageContainer>
           <LoreNameWrapper layout layoutId="wizardName">
-            {loreTokenSlug === "wizards"
-              ? `${wizData[tokenId.toString()].name} (#${tokenId})`
-              : loreTokenSlug === "souls"
-              ? `${
-                  soulsData?.[tokenId.toString()]?.name ?? "Soul"
-                }  (#${tokenId})`
+            {loreTokenSlug !== "narrative"
+              ? `${tokenName} (#${tokenId})`
               : "Narrative Page"}
           </LoreNameWrapper>
           <NextPageContainer>
@@ -303,25 +291,28 @@ export default function BookOfLoreControls({
             )}
           </NextPageContainer>
         </PaginationContainer>
-
         <WriteContainer style={{ justifyContent: "flex-end" }}>
-          {!account && <ConnectWalletButton />}
-          {canEditRightPage && (
+          {!account ? <ConnectWalletButton /> : null}
+          {canEditRightPage ? (
             <Link
-              href={`/lore/write?tokenId=${tokenId}&tokenAddress=${CHARACTER_CONTRACTS[loreTokenSlug]}&loreIndex=${rightPageLoreIndex}`}
+              href={`/lore/write?tokenId=${tokenId}&tokenAddress=${
+                CHARACTER_CONTRACTS[
+                  loreTokenSlug as "wizards" | "souls" | "ponies"
+                ]
+              }&loreIndex=${rightPageLoreIndex}`}
               passHref={true}
             >
               <WriteButton size="medium">Edit Right Page</WriteButton>
             </Link>
-          )}
+          ) : null}
           {account && !canEditRightPage && writeNewLoreButton}
         </WriteContainer>
       </BookOfLoreControlsElement>
-      {canEditRightPage && (
+      {canEditRightPage ? (
         <WriteContainer style={{ alignSelf: "center" }}>
           {writeNewLoreButton}
         </WriteContainer>
-      )}
+      ) : null}
     </Flex>
   );
 }

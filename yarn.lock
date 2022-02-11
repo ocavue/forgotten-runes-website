@@ -8613,6 +8613,13 @@ endent@^2.0.1:
     fast-json-parse "^1.0.3"
     objectorarray "^1.0.5"
 
+english-ordinals@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/english-ordinals/-/english-ordinals-2.2.0.tgz#031b65f9d9ddc362c23f7e4a731fee4e463db7f8"
+  integrity sha512-xG7HzUj2KcrkgfvLE6uUfOu9k7mmQ4v0qVjQ5BhxI1p5bx8zjL32aWjr7sppH9fNoTqX0sno3PCasgTebpzPtQ==
+  dependencies:
+    rosaenlg-n2words "2.2.0"
+
 enhanced-resolve@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-4.5.0.tgz#2f3cfd84dbe3b487f18f2db2ef1e064a571ca5ec"
@@ -12290,6 +12297,11 @@ lodash.difference@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.difference/-/lodash.difference-4.5.0.tgz#9ccb4e505d486b91651345772885a2df27fd017c"
   integrity sha1-nMtOUF1Ia5FlE0V3KIWi3yf9AXw=
 
+lodash.escape@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/lodash.escape/-/lodash.escape-4.0.1.tgz#c9044690c21e04294beaa517712fded1fa88de98"
+  integrity sha1-yQRGkMIeBClL6qUXcS/e0fqI3pg=
+
 lodash.flatten@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
@@ -12314,6 +12326,11 @@ lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
+
+lodash.unescape@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
+  integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
 
 lodash.union@^4.6.0:
   version "4.6.0"
@@ -12499,6 +12516,20 @@ markdown-to-jsx@^7.1.3:
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-7.1.3.tgz#f00bae66c0abe7dd2d274123f84cb6bd2a2c7c6a"
   integrity sha512-jtQ6VyT7rMT5tPV0g2EJakEnXLiPksnvlYtwQsVVZ611JsWGN8bQ1tVSDX4s6JllfEH6wmsYxNjTUAMrPmNA8w==
+
+markdown-to-txt@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/markdown-to-txt/-/markdown-to-txt-2.0.0.tgz#7954902555fe46b7aceee02f2fa83619d6519504"
+  integrity sha512-H5DSAY6frUQ6/CR0nJMlGCEuSA3pvi14dYfICJPKLAvd/rDk6eb+cj84zU5XTNYzECyCcujoAL1PHhjmOgeqUw==
+  dependencies:
+    lodash.escape "^4.0.1"
+    lodash.unescape "^4.0.1"
+    marked "^3.0.8"
+
+marked@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-3.0.8.tgz#2785f0dc79cbdc6034be4bb4f0f0a396bd3f8aeb"
+  integrity sha512-0gVrAjo5m0VZSJb4rpL59K1unJAMb/hm8HRXqasD8VeC8m91ytDPMritgFSlKonfdt+rRYYpP/JfLxgIX8yoSw==
 
 material-colors@^1.2.1:
   version "1.2.6"
@@ -14840,10 +14871,10 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
-prettier@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.0.tgz#85bdfe0f70c3e777cf13a4ffff39713ca6f64cba"
-  integrity sha512-DsEPLY1dE5HF3BxCRBmD4uYZ+5DCbvatnolqTqcxEgKVZnL2kUfyu7b8pPQ5+hTBkdhU9SLUmK0/pHb07RE4WQ==
+prettier@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
+  integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
 
 prettier@~2.2.1:
   version "2.2.1"
@@ -16784,6 +16815,11 @@ rlp@^2.0.0, rlp@^2.2.3:
   integrity sha512-HAfAmL6SDYNWPUOJNrM500x4Thn4PZsEy5pijPh40U9WfNk0z15hUYzO9xVIMAdIHdFtD8CBDHd75Td1g36Mjg==
   dependencies:
     bn.js "^4.11.1"
+
+rosaenlg-n2words@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/rosaenlg-n2words/-/rosaenlg-n2words-2.2.0.tgz#22cabf8e1c98c6f9bc2bcbe98144cdd48793c7cb"
+  integrity sha512-pQUq7prdvNFfPSUED/61HGhujIdNxbp7o9IA1Dr6LM2e5NqlWVk4ctjwvioRwOj7BDU74c9Sj7doj4NX70mahA==
 
 rsvp@^4.8.4:
   version "4.8.5"

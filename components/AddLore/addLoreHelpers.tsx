@@ -6,9 +6,9 @@ import {
 import { LoreAPISubmitParams } from "../../pages/lore/add";
 import Bluebird from "bluebird";
 import parseDataUrl from "parse-data-url";
-import client from "../../lib/graphql";
+import subgraphClient from "../../lib/graphql";
 import { gql } from "@apollo/client";
-import { bustLoreCache } from "../Lore/loreSubgraphUtils";
+import { bustLoreCache } from "../Lore/loreFetchingUtils";
 import { NETWORK } from "../../constants";
 import replaceAsync from "string-replace-async";
 import axios from "axios";
@@ -894,7 +894,7 @@ export const getPendingLoreTxHashRedirection = async ({
   tokenId: string;
   waitedOneRound: boolean;
 }) => {
-  const { data } = await client.query({
+  const { data } = await subgraphClient.query({
     query: gql`
         query Lore{
             lores(where: { struck: false, nsfw: false, txHash: "${waitForTxHash}" }) {
