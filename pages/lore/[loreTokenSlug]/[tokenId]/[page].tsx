@@ -17,6 +17,7 @@ import path from "path";
 import flatMap from "lodash/flatMap";
 import LoreSharedLayout from "../../../../components/Lore/LoreSharedLayout";
 import Spacer from "../../../../components/Spacer";
+import { getCloudfrontedImageSrc } from "../../../../components/Lore/LoreMarkdownRenderer";
 
 const LorePage = ({
   loreTokenSlug,
@@ -43,11 +44,14 @@ const LorePage = ({
   if (!ogImage) {
     ogImage = tokenImage;
   }
+
+  const { newSrc: cloudFrontedOgImage } = getCloudfrontedImageSrc(ogImage);
+
   const og = (
     <OgImage
       title={title}
       wizard={tokenId}
-      images={ogImage}
+      images={cloudFrontedOgImage}
       bgColor={
         lorePageData.leftPage?.firstImage
           ? lorePageData.leftPage?.bgColor

@@ -58,15 +58,17 @@ export const BlogPostImgWrap = styled.div`
     transform: scale(1.1);
   }
 `;
+
+// image-rendering: ${(props) =>
+//   props.pixelated === undefined || props.pixelated
+//     ? "pixelated"
+//     : "inherit"};
 export const BlogPostImgWrapInner = styled.div<{
   pixelated?: boolean;
   cover?: boolean;
 }>`
   img {
-    image-rendering: ${(props) =>
-      props.pixelated === undefined || props.pixelated
-        ? "pixelated"
-        : "inherit"};
+    image-rendering: pixelated;
     position: absolute;
     left: 0;
     top: 0;
