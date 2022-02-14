@@ -31,7 +31,6 @@ import "react-toastify/dist/ReactToastify.css";
 import StyledToastContainer from "../../components/StyledToastContainer";
 import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
 import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
-import { NETWORKS } from "../../constants";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,

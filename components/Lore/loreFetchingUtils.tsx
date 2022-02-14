@@ -1,4 +1,4 @@
-import subgraphClient, { client } from "../../lib/graphql";
+import { client } from "../../lib/graphql";
 import { gql } from "@apollo/client";
 import { CHARACTER_CONTRACTS } from "../../contracts/ForgottenRunesWizardsCultContract";
 import { getLoreUrl } from "./loreUtils";

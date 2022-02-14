@@ -220,7 +220,7 @@ export default function BookOfLoreControls({
 
   const canEditRightPage =
     account &&
-    rightPageLoreIndex &&
+    rightPageLoreIndex !== undefined &&
     rightPageCreator?.toLowerCase() === account?.toLowerCase();
   const writeNewLoreButton = (
     <Link href="/lore/write" passHref={true}>
@@ -240,7 +240,7 @@ export default function BookOfLoreControls({
             />
           )}
           {account &&
-            leftPageLoreIndex &&
+            leftPageLoreIndex !== undefined &&
             leftPageCreator?.toLowerCase() === account.toLowerCase() && (
               <Link
                 href={`/lore/write?tokenId=${tokenId}&tokenAddress=${
