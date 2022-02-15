@@ -139,7 +139,7 @@ export async function getLoreInChapterForm(
                     image
                     backgroundColor
                   }
-                  lore(where: {_and: {index: {_is_null: false}}}) {
+                  lore(where: {_and: {index: {_is_null: false}}}, order_by: {index: asc}) {
                     index
                     creator
                     tokenId
