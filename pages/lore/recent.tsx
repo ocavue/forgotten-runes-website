@@ -104,7 +104,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       const result: RecentLoreEntryType = {
         createdAtTimestamp: (await provider.getBlock(entry.createdAtBlock))
           .timestamp,
-        title: `${getOrdinal(entry.page + 1)} entry for ${name}`,
+        title: `${getOrdinal(entry.page)} entry for ${name}`,
         image: entry?.firstImage ?? characterImage,
         pixelateImage: !entry?.firstImage,
         coverImageFit: !!entry?.firstImage,
