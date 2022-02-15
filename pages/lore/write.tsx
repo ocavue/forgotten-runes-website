@@ -93,6 +93,8 @@ const WriteLore = ({}: {}) => {
     if (existingLoreToken) setPickedToken(existingLoreToken);
   }, [existingLoreToken, existingLore, existingLoreBgColor]);
 
+  const fetchingExistingLore = !existingLore && isEditMode;
+
   return (
     <Flex flexDirection={"column"} pb={6} p={4} pr={4}>
       <Flex
@@ -157,9 +159,9 @@ const WriteLore = ({}: {}) => {
           </Flex>
         </>
       )}
-      {!existingLore && isEditMode && <h1>Fetching existing lore entry...</h1>}
+      {fetchingExistingLore && <h1>Fetching existing lore entry...</h1>}
 
-      {pickedToken && (
+      {pickedToken && !fetchingExistingLore ? (
         <>
           <Flex
             flexDirection={"row"}
@@ -296,7 +298,7 @@ const WriteLore = ({}: {}) => {
             </Flex>
           </Flex>
         </>
-      )}
+      ) : null}
       <StyledToastContainer theme="dark" />
     </Flex>
   );
