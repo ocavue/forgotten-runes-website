@@ -6,18 +6,8 @@ import BookCover from "../../components/Lore/BookCover";
 import LoreSharedLayout from "../../components/Lore/LoreSharedLayout";
 import OgImage from "../../components/OgImage";
 import { GetStaticPropsContext } from "next";
-import {
-  bustLoreCache,
-  getWizardsWithLore,
-} from "../../components/Lore/loreFetchingUtils";
-import { useMedia } from "react-use";
 
-const WizardMapLeaflet = dynamic(
-  () => import("../../components/Lore/WizardMapLeaflet"),
-  { ssr: false }
-);
-
-const BookOfLoreIndexPage = ({ wizardsWithLore }: { wizardsWithLore: any }) => {
+const BookOfLoreIndexPage = () => {
   return (
     <Layout title={`The Forgotten Runes Book of Lore`}>
       <OgImage

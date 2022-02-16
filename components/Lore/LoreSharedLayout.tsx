@@ -22,10 +22,14 @@ const LoreSharedLayout = ({ children }: Props) => {
   const { route, pathname } = useRouter();
 
   const isOnRecentRoute = route === "/lore/recent";
+  const isOnImagesRoute = route === "/lore/images";
   const isOnCharactersRoute = route === "/lore/characters";
   const isOnStatsRoute = route === "/lore/stats";
   const isOnBookRoute =
-    !isOnCharactersRoute && !isOnRecentRoute && !isOnStatsRoute;
+    !isOnCharactersRoute &&
+    !isOnRecentRoute &&
+    !isOnStatsRoute &&
+    !isOnImagesRoute;
 
   return (
     <Flex flexDirection={"column"} alignItems={"center"}>
@@ -36,6 +40,10 @@ const LoreSharedLayout = ({ children }: Props) => {
         <Spacer pl={4} />
         <Link href={"/lore/recent"} passHref={true}>
           <StyledLink selected={isOnRecentRoute}>Recent</StyledLink>
+        </Link>
+        <Spacer pl={4} />
+        <Link href={"/lore/images"} passHref={true}>
+          <StyledLink selected={isOnImagesRoute}>Images</StyledLink>
         </Link>
         <Spacer pl={4} />
         <Link href={"/lore/characters"} passHref={true}>
