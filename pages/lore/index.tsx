@@ -1,5 +1,4 @@
 import { css, Global } from "@emotion/react";
-import dynamic from "next/dynamic";
 import React from "react";
 import Layout from "../../components/Layout";
 import BookCover from "../../components/Lore/BookCover";

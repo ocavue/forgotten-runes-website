@@ -8,7 +8,15 @@ import { client } from "../../lib/graphql";
 import { gql } from "@apollo/client";
 import { Box } from "rebass";
 import flatMap from "lodash/flatMap";
-import { getCloudfrontedImageSrc } from "../../components/Lore/LoreMarkdownRenderer";
+import { getCloudinaryFrontedImageSrc } from "../../components/Lore/LoreMarkdownRenderer";
+
+import dynamic from "next/dynamic";
+const ImageWithFallback = dynamic(
+  () => import("../../components/ui/ImageWithFallback"),
+  {
+    ssr: false,
+  }
+);
 
 const LoreImagesPage = ({ loreImages }: { loreImages: any[] }) => {
   return (
@@ -30,13 +38,12 @@ const LoreImagesPage = ({ loreImages }: { loreImages: any[] }) => {
       />
       <LoreSharedLayout>
         <h2>Images from lore entries</h2>
-        <Box px={5} py={4}>
+        <Box px={5} py={4} width={"100%"}>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
               gap: "5px",
-              gridAutoFlow: "dense",
             }}
           >
             {loreImages.map((imgData: any, index) => (
@@ -46,9 +53,10 @@ const LoreImagesPage = ({ loreImages }: { loreImages: any[] }) => {
                   imgData.page - 1
                 }`}
               >
-                <img
-                  style={{ width: "100%", height: "auto" }}
+                <ImageWithFallback
                   src={imgData.src}
+                  fallbackSrc={imgData.fallbackSrc}
+                  style={{ width: "120px", height: "120px" }}
                 />
               </a>
             ))}
@@ -86,9 +94,13 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 
   const loreImages = flatMap(loreImageData.data.loreWithImages, (entry: any) =>
     entry.images.map((imageData: any) => {
-      const { newSrc, fallbackSrc } = getCloudfrontedImageSrc(imageData.href);
+      const { newSrc, fallbackSrc } = getCloudinaryFrontedImageSrc(
+        imageData.href,
+        "ar_1:1,c_fill,w_200"
+      );
       return {
         src: newSrc,
+        fallbackSrc,
         slug: entry.slug,
         tokenId: entry.tokenId,
         page: entry.page,

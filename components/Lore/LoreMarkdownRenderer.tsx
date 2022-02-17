@@ -1,34 +1,40 @@
 import ReactPlayer from "react-player";
 import { IPFS_SERVER } from "../../constants";
 import ReactMarkdown, { uriTransformer } from "react-markdown";
-import { useState } from "react";
 import * as React from "react";
-import {
-  CLOUDINARY_SERVER,
-  IPFS_HTTP_SERVER,
-  TextPage,
-} from "./IndividualLorePage";
+import { CLOUDINARY_SERVER, TextPage } from "./IndividualLorePage";
 import Link from "next/link";
-import productionWizardData from "../../data/nfts-prod.json";
 import { getContrast } from "../../lib/colorUtils";
 import {
   getContractFromTokenSlug,
   getSlugFromTag,
   getTokenName,
 } from "../../lib/nftUtilis";
+import dynamic from "next/dynamic";
+
+const ImageWithFallback = dynamic(() => import("../ui/ImageWithFallback"), {
+  ssr: false,
+});
 
 const TOKEN_TAG_REGEX = /\@(wizard|soul|pony)([0-9]+)/gm;
 
-export function getCloudfrontedImageSrc(src?: string) {
+export function getCloudinaryFrontedImageSrc(src?: string, flags?: string) {
   let fallbackSrc: string;
   let newSrc: string;
+
+  const CLOUDINARY_SERVER_WITH_FLAGS = `${CLOUDINARY_SERVER}${
+    flags ? flags : "f_auto"
+  }/`;
   if (src?.startsWith("ipfs://")) {
-    newSrc = src.replace(/^ipfs:\/\//, IPFS_HTTP_SERVER);
+    newSrc = src.replace(
+      /^ipfs:\/\//,
+      `${CLOUDINARY_SERVER_WITH_FLAGS}${IPFS_SERVER}/`
+    );
     // We fall back to IPFS CDN if we get error (e.g. in case being over limit with Cloudinary)
     fallbackSrc = src.replace(/^ipfs:\/\//, `${IPFS_SERVER}/`);
   } else if (src?.startsWith("https://") || src?.startsWith("http://")) {
-    newSrc = `${CLOUDINARY_SERVER}${src}`;
-    fallbackSrc = newSrc;
+    newSrc = `${CLOUDINARY_SERVER_WITH_FLAGS}${src}`;
+    fallbackSrc = src;
   } else if (src?.startsWith("data")) {
     newSrc = src;
     fallbackSrc = src;
@@ -36,7 +42,7 @@ export function getCloudfrontedImageSrc(src?: string) {
     newSrc = uriTransformer(src as string);
     fallbackSrc = newSrc;
   }
-  return { fallbackSrc, newSrc };
+  return { newSrc, fallbackSrc };
 }
 
 const LoreMarkdownRenderer = ({
@@ -125,16 +131,13 @@ const LoreMarkdownRenderer = ({
             );
           },
           img: ({ node, src, ...props }) => {
-            let { fallbackSrc, newSrc } = getCloudfrontedImageSrc(src);
+            const { newSrc, fallbackSrc } = getCloudinaryFrontedImageSrc(src);
 
-            const [imgSrc, setImgSrc] = useState<string>(newSrc);
-            const onError = () => setImgSrc(fallbackSrc);
             return (
-              <img
-                {...props}
+              <ImageWithFallback
+                src={newSrc}
+                fallbackSrc={fallbackSrc}
                 style={{ maxWidth: "100%", height: "auto" }}
-                src={imgSrc}
-                onError={onError}
               />
             );
           },

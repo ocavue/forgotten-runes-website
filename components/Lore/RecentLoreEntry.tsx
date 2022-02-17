@@ -8,11 +8,12 @@ import {
   StyledAnchor,
   StyledImageAnchor,
 } from "../Blog/BlogEntry";
-import { getCloudfrontedImageSrc } from "./LoreMarkdownRenderer";
+import { getCloudinaryFrontedImageSrc } from "./LoreMarkdownRenderer";
 import Spacer from "../Spacer";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import { Box, Flex } from "rebass";
+import ImageWithFallback from "../ui/ImageWithFallback";
 
 dayjs.extend(LocalizedFormat);
 
@@ -31,7 +32,9 @@ export default function RecentLoreEntry({
 }: {
   entry: RecentLoreEntryType;
 }) {
-  const { newSrc: imageSrc } = getCloudfrontedImageSrc(entry.image);
+  const { newSrc: src, fallbackSrc } = getCloudinaryFrontedImageSrc(
+    entry.image
+  );
 
   return (
     <Flex flexDirection={"column"} justifyContent={"space-between"}>
@@ -43,7 +46,11 @@ export default function RecentLoreEntry({
                 pixelated={entry.pixelateImage}
                 cover={entry.coverImageFit}
               >
-                <img src={imageSrc} alt={entry.title} />
+                <ImageWithFallback
+                  src={src}
+                  fallbackSrc={fallbackSrc}
+                  alt={entry.title}
+                />
               </BlogPostImgWrapInner>
             </BlogPostImgWrap>
           </StyledImageAnchor>

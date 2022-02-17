@@ -11,7 +11,7 @@ import { IPFS_SERVER } from "../../constants";
 
 import Spacer from "../Spacer";
 import LoreMarkdownRenderer, {
-  getCloudfrontedImageSrc,
+  getCloudinaryFrontedImageSrc,
 } from "./LoreMarkdownRenderer";
 import truncateEthAddress from "truncate-eth-address";
 import { Flex } from "rebass";
@@ -89,7 +89,7 @@ export const CoreCharacterPage = ({
   tokenBg?: string;
   currentOwner?: string;
 }) => {
-  const { newSrc, fallbackSrc } = getCloudfrontedImageSrc(tokenImage);
+  const { newSrc, fallbackSrc } = getCloudinaryFrontedImageSrc(tokenImage);
   return (
     <BookOfLorePage bg={tokenBg ? "#" + tokenBg : "#000000"}>
       <Flex
@@ -160,10 +160,7 @@ export const EmptyLorePage = ({
   );
 };
 
-export const CLOUDINARY_SERVER = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD}/image/fetch/f_auto/`;
-export const IPFS_HTTP_SERVER = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD
-  ? `${CLOUDINARY_SERVER}${IPFS_SERVER}/`
-  : `${IPFS_SERVER}/`;
+export const CLOUDINARY_SERVER = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD}/image/fetch/`;
 
 export default function IndividualLorePage({
   bgColor,
