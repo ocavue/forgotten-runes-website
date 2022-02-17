@@ -3,10 +3,11 @@ import { useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import { Post } from "./types";
+import Spacer from "../Spacer";
 
 type Props = { post: Post };
 
-const StyledAnchor = styled.a`
+export const StyledAnchor = styled.a`
   font-size: 1.2em;
   margin-bottom: 0.3em;
   display: inline-block;
@@ -18,12 +19,12 @@ const StyledAnchor = styled.a`
   }
 `;
 
-const Description = styled.div`
+export const Description = styled.div`
   font-size: 14px;
   color: #585858;
 `;
 
-const Category = styled.a`
+export const Category = styled.a`
   text-transform: uppercase;
   font-weight: bold;
   color: #a647ff !important;
@@ -37,16 +38,16 @@ const BlogPostTitle = styled.h2`
   /* min-height: 2.4em; */
   font-size: 1.5rem !important;
 `;
-const BlogEntryElement = styled.div``;
+export const BlogEntryElement = styled.div``;
 
-const StyledImageAnchor = styled.a`
+export const StyledImageAnchor = styled.a`
   display: block;
   position: relative;
   width: 100%;
   padding-top: 57%;
   text-decoration: none;
 `;
-const BlogPostImgWrap = styled.div`
+export const BlogPostImgWrap = styled.div`
   position: absolute;
   left: 0;
   top: 0;
@@ -57,7 +58,16 @@ const BlogPostImgWrap = styled.div`
     transform: scale(1.1);
   }
 `;
-const BlogPostImgWrapInner = styled.div`
+
+// image-rendering: ${(props) =>
+//   props.pixelated === undefined || props.pixelated
+//     ? "pixelated"
+//     : "inherit"};
+export const BlogPostImgWrapInner = styled.div<{
+  pixelated?: boolean;
+  cover?: boolean;
+  backgroundColor?: string;
+}>`
   img {
     image-rendering: pixelated;
     position: absolute;
@@ -67,8 +77,10 @@ const BlogPostImgWrapInner = styled.div`
     bottom: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: ${(props) =>
+      props.cover == undefined || props.cover ? "cover" : "contain"};
     border-radius: 5px;
+    background-color: ${(props) => props.backgroundColor ?? "inherit"};
   }
 `;
 

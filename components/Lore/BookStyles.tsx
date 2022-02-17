@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 
-export const BookElement = styled(motion.div)``;
+export const BookElement = styled(motion.div)`
+  width: 100%;
+  max-width: 1400px;
+`;
 
 export const Carousel = styled(motion.div)`
   box-sizing: border-box;

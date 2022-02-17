@@ -1,14 +1,11 @@
 import { toast } from "react-toastify";
-import {
-  getBookOfLoreContract,
-  isWizardsContract,
-} from "../../contracts/ForgottenRunesWizardsCultContract";
+import { getBookOfLoreContract } from "../../contracts/ForgottenRunesWizardsCultContract";
 import { LoreAPISubmitParams } from "../../pages/lore/add";
 import Bluebird from "bluebird";
 import parseDataUrl from "parse-data-url";
-import client from "../../lib/graphql";
+import { client } from "../../lib/graphql";
 import { gql } from "@apollo/client";
-import { bustLoreCache } from "../Lore/loreSubgraphUtils";
+import { bustLoreCache } from "../Lore/loreFetchingUtils";
 import { NETWORK } from "../../constants";
 import replaceAsync from "string-replace-async";
 import axios from "axios";
@@ -427,7 +424,10 @@ export const useExistingLoreData = () => {
   const editTokenId = router.query?.tokenId;
   const editTokenAddress = router.query?.tokenAddress;
 
-  const isEditMode = editTokenId && editLoreIndex && editTokenAddress;
+  const isEditMode =
+    editTokenId !== undefined &&
+    editLoreIndex !== undefined &&
+    editTokenAddress;
 
   const [existingLoreToken, setExistingLoreToken] =
     useState<TokenConfiguration>();
@@ -896,18 +896,16 @@ export const getPendingLoreTxHashRedirection = async ({
 }) => {
   const { data } = await client.query({
     query: gql`
-        query Lore{
-            lores(where: { struck: false, nsfw: false, txHash: "${waitForTxHash}" }) {
-                id
-                index
-                txHash
-            }
+      query Lore {
+        Lore(where: {txHash: {_eq: "${waitForTxHash}"}}) {
+          txHash
         }
+      }
     `,
     fetchPolicy: "no-cache",
   });
   console.log(data);
-  if (waitedOneRound || data?.lores[0]) {
+  if (waitedOneRound || data?.Lore?.length > 0) {
     await bustLoreCache();
 
     return {

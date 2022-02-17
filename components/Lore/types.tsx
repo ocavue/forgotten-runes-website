@@ -35,6 +35,8 @@ export type IndividualLorePageData = {
   pageNumber?: number;
   loreIndex?: number;
   creator?: string;
+  nsfw?: boolean;
+  struck?: boolean;
 };
 
 export type LorePageData = {

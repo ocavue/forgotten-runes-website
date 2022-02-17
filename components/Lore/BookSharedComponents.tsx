@@ -6,7 +6,7 @@ export const LoreNameWrapper = styled(motion.div)<{ layoutId: string }>`
   background-image: url("/static/lore/book/page_border_header_top.png");
   background-repeat: no-repeat;
   background-size: cover;
-  width: 320px;
+  width: 380px;
   min-width: 320px;
   min-height: 60px;
   padding: 12px 26px 12px 26px;

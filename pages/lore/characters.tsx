@@ -1,12 +1,22 @@
 import { css, Global } from "@emotion/react";
+import dynamic from "next/dynamic";
 import React from "react";
 import Layout from "../../components/Layout";
-import BookCover from "../../components/Lore/BookCover";
-import LoreSharedLayout from "../../components/Lore/LoreSharedLayout";
 import OgImage from "../../components/OgImage";
 import { GetStaticPropsContext } from "next";
+import { getWizardsWithLore } from "../../components/Lore/loreFetchingUtils";
+import LoreSharedLayout from "../../components/Lore/LoreSharedLayout";
 
-const BookOfLoreIndexPage = () => {
+const WizardMapLeaflet = dynamic(
+  () => import("../../components/Lore/WizardMapLeaflet"),
+  { ssr: false }
+);
+
+const CharacterMapLorePage = ({
+  wizardsWithLore,
+}: {
+  wizardsWithLore: any;
+}) => {
   return (
     <Layout title={`The Forgotten Runes Book of Lore`}>
       <OgImage
@@ -25,17 +35,20 @@ const BookOfLoreIndexPage = () => {
         `}
       />
       <LoreSharedLayout>
-        <BookCover />
+        <h2>Characters with Lore</h2>
       </LoreSharedLayout>
+      <WizardMapLeaflet wizardsWithLore={wizardsWithLore} bookOfLore={true} />
     </Layout>
   );
 };
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   return {
-    props: {},
+    props: {
+      wizardsWithLore: await getWizardsWithLore(),
+    },
     revalidate: 5 * 60,
   };
 }
 
-export default BookOfLoreIndexPage;
+export default CharacterMapLorePage;

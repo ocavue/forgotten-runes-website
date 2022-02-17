@@ -2,7 +2,7 @@ import { ApolloClient, from, HttpLink, InMemoryCache } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { onError } from "@apollo/client/link/error";
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   defaultOptions: { query: { errorPolicy: "all" } },
   cache: new InMemoryCache(),
   link: from([
@@ -28,8 +28,6 @@ const client = new ApolloClient({
       }
     }),
     new RetryLink(),
-    new HttpLink({ uri: process.env.SUBGRAPH_ENDPOINT as string }),
+    new HttpLink({ uri: process.env.GRAPHQL_ENDPOINT as string }),
   ]),
 });
-
-export default client;

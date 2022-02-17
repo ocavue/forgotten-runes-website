@@ -1,30 +1,13 @@
-import client from "../../lib/graphql";
+import { client } from "../../lib/graphql";
 import { gql } from "@apollo/client";
-import {
-  CHARACTER_CONTRACTS,
-  isPoniesContract,
-  isSoulsContract,
-  isWizardsContract,
-} from "../../contracts/ForgottenRunesWizardsCultContract";
+import { CHARACTER_CONTRACTS } from "../../contracts/ForgottenRunesWizardsCultContract";
 import { getLoreUrl } from "./loreUtils";
 import path from "path";
 import { IndividualLorePageData } from "./types";
-import { hydratePageDataFromMetadata } from "./markdownUtils";
+import { hydratePageDataFromRawContent } from "./markdownUtils";
 import { promises as fs } from "fs";
 import * as os from "os";
 import { getContractFromTokenSlug } from "../../lib/nftUtilis";
-
-const COMMON_LORE_FIELDS = `
-  id
-  index
-  creator
-  tokenContract
-  loreMetadataURI
-  tokenId
-  struck
-  nsfw
-  createdAtTimestamp
-`;
 
 const LORE_CACHE = path.join(os.tmpdir(), ".lore_cache");
 
@@ -38,8 +21,8 @@ const WIZARDS_THAT_HAVE_LORE_CACHE = path.join(
 );
 
 export async function bustLoreCache() {
-  const files = Object.entries(CHARACTER_CONTRACTS).map(
-    ([tokenSlug, tokenAddress]) => getCacheLocation(tokenAddress)
+  const files = Object.entries(CHARACTER_CONTRACTS).map(([_, tokenAddress]) =>
+    getCacheLocation(tokenAddress)
   );
 
   files.push(WIZARDS_THAT_HAVE_LORE_CACHE);
@@ -59,6 +42,47 @@ export async function bustLoreCache() {
 
 const LORE_CACHE_STALE_AFTER_MINUTES = 5;
 const WIZARDS_THAT_HAVE_LORE_CACHE_STALE_AFTER_MINUTES = 10;
+
+export async function getSingleTokenData(
+  tokenContract: string,
+  tokenId: number
+) {
+  const result = await client.query({
+    query: gql`
+       query Query {
+        Token(where: {tokenContract: {_eq: "${tokenContract}"}, tokenId: {_eq: ${tokenId}}}) {
+          pony {
+            image
+            name
+            backgroundColor
+          }
+          soul {
+            image
+            name
+            backgroundColor
+          }
+          wizard {
+            image
+            name
+            backgroundColor
+          }
+          currentOwner
+        }
+      }`,
+    fetchPolicy: "cache-first",
+  });
+
+  const specificToken =
+    result.data.Token?.[0]?.wizard ??
+    result.data.Token?.[0]?.soul ??
+    result.data.Token?.[0]?.pony;
+  return {
+    name: specificToken.name ?? "Unknown",
+    image: specificToken.image ?? "http://unknown",
+    bg: specificToken.backgroundColor,
+    currentOwner: result.data.Token?.[0]?.currentOwner,
+  };
+}
 
 export async function getLoreInChapterForm(
   tokenContract: string,
@@ -88,47 +112,76 @@ export async function getLoreInChapterForm(
     results = [];
 
     // Not we optimistically fetch N lore pages at a time - this is a temporary hack as it's faster than waiting for results to then do another request etc
-    const serverGraphPagesToFetch = 2;
+    const serverGraphPagesToFetch = 1;
     const graphResults = await Promise.all(
       Array.from({ length: serverGraphPagesToFetch }, (_, i) =>
         client.query({
           query: gql`
               query WizardLore {
-                  loreTokens(skip: ${
-                    i * 999
-                  }, first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${tokenContract}"}) {
-                      tokenContract
-                      tokenId
-                      lore(
-                          where: { struck: false, nsfw: false }
-                          orderBy: id
-                          orderDirection: asc
-                      ) {
-                          ${COMMON_LORE_FIELDS}
-                      }
+                Token(offset: ${
+                  i * 10000
+                }, limit: 10000, order_by: {tokenId: asc}, where: {_and: { tokenContract: {_eq: "${tokenContract}"}, lore: {index: {_is_null: false}}}}) {
+                  tokenContract
+                  tokenId
+                  currentOwner
+                  wizard {
+                    name
+                    image
+                    backgroundColor
                   }
-              }
-          `,
+                  pony {
+                    name
+                    image
+                    backgroundColor
+                  }
+                  soul {
+                    name
+                    image
+                    backgroundColor
+                  }
+                  lore(where: {_and: {index: {_is_null: false}}}, order_by: {index: asc}) {
+                    index
+                    creator
+                    tokenId
+                    struck
+                    nsfw
+                    createdAtBlock
+                    rawContent
+                  }
+                }
+              }`,
           fetchPolicy: "no-cache",
         })
       )
     );
+
     console.log(`Got ${graphResults.length} queries worth of results....`);
 
     for (let i = 0; i < graphResults.length; i++) {
-      const loreTokens = graphResults[i]?.data?.loreTokens ?? [];
+      const loreTokens = graphResults[i]?.data?.Token ?? [];
 
       console.log(`Query ${i} had ${loreTokens.length} lore tokens`);
 
       results.push(
         ...loreTokens.map((loreTokenEntry: any) => {
+          const specificToken =
+            loreTokenEntry.wizard ?? loreTokenEntry.soul ?? loreTokenEntry.pony;
           return {
             tokenId: parseInt(loreTokenEntry.tokenId),
+            tokenData: {
+              name: specificToken?.name ?? "Unknown",
+              image: specificToken?.image ?? "https://unknown",
+              bg: specificToken?.backgroundColor,
+              currentOwner: loreTokenEntry.currentOwner,
+            },
             lore: loreTokenEntry.lore.map((loreEntry: any) => ({
-              loreMetadataURI: loreEntry.loreMetadataURI,
-              createdAtTimestamp: loreEntry.createdAtTimestamp,
+              rawContent: loreEntry.rawContent,
+              createdAtBlock: loreEntry.createdAtBlock,
               creator: loreEntry.creator,
+              currentOwner: loreTokenEntry.currentOwner,
               index: loreEntry.index,
+              nsfw: loreEntry.nsfw,
+              struck: loreEntry.struck,
             })),
           };
         })
@@ -172,12 +225,22 @@ export async function getLeftRightPages(
   let leftPage: IndividualLorePageData;
   let rightPage: IndividualLorePageData;
 
+  let tokenData: {
+    name: string;
+    image: string;
+    bg?: string;
+    currentOwner?: string;
+  };
+
   if (chapterIndexForToken === -1) {
+    tokenData = await getSingleTokenData(tokenContract, tokenId);
     leftPage = {
       isEmpty: true,
       bgColor: `#000000`,
       firstImage: null,
       pageNumber: leftPageNum,
+      nsfw: false,
+      struck: false,
     };
 
     rightPage = {
@@ -185,46 +248,57 @@ export async function getLeftRightPages(
       bgColor: "#000000",
       firstImage: null,
       pageNumber: rightPageNum,
+      nsfw: false,
+      struck: false,
     };
   } else {
-    const lore = loreInChapterForm[chapterIndexForToken]?.lore ?? [];
+    const lore = loreInChapterForm[chapterIndexForToken].lore ?? [];
+    tokenData = loreInChapterForm[chapterIndexForToken].tokenData;
 
     if (leftPageNum >= 0 && leftPageNum < lore.length) {
       const loreElement = lore[leftPageNum];
-      leftPage = await hydratePageDataFromMetadata(
-        loreElement.loreMetadataURI,
-        loreElement.createdAtTimestamp,
+      leftPage = await hydratePageDataFromRawContent(
+        loreElement.rawContent,
+        loreElement.createdAtBlock,
         loreElement.creator,
         tokenId
       );
       leftPage.creator = loreElement.creator;
       leftPage.loreIndex = loreElement.index;
+      leftPage.nsfw = loreElement.nsfw;
+      leftPage.struck = loreElement.struck;
     } else {
       // Would end up showing wizard
       leftPage = {
         isEmpty: true,
         bgColor: `#000000`,
         firstImage: null,
+        nsfw: false,
+        struck: false,
       };
     }
     leftPage.pageNumber = leftPageNum;
 
     if (rightPageNum < lore.length) {
       const loreElement = lore[rightPageNum];
-      rightPage = await hydratePageDataFromMetadata(
-        loreElement.loreMetadataURI,
-        loreElement.createdAtTimestamp,
+      rightPage = await hydratePageDataFromRawContent(
+        loreElement.rawContent,
+        loreElement.createdAtBlock,
         loreElement.creator,
         tokenId
       );
       rightPage.creator = loreElement.creator;
       rightPage.loreIndex = loreElement.index;
+      rightPage.nsfw = loreElement.nsfw;
+      rightPage.struck = loreElement.struck;
     } else {
       // Would end showing add lore
       rightPage = {
         isEmpty: true,
         bgColor: "#000000",
         firstImage: null,
+        nsfw: false,
+        struck: false,
       };
     }
     rightPage.pageNumber = rightPageNum;
@@ -232,7 +306,7 @@ export async function getLeftRightPages(
 
   //------
   // Figure out previous route
-  let previousPageRoute = null;
+  let previousPageRoute;
   if (chapterIndexForToken > 0) {
     if (leftPageNum - 1 >= 0) {
       previousPageRoute = getLoreUrl(
@@ -286,12 +360,44 @@ export async function getLeftRightPages(
     }
   }
 
-  return [leftPage, rightPage, previousPageRoute, nextPageRoute];
+  return [
+    tokenData.name,
+    tokenData.image,
+    tokenData.bg,
+    tokenData.currentOwner,
+    leftPage,
+    rightPage,
+    previousPageRoute,
+    nextPageRoute,
+  ];
 }
 
 export async function getFirstAvailableWizardLoreUrl() {
   // We used to fetch this from subgraph but now we know wizard 0 always has lore so no need :)
   return getLoreUrl("wizards", 0, 0);
+}
+
+export async function fetchWizardsWithLore(): Promise<number[]> {
+  const { data } = await client.query({
+    query: gql`
+        query WizardLore {
+          Token(where: {_and: {tokenContract: {_eq: "${CHARACTER_CONTRACTS.wizards}"}, lore: {index: {_is_null: false}}}}, order_by: {tokenId: asc}) {
+              tokenId
+          }
+        }`,
+  });
+
+  const results = (data?.Token ?? []).reduce(
+    (
+      result: {
+        [key: number]: boolean;
+      },
+      token: any
+    ) => ((result[token.tokenId] = true), result),
+    {}
+  );
+
+  return results;
 }
 
 export async function getWizardsWithLore(): Promise<{
@@ -319,24 +425,7 @@ export async function getWizardsWithLore(): Promise<{
 
   if (!results) {
     try {
-      const { data } = await client.query({
-        query: gql`
-            query WizardLore {
-                loreTokens(first: 999, orderBy: tokenId, orderDirection: asc, where: {tokenContract: "${CHARACTER_CONTRACTS.wizards}"}) {
-                    tokenId
-                }
-            }`,
-      });
-
-      results = (data?.loreTokens ?? []).reduce(
-        (
-          result: {
-            [key: number]: boolean;
-          },
-          token: any
-        ) => ((result[token.tokenId] = true), result),
-        {}
-      );
+      results = await fetchWizardsWithLore();
 
       await fs.writeFile(
         cacheFile,
