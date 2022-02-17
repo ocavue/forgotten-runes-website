@@ -11,7 +11,8 @@ import { LoreNameWrapper } from "./BookSharedComponents";
 import { useEthers } from "@usedapp/core";
 import { ConnectWalletButton } from "../web3/ConnectWalletButton";
 import { CHARACTER_CONTRACTS } from "../../contracts/ForgottenRunesWizardsCultContract";
-import { Flex } from "rebass";
+import { Box, Flex } from "rebass";
+import truncateEthAddress from "truncate-eth-address";
 
 type Props = {
   loreTokenSlug: "wizards" | "souls" | "ponies" | "narrative";
@@ -23,6 +24,7 @@ type Props = {
   rightPageLoreIndex?: number;
   leftPageCreator?: string;
   rightPageCreator?: string;
+  currentOwner?: string;
 };
 
 const BookOfLoreControlsElement = styled.div`
@@ -189,6 +191,7 @@ export default function BookOfLoreControls({
   rightPageLoreIndex,
   leftPageCreator,
   rightPageCreator,
+  currentOwner,
 }: Props) {
   const router = useRouter();
 
@@ -271,9 +274,23 @@ export default function BookOfLoreControls({
             )}
           </PreviousPageContainer>
           <LoreNameWrapper layout layoutId="wizardName">
-            {loreTokenSlug !== "narrative"
-              ? `${tokenName} (#${tokenId})`
-              : "Narrative Page"}
+            <Box>
+              {loreTokenSlug !== "narrative"
+                ? `${tokenName} (#${tokenId})`
+                : "Narrative Page"}
+            </Box>
+            <Box pt={2}>
+              {currentOwner &&
+              currentOwner.toLowerCase() !==
+                "0x0000000000000000000000000000000000000000" ? (
+                <span>
+                  Owner:{" "}
+                  <Link href={`https://opensea.io/${currentOwner}`}>
+                    {truncateEthAddress(currentOwner)}
+                  </Link>
+                </span>
+              ) : null}
+            </Box>
           </LoreNameWrapper>
           <NextPageContainer>
             {nextPageRoute ? (

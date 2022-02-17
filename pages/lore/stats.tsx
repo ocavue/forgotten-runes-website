@@ -4,17 +4,11 @@ import React from "react";
 import Layout from "../../components/Layout";
 import OgImage from "../../components/OgImage";
 import { GetStaticPropsContext } from "next";
-import { getWizardsWithLore } from "../../components/Lore/loreFetchingUtils";
 import LoreSharedLayout from "../../components/Lore/LoreSharedLayout";
 import Spacer from "../../components/Spacer";
 import { gql } from "@apollo/client";
 import { client } from "../../lib/graphql";
 import { BOOK_OF_LORE_ADDRESS } from "../../contracts/ForgottenRunesWizardsCultContract";
-
-const WizardMapLeaflet = dynamic(
-  () => import("../../components/Lore/WizardMapLeaflet"),
-  { ssr: false }
-);
 
 const CharacterMapLorePage = ({ loreCount }: { loreCount: number }) => {
   return (

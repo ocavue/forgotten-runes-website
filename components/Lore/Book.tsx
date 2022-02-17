@@ -42,6 +42,7 @@ const Book = ({
       loreTokenSlug={loreTokenSlug}
       tokenId={tokenId}
       tokenName={tokenName}
+      currentOwner={currentOwner}
       previousPageRoute={lorePageData.previousPageRoute}
       nextPageRoute={lorePageData.nextPageRoute}
       leftPageLoreIndex={lorePageData.leftPage?.loreIndex}

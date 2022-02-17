@@ -22,6 +22,7 @@ export type RecentLoreEntryType = {
   image: string;
   pixelateImage: boolean;
   coverImageFit: boolean;
+  backgroundColor: string;
   title: string;
   story: string;
   url: string;
@@ -45,6 +46,7 @@ export default function RecentLoreEntry({
               <BlogPostImgWrapInner
                 pixelated={entry.pixelateImage}
                 cover={entry.coverImageFit}
+                backgroundColor={entry.backgroundColor}
               >
                 <ImageWithFallback
                   src={src}
@@ -59,14 +61,16 @@ export default function RecentLoreEntry({
         <Link href={entry.url} passHref={true}>
           <Category>{entry.title}</Category>
         </Link>
-
+        <Spacer pt={2} />
         <Link href={entry.url} passHref={true}>
           <StyledAnchor title={entry.title}>
-            {entry.story && <Description>{entry.story}</Description>}
+            <Description>
+              {dayjs.unix(entry.createdAtTimestamp).format("MMM D, YYYY")}{" "}
+              {entry.story ? `• ${entry.story}` : null}
+            </Description>
           </StyledAnchor>
         </Link>
       </Box>
-      <h4>{dayjs.unix(entry.createdAtTimestamp).format("L")}</h4>
     </Flex>
   );
 }

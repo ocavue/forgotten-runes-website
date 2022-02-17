@@ -99,18 +99,19 @@ export const CoreCharacterPage = ({
       >
         <div />
         <ResponsivePixelImg src={newSrc} style={{ maxWidth: "480px" }} />
-        {currentOwner &&
-        currentOwner.toLowerCase() !==
-          "0x0000000000000000000000000000000000000000" ? (
-          <h4>
-            Owner:{" "}
-            <Link href={`https://opensea.io/${currentOwner}`}>
-              {truncateEthAddress(currentOwner)}
-            </Link>
-          </h4>
-        ) : (
-          <div />
-        )}
+        <div />
+        {/*{currentOwner &&*/}
+        {/*currentOwner.toLowerCase() !==*/}
+        {/*  "0x0000000000000000000000000000000000000000" ? (*/}
+        {/*  <h4>*/}
+        {/*    Owner:{" "}*/}
+        {/*    <Link href={`https://opensea.io/${currentOwner}`}>*/}
+        {/*      {truncateEthAddress(currentOwner)}*/}
+        {/*    </Link>*/}
+        {/*  </h4>*/}
+        {/*) : (*/}
+        {/*  <div />*/}
+        {/*)}*/}
       </Flex>
     </BookOfLorePage>
   );

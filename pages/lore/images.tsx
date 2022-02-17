@@ -37,7 +37,6 @@ const LoreImagesPage = ({ loreImages }: { loreImages: any[] }) => {
         `}
       />
       <LoreSharedLayout>
-        <h2>Images from lore entries</h2>
         <Box px={5} py={4} width={"100%"}>
           <div
             style={{
@@ -56,7 +55,10 @@ const LoreImagesPage = ({ loreImages }: { loreImages: any[] }) => {
                 <ImageWithFallback
                   src={imgData.src}
                   fallbackSrc={imgData.fallbackSrc}
-                  style={{ width: "120px", height: "120px" }}
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                  }}
                 />
               </a>
             ))}

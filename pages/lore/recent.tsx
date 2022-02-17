@@ -39,7 +39,6 @@ const RecentLorePage = ({
         `}
       />
       <LoreSharedLayout>
-        <h2>Recent Lore</h2>
         <Flex p={4}>
           <BlogPostGrid>
             {recentLore.map((entry, index) => (
@@ -71,14 +70,17 @@ export async function getStaticProps(context: GetStaticPropsContext) {
             wizard {
               image
               name
+              backgroundColor
             }
             soul {
               image
               name
+              backgroundColor
             }
             pony {
               image
               name
+              backgroundColor
             }
             tokenId
           }
@@ -108,6 +110,9 @@ export async function getStaticProps(context: GetStaticPropsContext) {
         image: entry?.firstImage ?? characterImage,
         pixelateImage: !entry?.firstImage,
         coverImageFit: !!entry?.firstImage,
+        backgroundColor: token?.backgroundColor
+          ? `#${token?.backgroundColor}`
+          : "black",
         story: `${markdownToTxt(entry?.markdownText ?? "Image only lore")
           .padEnd(256)
           .substring(0, 256)

@@ -66,6 +66,7 @@ export const BlogPostImgWrap = styled.div`
 export const BlogPostImgWrapInner = styled.div<{
   pixelated?: boolean;
   cover?: boolean;
+  backgroundColor?: string;
 }>`
   img {
     image-rendering: pixelated;
@@ -79,6 +80,7 @@ export const BlogPostImgWrapInner = styled.div<{
     object-fit: ${(props) =>
       props.cover == undefined || props.cover ? "cover" : "contain"};
     border-radius: 5px;
+    background-color: ${(props) => props.backgroundColor ?? "inherit"};
   }
 `;
 

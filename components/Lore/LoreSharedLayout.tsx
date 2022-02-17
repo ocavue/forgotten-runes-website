@@ -49,10 +49,10 @@ const LoreSharedLayout = ({ children }: Props) => {
         <Link href={"/lore/characters"} passHref={true}>
           <StyledLink selected={isOnCharactersRoute}>Characters</StyledLink>
         </Link>
-        <Spacer pl={4} />
-        <Link href={"/lore/stats"} passHref={true}>
-          <StyledLink selected={isOnStatsRoute}>Stats</StyledLink>
-        </Link>
+        {/*<Spacer pl={4} />*/}
+        {/*<Link href={"/lore/stats"} passHref={true}>*/}
+        {/*  <StyledLink selected={isOnStatsRoute}>Stats</StyledLink>*/}
+        {/*</Link>*/}
       </Flex>
       {children}
     </Flex>
