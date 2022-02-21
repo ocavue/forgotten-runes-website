@@ -7,27 +7,17 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: from([
     onError(({ graphQLErrors, networkError, operation, forward }) => {
-      if (graphQLErrors) {
-        for (let err of graphQLErrors) {
-          console.warn(`Checking if to retry GraphQL error: ${err.message}`);
-
-          if (
-            err.message ===
-            "panic processing query: Once instance has previously been poisoned"
-          ) {
-            console.info("Retrying panic error...");
-            return forward(operation);
-          }
-        }
-      }
-
       // To retry on network errors, we depend on the RetryLink
       // instead of the onError link. This just logs the error.
       if (networkError) {
         console.log(`[Network error]: ${networkError}`);
       }
+
+      if (graphQLErrors) {
+        console.warn(graphQLErrors);
+      }
     }),
-    new RetryLink(),
+    new RetryLink({ delay: { initial: 120, max: 200, jitter: true } }),
     new HttpLink({ uri: process.env.GRAPHQL_ENDPOINT as string }),
   ]),
 });

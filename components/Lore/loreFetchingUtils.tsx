@@ -46,7 +46,7 @@ const WIZARDS_THAT_HAVE_LORE_CACHE_STALE_AFTER_MINUTES = 10;
 export async function getSingleTokenData(
   tokenContract: string,
   tokenId: number
-) {
+): Promise<TokenData> {
   const result = await client.query({
     query: gql`
        query Query {
@@ -208,32 +208,200 @@ export async function getIndexForToken(
   return paginatedLore.findIndex((element) => element.tokenId === tokenId);
 }
 
-export async function getLeftRightPages(
+export function getLoreAsEvenPage(pageNum: number) {
+  // Often used as we key nextjs pages by right page since we show two at a time
+  // i.e. /wizards/123/1 redirects to /wizards/123/2
+  return pageNum % 2 === 0 ? pageNum : pageNum + 1;
+}
+
+const PAGINATED_LORE_FIELDS = `
+          slug
+          tokenId
+          page
+          globalpage
+          rawContent
+          creator
+          createdAtBlock
+          nsfw
+          struck
+          index
+          token {
+            tokenContract
+            tokenId
+            currentOwner
+            wizard {
+              name
+              image
+              backgroundColor
+            }
+            pony {
+              name
+              image
+              backgroundColor
+            }
+            soul {
+              name
+              image
+              backgroundColor
+            }
+          }
+`;
+
+export async function getPreviousAndNextPageRoutes(
+  globalPageForPrevious: number,
+  globalPageForNext: number,
+  loreTokenSlug: string
+) {
+  let previousPageRoute;
+  let nextPageRoute;
+
+  const { data } = await client.query({
+    query: gql`
+        query Query {
+            previousPage: PaginatedLore(where: { globalpage: { _eq: ${
+              globalPageForPrevious - 1
+            } } }) {
+                page
+                globalpage
+                slug
+                tokenId
+            }
+            nextPage: PaginatedLore(where: { globalpage: { _eq: ${
+              globalPageForNext + 1
+            } } }) {
+                page
+                globalpage
+                slug
+                tokenId
+            }
+        }
+    `,
+  });
+
+  const previousPageData = data.previousPage?.[0];
+  const nextPageData = data.nextPage?.[0];
+
+  if (previousPageData) {
+    previousPageRoute = getLoreUrl(
+      previousPageData.slug,
+      previousPageData.tokenId,
+      getLoreAsEvenPage(previousPageData.page - 1)
+    );
+  } else {
+    // TODO: obvs have to get clever with how to do going back from first soul to last wizard
+    previousPageRoute = getLoreUrl("narrative", 0, 0);
+  }
+
+  if (nextPageData) {
+    nextPageRoute = getLoreUrl(
+      nextPageData.slug,
+      nextPageData.tokenId,
+      getLoreAsEvenPage(nextPageData.page - 1)
+    );
+  } else {
+    if (loreTokenSlug === "wizards") {
+      const { data } = await client.query({
+        query: gql`
+          query Query {
+            souls: PaginatedLore(
+              limit: 1
+              order_by: { globalpage: asc }
+              where: { slug: { _eq: "souls" } }
+            ) {
+              tokenId
+              page
+              globalpage
+            }
+          }
+        `,
+        fetchPolicy: "no-cache",
+      });
+
+      if (data.souls.length > 0) {
+        nextPageRoute = getLoreUrl("souls", data.souls?.[0].tokenId, 0);
+      }
+    } else if (loreTokenSlug === "souls") {
+      const { data } = await client.query({
+        query: gql`
+          query Query {
+            ponies: PaginatedLore(
+              limit: 1
+              order_by: { globalpage: asc }
+              where: { slug: { _eq: "ponies" } }
+            ) {
+              tokenId
+              page
+              globalpage
+            }
+          }
+        `,
+        fetchPolicy: "no-cache",
+      });
+
+      if (data.ponies.length > 0) {
+        nextPageRoute = getLoreUrl("ponies", data.ponies?.[0].tokenId, 0);
+      }
+    }
+  }
+  return { previousPageRoute, nextPageRoute };
+}
+
+export async function getLeftRightPagesV2(
   loreTokenSlug: string,
   tokenId: number,
   leftPageNum: number,
   rightPageNum: number
 ) {
-  const tokenContract = getContractFromTokenSlug(loreTokenSlug);
-  const loreInChapterForm = await getLoreInChapterForm(tokenContract);
+  const { data } = await client.query({
+    query: gql`
+      query Query {
+        leftPage: PaginatedLore(
+          order_by: { globalpage: asc }
+          where: { slug: {_eq: ${loreTokenSlug}}, tokenId: { _eq: ${tokenId} }, page: { _eq: ${
+      leftPageNum + 1
+    } } }
+        ) {
+            ${PAGINATED_LORE_FIELDS}
+        }
+        rightPage: PaginatedLore(
+          order_by: { globalpage: asc }
+          where: { slug: {_eq: ${loreTokenSlug}}, tokenId: { _eq: ${tokenId} }, page: { _eq: ${
+      rightPageNum + 1
+    } } }
+        ) {
+            ${PAGINATED_LORE_FIELDS}
+        }
+      }
+    `,
+  });
 
-  const chapterIndexForToken = await getIndexForToken(
-    tokenId,
-    loreInChapterForm
+  const leftPageData = data.leftPage?.[0];
+  const rightPageData = data.rightPage?.[0];
+
+  const tokenContract = getContractFromTokenSlug(loreTokenSlug);
+
+  const tokenData = await extractTokenData(
+    leftPageData,
+    rightPageData,
+    tokenContract,
+    tokenId
   );
 
   let leftPage: IndividualLorePageData;
   let rightPage: IndividualLorePageData;
 
-  let tokenData: {
-    name: string;
-    image: string;
-    bg?: string;
-    currentOwner?: string;
-  };
-
-  if (chapterIndexForToken === -1) {
-    tokenData = await getSingleTokenData(tokenContract, tokenId);
+  if (leftPageData) {
+    leftPage = await hydratePageDataFromRawContent(
+      leftPageData.rawContent,
+      leftPageData.createdAtBlock,
+      leftPageData.creator,
+      tokenId
+    );
+    leftPage.creator = leftPageData.creator;
+    leftPage.loreIndex = leftPageData.index;
+    leftPage.nsfw = leftPageData.nsfw;
+    leftPage.struck = leftPageData.struck;
+  } else {
     leftPage = {
       isEmpty: true,
       bgColor: `#000000`,
@@ -242,7 +410,20 @@ export async function getLeftRightPages(
       nsfw: false,
       struck: false,
     };
+  }
 
+  if (rightPageData) {
+    rightPage = await hydratePageDataFromRawContent(
+      rightPageData.rawContent,
+      rightPageData.createdAtBlock,
+      rightPageData.creator,
+      tokenId
+    );
+    rightPage.creator = rightPageData.creator;
+    rightPage.loreIndex = rightPageData.index;
+    rightPage.nsfw = rightPageData.nsfw;
+    rightPage.struck = rightPageData.struck;
+  } else {
     rightPage = {
       isEmpty: true,
       bgColor: "#000000",
@@ -251,113 +432,31 @@ export async function getLeftRightPages(
       nsfw: false,
       struck: false,
     };
-  } else {
-    const lore = loreInChapterForm[chapterIndexForToken].lore ?? [];
-    tokenData = loreInChapterForm[chapterIndexForToken].tokenData;
-
-    if (leftPageNum >= 0 && leftPageNum < lore.length) {
-      const loreElement = lore[leftPageNum];
-      leftPage = await hydratePageDataFromRawContent(
-        loreElement.rawContent,
-        loreElement.createdAtBlock,
-        loreElement.creator,
-        tokenId
-      );
-      leftPage.creator = loreElement.creator;
-      leftPage.loreIndex = loreElement.index;
-      leftPage.nsfw = loreElement.nsfw;
-      leftPage.struck = loreElement.struck;
-    } else {
-      // Would end up showing wizard
-      leftPage = {
-        isEmpty: true,
-        bgColor: `#000000`,
-        firstImage: null,
-        nsfw: false,
-        struck: false,
-      };
-    }
-    leftPage.pageNumber = leftPageNum;
-
-    if (rightPageNum < lore.length) {
-      const loreElement = lore[rightPageNum];
-      rightPage = await hydratePageDataFromRawContent(
-        loreElement.rawContent,
-        loreElement.createdAtBlock,
-        loreElement.creator,
-        tokenId
-      );
-      rightPage.creator = loreElement.creator;
-      rightPage.loreIndex = loreElement.index;
-      rightPage.nsfw = loreElement.nsfw;
-      rightPage.struck = loreElement.struck;
-    } else {
-      // Would end showing add lore
-      rightPage = {
-        isEmpty: true,
-        bgColor: "#000000",
-        firstImage: null,
-        nsfw: false,
-        struck: false,
-      };
-    }
-    rightPage.pageNumber = rightPageNum;
   }
+
+  leftPage.pageNumber = leftPageNum;
+  rightPage.pageNumber = rightPageNum;
 
   //------
   // Figure out previous route
-  let previousPageRoute;
-  if (chapterIndexForToken > 0) {
-    if (leftPageNum - 1 >= 0) {
-      previousPageRoute = getLoreUrl(
-        loreTokenSlug,
-        loreInChapterForm[chapterIndexForToken].tokenId,
-        leftPageNum - 1
-      );
-    } else {
-      previousPageRoute = getLoreUrl(
-        loreTokenSlug,
-        loreInChapterForm[chapterIndexForToken - 1].tokenId,
-        (loreInChapterForm[chapterIndexForToken - 1]?.lore ?? []).length - 1
-      );
-    }
-  } else {
-    // No previous pages implies this is first wizard in the book, so before it comes lore
-    // TODO: obvs have to get clever with how to do going back from first soul to last wizard
-    previousPageRoute = getLoreUrl("narrative", 0, 0);
-  }
-
-  // Figure out next route
+  let previousPageRoute = null;
   let nextPageRoute = null;
-  if (
-    rightPageNum <
-    (loreInChapterForm[chapterIndexForToken]?.lore ?? []).length - 1
-  ) {
-    nextPageRoute = getLoreUrl(loreTokenSlug, tokenId, rightPageNum + 2);
-  } else {
-    if (chapterIndexForToken + 1 < loreInChapterForm.length) {
-      nextPageRoute = getLoreUrl(
-        loreTokenSlug,
-        loreInChapterForm[chapterIndexForToken + 1].tokenId,
-        0
-      );
-    } else if (loreTokenSlug === "wizards") {
-      const soulsChapters = await getLoreInChapterForm(
-        CHARACTER_CONTRACTS.souls
-      );
+  if (leftPageData ?? rightPageData) {
+    // use leftmost page for previous
+    const globalPageForPrevious =
+      leftPageData?.globalpage ?? rightPageData?.globalpage;
 
-      if (soulsChapters.length > 0) {
-        nextPageRoute = getLoreUrl("souls", soulsChapters[0].tokenId, 0);
-      }
-    } else if (loreTokenSlug === "souls") {
-      const poniesChapters = await getLoreInChapterForm(
-        CHARACTER_CONTRACTS.ponies
-      );
+    // use rightmost page for next
+    const globalPageForNext =
+      rightPageData?.globalpage ?? leftPageData?.globalpage;
+    const result = await getPreviousAndNextPageRoutes(
+      globalPageForPrevious,
+      globalPageForNext,
+      loreTokenSlug
+    );
 
-      if (poniesChapters.length > 0) {
-        nextPageRoute = getLoreUrl("ponies", poniesChapters[0].tokenId, 0);
-      }
-    }
+    previousPageRoute = result;
+    nextPageRoute = result;
   }
 
   return [
@@ -371,6 +470,198 @@ export async function getLeftRightPages(
     nextPageRoute,
   ];
 }
+
+type TokenData = {
+  name: string;
+  image: string;
+  bg?: string;
+  currentOwner?: string;
+};
+
+async function extractTokenData(
+  leftPageData: any,
+  rightPageData: any,
+  tokenContract: string,
+  tokenId: number
+): Promise<TokenData> {
+  if (leftPageData || rightPageData) {
+    const pageData = leftPageData ?? rightPageData;
+    const specificToken =
+      pageData.token.wizard ?? pageData.token.soul ?? pageData.token.pony;
+    return {
+      name: specificToken?.name ?? "Unknown",
+      image: specificToken?.image ?? "https://unknown",
+      bg: specificToken?.backgroundColor,
+      currentOwner: pageData.currentOwner,
+    };
+  } else {
+    return getSingleTokenData(tokenContract, tokenId);
+  }
+}
+
+// export async function getLeftRightPages(
+//   loreTokenSlug: string,
+//   tokenId: number,
+//   leftPageNum: number,
+//   rightPageNum: number
+// ) {
+//   const tokenContract = getContractFromTokenSlug(loreTokenSlug);
+//   const loreInChapterForm = await getLoreInChapterForm(tokenContract);
+//
+//   const chapterIndexForToken = await getIndexForToken(
+//     tokenId,
+//     loreInChapterForm
+//   );
+//
+//   let leftPage: IndividualLorePageData;
+//   let rightPage: IndividualLorePageData;
+//
+//   let tokenData: {
+//     name: string;
+//     image: string;
+//     bg?: string;
+//     currentOwner?: string;
+//   };
+//
+//   if (chapterIndexForToken === -1) {
+//     tokenData = await getSingleTokenData(tokenContract, tokenId);
+//     leftPage = {
+//       isEmpty: true,
+//       bgColor: `#000000`,
+//       firstImage: null,
+//       pageNumber: leftPageNum,
+//       nsfw: false,
+//       struck: false,
+//     };
+//
+//     rightPage = {
+//       isEmpty: true,
+//       bgColor: "#000000",
+//       firstImage: null,
+//       pageNumber: rightPageNum,
+//       nsfw: false,
+//       struck: false,
+//     };
+//   } else {
+//     const lore = loreInChapterForm[chapterIndexForToken].lore ?? [];
+//     tokenData = loreInChapterForm[chapterIndexForToken].tokenData;
+//
+//     if (leftPageNum >= 0 && leftPageNum < lore.length) {
+//       const loreElement = lore[leftPageNum];
+//       leftPage = await hydratePageDataFromRawContent(
+//         loreElement.rawContent,
+//         loreElement.createdAtBlock,
+//         loreElement.creator,
+//         tokenId
+//       );
+//       leftPage.creator = loreElement.creator;
+//       leftPage.loreIndex = loreElement.index;
+//       leftPage.nsfw = loreElement.nsfw;
+//       leftPage.struck = loreElement.struck;
+//     } else {
+//       // Would end up showing wizard
+//       leftPage = {
+//         isEmpty: true,
+//         bgColor: `#000000`,
+//         firstImage: null,
+//         nsfw: false,
+//         struck: false,
+//       };
+//     }
+//     leftPage.pageNumber = leftPageNum;
+//
+//     if (rightPageNum < lore.length) {
+//       const loreElement = lore[rightPageNum];
+//       rightPage = await hydratePageDataFromRawContent(
+//         loreElement.rawContent,
+//         loreElement.createdAtBlock,
+//         loreElement.creator,
+//         tokenId
+//       );
+//       rightPage.creator = loreElement.creator;
+//       rightPage.loreIndex = loreElement.index;
+//       rightPage.nsfw = loreElement.nsfw;
+//       rightPage.struck = loreElement.struck;
+//     } else {
+//       // Would end showing add lore
+//       rightPage = {
+//         isEmpty: true,
+//         bgColor: "#000000",
+//         firstImage: null,
+//         nsfw: false,
+//         struck: false,
+//       };
+//     }
+//     rightPage.pageNumber = rightPageNum;
+//   }
+//
+//   //------
+//   // Figure out previous route
+//   let previousPageRoute;
+//   if (chapterIndexForToken > 0) {
+//     if (leftPageNum - 1 >= 0) {
+//       previousPageRoute = getLoreUrl(
+//         loreTokenSlug,
+//         loreInChapterForm[chapterIndexForToken].tokenId,
+//         leftPageNum - 1
+//       );
+//     } else {
+//       previousPageRoute = getLoreUrl(
+//         loreTokenSlug,
+//         loreInChapterForm[chapterIndexForToken - 1].tokenId,
+//         (loreInChapterForm[chapterIndexForToken - 1]?.lore ?? []).length - 1
+//       );
+//     }
+//   } else {
+//     // No previous pages implies this is first wizard in the book, so before it comes lore
+//     // TODO: obvs have to get clever with how to do going back from first soul to last wizard
+//     previousPageRoute = getLoreUrl("narrative", 0, 0);
+//   }
+//
+//   // Figure out next route
+//   let nextPageRoute = null;
+//   if (
+//     rightPageNum <
+//     (loreInChapterForm[chapterIndexForToken]?.lore ?? []).length - 1
+//   ) {
+//     nextPageRoute = getLoreUrl(loreTokenSlug, tokenId, rightPageNum + 2);
+//   } else {
+//     if (chapterIndexForToken + 1 < loreInChapterForm.length) {
+//       nextPageRoute = getLoreUrl(
+//         loreTokenSlug,
+//         loreInChapterForm[chapterIndexForToken + 1].tokenId,
+//         0
+//       );
+//     } else if (loreTokenSlug === "wizards") {
+//       const soulsChapters = await getLoreInChapterForm(
+//         CHARACTER_CONTRACTS.souls
+//       );
+//
+//       if (soulsChapters.length > 0) {
+//         nextPageRoute = getLoreUrl("souls", soulsChapters[0].tokenId, 0);
+//       }
+//     } else if (loreTokenSlug === "souls") {
+//       const poniesChapters = await getLoreInChapterForm(
+//         CHARACTER_CONTRACTS.ponies
+//       );
+//
+//       if (poniesChapters.length > 0) {
+//         nextPageRoute = getLoreUrl("ponies", poniesChapters[0].tokenId, 0);
+//       }
+//     }
+//   }
+//
+//   return [
+//     tokenData.name,
+//     tokenData.image,
+//     tokenData.bg,
+//     tokenData.currentOwner,
+//     leftPage,
+//     rightPage,
+//     previousPageRoute,
+//     nextPageRoute,
+//   ];
+// }
 
 export async function getFirstAvailableWizardLoreUrl() {
   // We used to fetch this from subgraph but now we know wizard 0 always has lore so no need :)
