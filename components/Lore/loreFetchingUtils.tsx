@@ -455,8 +455,8 @@ export async function getLeftRightPagesV2(
       loreTokenSlug
     );
 
-    previousPageRoute = result;
-    nextPageRoute = result;
+    previousPageRoute = result.previousPageRoute;
+    nextPageRoute = result.nextPageRoute;
   }
 
   return [
