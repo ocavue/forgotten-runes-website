@@ -4,8 +4,11 @@ import { getWeb3Controller, Web3Controller } from "../home/Web3Controller";
 
 const BREAKPOINT = 768;
 
+const NORMAL = false;
+const ORIGINAL = false;
 const NIGHT = false;
-const WINTER = true;
+const WINTER = false;
+const SIMPLIFIED = true;
 
 export class BootScene extends Phaser.Scene {
   gameScene: any;
@@ -82,7 +85,7 @@ export class BootScene extends Phaser.Scene {
         "sky/castle_Souls_skyBG_dark_layer_1_1.png"
       );
       this.load.image("pinkBG", "sky/castle_Souls_skyBG_dark_sky_1.png");
-    } else {
+    } else if (ORIGINAL) {
       this.load.path = "/static/game/wizards/";
       this.load.image("pinkBG", "pinkBG.png");
       this.load.image("cloudsPinkBack", "cloudsPinkBack.png");
@@ -91,6 +94,8 @@ export class BootScene extends Phaser.Scene {
       this.load.image("moon", "moon.png");
       this.load.image("stars", "stars.png");
       this.load.image("darkGradientStrip", "darkGradientStrip.png");
+    } else if (SIMPLIFIED) {
+      this.load.path = "/static/game/wizards/";
     }
     this.load.addFile(new WebFontFile(this.load, ["Press Start 2P"]));
   }
@@ -118,15 +123,17 @@ export class BootScene extends Phaser.Scene {
     // but the bg stage is also centered
 
     // https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.TileSprite.html
-    const pinkBG = this.add.tileSprite(
-      0,
-      0,
-      tileBgWidth,
-      this.cameras.main.height,
-      "pinkBG"
-    );
-    pinkBG.setOrigin(0, 0);
-    this.landscape.add(pinkBG);
+    if (!SIMPLIFIED) {
+      const pinkBG = this.add.tileSprite(
+        0,
+        0,
+        tileBgWidth,
+        this.cameras.main.height,
+        "pinkBG"
+      );
+      pinkBG.setOrigin(0, 0);
+      this.landscape.add(pinkBG);
+    }
 
     const addToLandscape = ({ name }: { name: string }) => {
       const layer = this.add.tileSprite(
@@ -191,7 +198,7 @@ export class BootScene extends Phaser.Scene {
       // );
       // blackBG.setOrigin(0, 0);
       // this.landscape.add(blackBG);
-    } else {
+    } else if (ORIGINAL) {
       const cloudsPinkBack = this.add.tileSprite(
         0,
         0,
@@ -346,21 +353,23 @@ export class BootScene extends Phaser.Scene {
       camera.scrollY = -height / 4; // TODO this isn't quite right
     }
 
-    const textureManager = this.scene.systems.textures;
-    const pinkBGFrame = textureManager.getFrame("pinkBG");
-    const gameCenter = width / 2;
-    const pinkBGFrameWidthScaled = pinkBGFrame.width;
+    if (!SIMPLIFIED) {
+      const textureManager = this.scene.systems.textures;
+      const pinkBGFrame = textureManager.getFrame("pinkBG");
+      const gameCenter = width / 2;
+      const pinkBGFrameWidthScaled = pinkBGFrame.width;
 
-    const tilePosX = (centerX - pinkBGFrameWidthScaled / 2) * -1;
-    const tilePosY = 0;
+      const tilePosX = (centerX - pinkBGFrameWidthScaled / 2) * -1;
+      const tilePosY = 0;
 
-    this.landscape.each((tile: any) => {
-      // the center of the pinkBGFrame needs to be the center of the screen
-      tile.width = width;
-      tile.height = pinkBGFrame.height; // don't repeat y
-      tile.tilePositionX = tilePosX;
-      tile.tilePositionY = tilePosY;
-    });
+      this.landscape.each((tile: any) => {
+        // the center of the pinkBGFrame needs to be the center of the screen
+        tile.width = width;
+        tile.height = pinkBGFrame.height; // don't repeat y
+        tile.tilePositionX = tilePosX;
+        tile.tilePositionY = tilePosY;
+      });
+    }
 
     // const zoneGraphics = this.add.graphics();
     // zoneGraphics.fillStyle(0x0000ff, 1);

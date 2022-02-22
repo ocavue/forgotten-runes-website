@@ -23,8 +23,10 @@ import { AlagardFontMetrics } from "../../../fontSettings";
 
 //  This Scene is aspect ratio locked at 640 x 960 (and scaled and centered accordingly)
 
+const ORIGINAL = false;
+const SIMPLIFIED = true;
 const NIGHT = false;
-const WINTER = true;
+const WINTER = false;
 const BREAKPOINT = 768;
 
 export class HomeScene extends Phaser.Scene {
@@ -182,6 +184,11 @@ export class HomeScene extends Phaser.Scene {
       this.configureWinterWonderland();
       this.letItSnow();
     }
+
+    if (SIMPLIFIED) {
+      this.configureSummoningBegunWorld();
+    }
+
     // if (this.summoningBegun) {
     //   this.configureSummoningBegunWorld();
     // } else {
@@ -399,14 +406,18 @@ export class HomeScene extends Phaser.Scene {
 
     // const zoneGraphics = this.add.graphics();
     // zoneGraphics.strokeRect(centerX + 10, 414, 30, 30);
+
+    /*
     const hatZone = this.add.zone(centerX + 10, 414, 30, 30);
     hatZone.setOrigin(0, 0);
     hatZone.setPosition(centerX + 10, 414);
     hatZone.setInteractive({ useHandCursor: true }).on("pointerup", () => {
       this.launchShowScene();
     });
+    */
 
-    this.showCrow();
+    // no crow for now
+    // this.showCrow();
 
     const web3Controller = getWeb3Controller(this.game);
     web3Controller.emitter.on(

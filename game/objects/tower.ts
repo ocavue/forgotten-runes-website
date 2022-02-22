@@ -12,8 +12,10 @@ import { ImageButton } from "./ImageButton";
 
 const maxRunes = 18;
 
+const SIMPLIFIED = true;
+const ORIGINAL = false;
 const NIGHT = false;
-const WINTER = true;
+const WINTER = false;
 
 export class Tower {
   scene: Phaser.Scene;
@@ -31,6 +33,7 @@ export class Tower {
   preload() {
     const scene = this.scene;
     scene.load.aseprite("buttons", "buttons.png", "buttons.json");
+    scene.load.aseprite("interior", "Interior_v4.png", "Interior_v4.json");
 
     if (WINTER) {
       scene.load.aseprite(
@@ -81,6 +84,12 @@ export class Tower {
     if (WINTER) {
       (scene as any).myAasepriteLoader?.createFromAsepriteWithLayers(
         "castlePartsSouls"
+      );
+    }
+
+    if (SIMPLIFIED) {
+      (scene as any).myAasepriteLoader?.createFromAsepriteWithLayers(
+        "interior"
       );
     }
 
@@ -454,9 +463,9 @@ export class Tower {
     lines.depth = 1;
     this.lines = lines;
 
-    const hatstaff = scene.add.sprite(centerX, 0, "castleParts", "hatStaff-0");
-    fadeIn(scene, hatstaff);
-    hatstaff.setOrigin(originX, originY);
+    // const hatstaff = scene.add.sprite(centerX, 0, "castleParts", "hatStaff-0");
+    // fadeIn(scene, hatstaff);
+    // hatstaff.setOrigin(originX, originY);
 
     // hatstaff.setInteractive({ useHandCursor: true }).on("pointerup", () => {
     //   (this.scene as any).launchShowScene();
@@ -491,6 +500,11 @@ export class Tower {
       yoyo: true,
       repeat: -1,
     });
+
+    const dice = scene.add.sprite(centerX, 120, "interior", "dice-0");
+    dice.setScale(0.3);
+    fadeIn(scene, dice);
+    dice.play({ key: "dice-dicePlay", repeat: -1 });
 
     // const palms1 = scene.add.sprite(
     //   centerX,
