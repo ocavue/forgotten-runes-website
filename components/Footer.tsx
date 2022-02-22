@@ -218,7 +218,7 @@ export default function Footer({}: Props) {
 
             <li className="item">
               <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-                <a>All Wizards</a>
+                <a>All Characters</a>
               </Link>
             </li>
 

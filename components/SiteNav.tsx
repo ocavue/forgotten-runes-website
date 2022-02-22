@@ -288,7 +288,9 @@ export default function SiteNav({
 
               <li className="item">
                 <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-                  <StyledLink selected={isOnGalleryRoute}>Gallery</StyledLink>
+                  <StyledLink selected={isOnGalleryRoute}>
+                    All Characters
+                  </StyledLink>
                 </Link>
               </li>
 

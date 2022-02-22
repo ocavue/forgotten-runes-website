@@ -36,8 +36,11 @@ export const loreTextStyles = css`
 `;
 
 export const LorePageHeader = styled.div``;
-export const LorePageDescription = styled.div`
+export const LorePageDescription = styled.div<{ center?: boolean }>`
   font-family: ${FONTS.robotishText};
   max-width: 768px;
   padding: 1em;
+  margin: 0 auto;
+
+  text-align: ${(props) => (props.center ? "center" : "left")};
 `;
