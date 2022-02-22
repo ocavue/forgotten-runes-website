@@ -58,6 +58,13 @@ export class Tower {
       );
       scene.load.image("towerTile", "souls/castle_Souls_tile.png");
     } else {
+      // we have some animations in souls too
+      scene.load.aseprite(
+        "castlePartsSouls",
+        "souls/castle_Souls.png",
+        "souls/castle_Souls.json"
+      );
+      scene.load.aseprite("castlePartsOrig", "castle_v2.png", "castle_v2.json");
       scene.load.aseprite("castleParts", "castle_v2.png", "castle_v2.json");
       scene.load.image("towerTile", "towerTile.png");
     }
@@ -88,6 +95,9 @@ export class Tower {
     }
 
     if (SIMPLIFIED) {
+      (scene as any).myAasepriteLoader?.createFromAsepriteWithLayers(
+        "castlePartsSouls"
+      );
       (scene as any).myAasepriteLoader?.createFromAsepriteWithLayers(
         "interior"
       );
@@ -408,8 +418,8 @@ export class Tower {
     const bottomDoor = scene.add.sprite(
       centerX,
       0 + bottomDoorY,
-      "castleParts",
-      "bottomDoor-with-snow-0" // WINTER ? "bottomDoor-with-snow-0" : "bottomDoor-0"
+      "castlePartsSouls",
+      "bottomDoor-0" // WINTER ? "bottomDoor-with-snow-0" : "bottomDoor-0"
     );
     fadeIn(scene, bottomDoor);
     bottomDoor.setOrigin(originX, originY);

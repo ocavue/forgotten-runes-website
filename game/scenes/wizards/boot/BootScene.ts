@@ -101,6 +101,10 @@ export class BootScene extends Phaser.Scene {
   }
 
   create() {
+    // Phaser.Canvas.setTouchAction(this.game.canvas, "auto"); // disable the default "none"
+    // this.game.input.touch.preventDefaultWheel = false;
+    this.game.input.mouse.preventDefaultWheel = false;
+
     const self = this;
     this.web3Controller = getWeb3Controller(this.game);
     this.cameras.main.setRoundPixels(true);
@@ -300,6 +304,8 @@ export class BootScene extends Phaser.Scene {
           );
           i++;
         });
+
+        this.game.events.emit(events.ON_SCROLL, { deltaX, deltaY, deltaZ });
 
         // console.log("centerY", centerY);
         // camera.scrollY = Math.max(this.initialScrollY, camera.scrollY);

@@ -1,4 +1,7 @@
 import { css } from "@emotion/react";
+import { FONTS } from "../../styles/styleguide";
+import styled from "@emotion/styled";
+
 export const loreTextStyles = css`
   font-size: 16px;
 
@@ -30,4 +33,11 @@ export const loreTextStyles = css`
     padding: 1em;
     border-radius: 2px;
   }
+`;
+
+export const LorePageHeader = styled.div``;
+export const LorePageDescription = styled.div`
+  font-family: ${FONTS.robotishText};
+  max-width: 768px;
+  padding: 1em;
 `;
