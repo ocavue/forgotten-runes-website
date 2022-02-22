@@ -12,7 +12,6 @@ import { useTimeoutFn } from "react-use";
 export type LoreAPISubmitParams = {
   token_address: string;
   token_id: string;
-  signature: string;
   title: string | null;
   story: string | null;
   pixel_art: boolean;
@@ -28,59 +27,55 @@ export const WaitingText = styled.div`
 `;
 const WaitingForGraphPage = () => {
   const router = useRouter();
+
   useTimeoutFn(() => {
-    // @ts-ignore
-    window.location = `/lore/add?waitForTxHash=${router.query?.waitForTxHash}&tokenId=${router.query?.tokenId}&tokenAddress=${router.query?.tokenAddress}&waited=true`;
+    if (router.query?.waitForTxHash || router.query?.redirectTo) {
+      // @ts-ignore
+      window.location = router.query?.redirectTo
+        ? router.query?.redirectTo
+        : `/lore/wait-for-lore-tx?waitForTxHash=${router.query?.waitForTxHash}`;
+    }
   }, 5 * 1000);
 
-  return (
-    <Flex
-      width={"100%"}
-      height={"100vh"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <WaitingText>Waiting for your lore to be inscribed...</WaitingText>
-    </Flex>
-  );
-};
-
-const AddLorePage = () => {
-  const router = useRouter();
-
-  if (
-    (router.query?.waitForTxHash || router.query?.lorePageToPrefetch) &&
-    router.query?.tokenId
-  ) {
-    return <WaitingForGraphPage />;
+  if (router.query?.waitForTxHash || router.query?.redirectTo) {
+    return (
+      <Flex
+        width={"100%"}
+        height={"100vh"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <WaitingText>Waiting for your lore to be inscribed...</WaitingText>
+      </Flex>
+    );
   }
 
   return <h2>Hmm, something went wrong...</h2>;
 };
 
+const WaitForLoreTxPage = () => {
+  return <WaitingForGraphPage />;
+};
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  if (context.query?.waitForTxHash && context.query?.tokenId) {
+  if (context.query?.waitForTxHash) {
     if (!context.query?.client) {
       console.log("Server side checking pending...");
       console.log(context.query.tokenAddress as string);
-      const pendingLoreProps = await getPendingLoreTxHashRedirection({
-        waitForTxHash: context.query.waitForTxHash as string,
-        tokenAddress: context.query.tokenAddress as string,
-        tokenId: context.query.tokenId as string,
-        waitedOneRound: Boolean(context.query?.waited) ?? false,
-      });
-      return pendingLoreProps;
+      const protocol = context.req.headers.host?.startsWith("local")
+        ? "http"
+        : "https";
+
+      return await getPendingLoreTxHashRedirection(
+        context.query.waitForTxHash as string,
+        `${protocol}://${context.req.headers.host}`
+      );
     } else {
       return { props: {} };
     }
   } else {
-    return {
-      redirect: {
-        destination: "/lore/write",
-        permanent: false,
-      },
-    };
+    return { props: {} };
   }
 }
 
-export default AddLorePage;
+export default WaitForLoreTxPage;

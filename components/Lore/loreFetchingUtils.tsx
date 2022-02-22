@@ -255,6 +255,9 @@ export async function getPreviousAndNextPageRoutes(
   let previousPageRoute;
   let nextPageRoute;
 
+  // console.log(`Global for previous: ${globalPageForPrevious}`);
+  // console.log(`Global for next: ${globalPageForNext}`);
+
   const { data } = await client.query({
     query: gql`
         query Query {
@@ -276,6 +279,7 @@ export async function getPreviousAndNextPageRoutes(
             }
         }
     `,
+    fetchPolicy: "no-cache",
   });
 
   const previousPageData = data.previousPage?.[0];
@@ -373,6 +377,7 @@ export async function getLeftRightPagesV2(
         }
       }
     `,
+    fetchPolicy: "no-cache",
   });
 
   const leftPageData = data.leftPage?.[0];
