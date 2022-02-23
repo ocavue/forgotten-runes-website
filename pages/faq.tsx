@@ -5,7 +5,7 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import { BLOCKS } from "@contentful/rich-text-types";
 import { Flex } from "rebass";
 
-export default function WtfPage({ entry }: { entry: Entry<any> }) {
+export default function FaqPage({ entry }: { entry: Entry<any> }) {
   return (
     <InfoPageLayout>
       <Flex flexDirection={"column"} p={2}>
