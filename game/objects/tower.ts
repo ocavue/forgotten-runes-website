@@ -119,15 +119,17 @@ export class Tower {
     );
     towerTile.setOrigin(originX, originY);
 
+    const xOffset = 52;
+
     {
       // buttons
       const faqButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 700 - 100,
         "buttons",
-        "faq_default.png",
-        "faq_hover.png",
+        "buttonWall_question.png",
+        "buttonWall_question.png",
         () => {
           let location: string = window.location.toString();
           if (location[location.length - 1] !== "/") {
@@ -136,45 +138,45 @@ export class Tower {
           window.open(location + "wtf", "_blank");
         }
       );
-      faqButton.setScale(0.5);
+      faqButton.setScale(1);
       scene.add.existing(faqButton);
 
       const discordButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 725 - 100,
         "buttons",
-        "social_discord_default.png",
-        "social_discord_hover.png",
+        "buttonWall_discord.png",
+        "buttonWall_discord.png",
         () => {
           console.log("discord");
           window.open("https://discord.com/invite/F7WbxwJuZC", "_blank");
         }
       );
-      discordButton.setScale(0.5);
+      discordButton.setScale(1);
       scene.add.existing(discordButton);
 
       const twitterButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 750 - 100,
         "buttons",
-        "social_twitter_default.png",
-        "social_twitter_hover.png",
+        "buttonWall_twitter.png",
+        "buttonWall_twitter.png",
         () => {
           window.open("https://twitter.com/forgottenrunes", "_blank");
         }
       );
-      twitterButton.setScale(0.5);
+      twitterButton.setScale(1);
       scene.add.existing(twitterButton);
 
       const openSeaButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 775 - 100,
         "buttons",
-        "social_opensea_default.png",
-        "social_opensea_hover.png",
+        "buttonWall_opensea.png",
+        "buttonWall_opensea.png",
         () => {
           const contractAddress =
             process.env.NEXT_PUBLIC_REACT_APP_WIZARDS_CONTRACT_ADDRESS;
@@ -184,7 +186,7 @@ export class Tower {
           );
         }
       );
-      openSeaButton.setScale(0.5);
+      openSeaButton.setScale(1);
       scene.add.existing(openSeaButton);
     }
 
