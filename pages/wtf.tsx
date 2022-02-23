@@ -1,64 +1,45 @@
-import fs from "fs";
-import matter from "gray-matter";
 import { GetStaticProps } from "next";
-import { MDXRemote } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
-import Head from "next/head";
-import path from "path";
-
-import { POSTS_PATH } from "../lib/mdxUtils";
 import InfoPageLayout from "../components/InfoPageLayout";
-import { ResponsiveImg } from "../components/ResponsivePixelImg";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import WizardArt from "../components/WizardArt";
+import { createClient, Entry } from "contentful";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import { BLOCKS } from "@contentful/rich-text-types";
+import { Flex } from "rebass";
 
-const components = {
-  Head,
-  InfoPageLayout,
-  ResponsiveImg,
-  WizardArt,
-};
-
-export default function WtfPage({
-  source,
-  frontMatter,
-}: {
-  source: { compiledSource: string; scope: any };
-  frontMatter: any;
-}) {
-  return <MDXRemote {...source} components={components} />;
+export default function FaqPage({ entry }: { entry: Entry<any> }) {
+  return (
+    <InfoPageLayout>
+      <Flex flexDirection={"column"} p={2}>
+        {documentToReactComponents(entry.fields.mainContent, {
+          renderNode: {
+            [BLOCKS.EMBEDDED_ASSET]: (node) => (
+              <img
+                src={node.data?.target?.fields?.file?.url}
+                alt={node.data?.target?.fields?.title}
+                style={{ objectFit: "cover" }}
+              />
+            ),
+            [BLOCKS.PARAGRAPH]: (node, children) => (
+              <p style={{ whiteSpace: "pre-line" }}>{children}</p>
+            ),
+          },
+        })}
+      </Flex>
+    </InfoPageLayout>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
-  const slug = "wtf";
-  const localizedPostFilePath = path.join(
-    POSTS_PATH,
-    "..",
-    "md",
-    `${slug}.${locale}.md`
-  );
-  const postFilePath = path.join(POSTS_PATH, "..", "md", `${slug}.md`);
-
-  const postFilePathToLoad = fs.existsSync(localizedPostFilePath)
-    ? localizedPostFilePath
-    : postFilePath;
-
-  const source = fs.readFileSync(postFilePathToLoad);
-  // TODO: unify with [slug].tsx
-  const { content, data } = matter(source);
-  const mdxSource = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [],
-      rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
-    },
-    scope: data,
+  const client = createClient({
+    space: process.env.CONTENTFUL_SPACE as string,
+    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
   });
+
+  const entry = await client.getEntry("6N3xs2AZQ1llxbyf5BFJz6"); // TODO: maybe some json config for specific static pages
+  // console.log(entry);
 
   return {
     props: {
-      source: mdxSource,
-      frontMatter: data,
+      entry: entry,
     },
   };
 };
