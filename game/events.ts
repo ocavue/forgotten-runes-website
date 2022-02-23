@@ -22,4 +22,5 @@ export type OnScrollEventArgs = {
   deltaX: number;
   deltaY: number;
   deltaZ: number;
+  scrollY: number;
 };

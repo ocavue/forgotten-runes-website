@@ -782,9 +782,11 @@ export class HomeScene extends Phaser.Scene {
         // this.updateCamera();
 
         const scrollYDiff = Math.abs(camera.scrollY - this.initialScrollY); // 0
-        // console.log("camera.scrollY: ", camera.scrollY, scrollYDiff);
         this.backgroundScene.updateParallax({
           scrollY: scrollYDiff,
+          deltaX,
+          deltaY,
+          deltaZ,
         });
       }
     );

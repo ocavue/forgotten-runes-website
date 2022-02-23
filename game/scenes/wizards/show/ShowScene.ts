@@ -199,9 +199,9 @@ export class ShowScene extends Phaser.Scene {
       const contract = await getWizardsContract({ provider });
       const signer = injectedProvider.getSigner();
       const address = await signer.getAddress();
-      console.log("address: ", address);
+      // console.log("address: ", address);
       const tokenIndexes = await contract.tokensOfOwner(address);
-      console.log("tokenIndexes: ", tokenIndexes);
+      // console.log("tokenIndexes: ", tokenIndexes);
 
       if (tokenIndexes?.length > 0) {
         const maxWizards = 10000;

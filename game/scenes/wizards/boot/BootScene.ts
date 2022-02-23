@@ -258,6 +258,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   addParallax() {
+    // console.log("TODO this doesn't work");
     const camera = this.cameras.main;
     this.initialScrollY = camera.scrollY;
     // console.log("this.initialScrollY: ", this.initialScrollY);
@@ -267,6 +268,11 @@ export class BootScene extends Phaser.Scene {
     const minScroll = this.initialScrollY;
     const maxScroll = -220;
 
+    // this.input.mouse.onMouseWheel((evt: any) => {
+    //   console.log("evt: ", evt);
+    // });
+
+    // this doesn't work, use HomeScene or updateParallax instead0
     this.input.on(
       "wheel",
       (
@@ -276,6 +282,7 @@ export class BootScene extends Phaser.Scene {
         deltaY: number,
         deltaZ: number
       ) => {
+        // console.log("this input scroll");
         const camera = this.cameras.main;
         const worldView = this.cameras.main.worldView;
         const centerX = worldView.centerX;
@@ -305,7 +312,7 @@ export class BootScene extends Phaser.Scene {
           i++;
         });
 
-        this.game.events.emit(events.ON_SCROLL, { deltaX, deltaY, deltaZ });
+        // this.game.events.emit(events.ON_SCROLL, { deltaX, deltaY, deltaZ });
 
         // console.log("centerY", centerY);
         // camera.scrollY = Math.max(this.initialScrollY, camera.scrollY);
@@ -314,9 +321,26 @@ export class BootScene extends Phaser.Scene {
     );
   }
 
-  updateParallax({ scrollY }: { scrollY: number }): void {
+  updateParallax({
+    scrollY,
+    deltaX,
+    deltaY,
+    deltaZ,
+  }: {
+    scrollY: number;
+    deltaX: number;
+    deltaY: number;
+    deltaZ: number;
+  }): void {
     let maxScrollY = 1650; // just cheating
     let _scrollY = Math.min(maxScrollY, scrollY);
+
+    this.game.events.emit(events.ON_SCROLL, {
+      scrollY,
+      deltaX,
+      deltaY,
+      deltaZ,
+    });
     // console.log("scrollY: ", scrollY);
 
     let i = 0;
