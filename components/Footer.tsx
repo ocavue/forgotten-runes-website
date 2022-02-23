@@ -186,8 +186,8 @@ export default function Footer({}: Props) {
               <a href="https://discord.gg/forgottenrunes">Discord</a>
             </li>
             <li>
-              <a href="https://soundcloud.com/forgottenrunes">
-                Soundcloud (AmAs)
+              <a href="https://www.youtube.com/channel/UCK8UOUpF8XPcc3Ynhmchcxg">
+                YouTube
               </a>
             </li>
           </ul>

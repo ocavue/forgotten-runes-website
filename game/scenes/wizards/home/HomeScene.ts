@@ -597,6 +597,7 @@ export class HomeScene extends Phaser.Scene {
   }
 
   updateCamera() {
+    console.log("HomeScene updateCamera");
     const camera = this.cameras.main;
     const width = this.scale.gameSize.width;
     const height = this.scale.gameSize.height;
@@ -605,18 +606,22 @@ export class HomeScene extends Phaser.Scene {
 
     const mainZoom = this.backgroundScene.cameras.main.zoom;
     camera.setZoom(mainZoom);
-
+    // console.log("mainZoom: ", mainZoom);
     if (mainZoom > 1) {
-      camera.scrollY = -height / mainZoom / 2;
+      camera.scrollY = -height / mainZoom / 2 - 120;
 
       // if (this.snowParticles) {
       // this.snowParticles.y = camera.scrollY;
       // }
+    } else {
+      camera.scrollY = -300;
     }
 
     // scroll based on whatever we initially had
     const initialCenterX = this.initialWidth / 2;
     camera.scrollX = (centerX - initialCenterX) * -1;
+
+    console.log("camera.scrollY: ", camera.scrollY);
     this.backgroundScene.updateCamera();
 
     this.updateDarkSkySize();

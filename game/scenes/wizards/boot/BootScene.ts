@@ -282,7 +282,7 @@ export class BootScene extends Phaser.Scene {
         deltaY: number,
         deltaZ: number
       ) => {
-        // console.log("this input scroll");
+        console.log("this input scroll");
         const camera = this.cameras.main;
         const worldView = this.cameras.main.worldView;
         const centerX = worldView.centerX;
@@ -362,6 +362,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   updateCamera() {
+    console.log("bootscene updateCamera");
     const width = this.scale.gameSize.width;
     const height = this.scale.gameSize.height;
     const centerX = width / 2;
@@ -382,6 +383,7 @@ export class BootScene extends Phaser.Scene {
       camera.setPosition(0, 0);
       camera.scrollY = -height / 4; // TODO this isn't quite right
     }
+    // console.log("camera.scrollY: ", camera.scrollY);
 
     if (!SIMPLIFIED) {
       const textureManager = this.scene.systems.textures;
