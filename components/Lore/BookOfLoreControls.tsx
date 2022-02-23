@@ -260,7 +260,7 @@ export default function BookOfLoreControls({
         <PaginationContainer>
           <PreviousPageContainer>
             {previousPageRoute ? (
-              <Link href={previousPageRoute} passHref>
+              <Link href={previousPageRoute} passHref prefetch={true}>
                 <a>
                   <Image
                     src={"/static/lore/book/arrow_L.png"}
@@ -294,7 +294,7 @@ export default function BookOfLoreControls({
           </LoreNameWrapper>
           <NextPageContainer>
             {nextPageRoute ? (
-              <Link href={nextPageRoute} passHref>
+              <Link href={nextPageRoute} passHref prefetch={true}>
                 <a>
                   <Image
                     src={"/static/lore/book/arrow_R.png"}

@@ -34,7 +34,7 @@ Here is a quick start guide to writing Lore (but please read through for detaile
 
 To write lore, you:
 
-- [Visit the Add Lore Page](/lore/add)
+- [Visit the Write Lore Page](/lore/write)
 
 ![](/static/lore/instructions/4jSfHkl.png)
 
@@ -167,4 +167,4 @@ The Lore Master may not:
 
 ## Next Steps
 
-Head over [the Book and write some Lore](/lore/add)
+Head over [the Book and write some Lore](/lore/write)
