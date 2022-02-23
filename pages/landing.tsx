@@ -18,6 +18,9 @@ export default function WtfPage({ entry }: { entry: Entry<any> }) {
                 style={{ objectFit: "cover" }}
               />
             ),
+            [BLOCKS.PARAGRAPH]: (node, children) => (
+              <p style={{ whiteSpace: "pre-line" }}>{children}</p>
+            ),
           },
         })}
       </Flex>
