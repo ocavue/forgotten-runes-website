@@ -108,18 +108,18 @@ p {
   resize: none;
   outline: none;
   min-height: 0;
-  background: black;
-  color: white;
+  background: black !important;
+  color: white !important;
   font-size: 14px;
   line-height: 1.7;
 }
 
 .rc-md-editor .rc-md-navigation {
-  background: rgb(22,22,22);
-  border-bottom: 1px solid rgb(22,22,22);
+  background: rgb(22,22,22) !important;
+  border-bottom: 1px solid rgb(22,22,22) !important;
 }
 
 .rc-md-editor {
-  background: rgb(22,22,22);
+  background: rgb(22,22,22) !important;;
 }
 

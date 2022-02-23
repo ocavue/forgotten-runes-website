@@ -72,7 +72,7 @@ nextConfig = withImages(nextConfig);
 nextConfig = withSvgr(nextConfig);
 nextConfig = withMDX(nextConfig);
 nextConfig = withTM({
-  webpack5: false,
+  webpack5: true,
   ...nextConfig,
 });
 
