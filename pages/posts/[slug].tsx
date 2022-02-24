@@ -23,6 +23,9 @@ import WizardHeads from "../../components/Post/WizardHeads";
 import { getStatic__allBlogPosts } from "../../components/Blog/blogUtils";
 import { Post } from "../../components/Blog/types";
 import RelatedPosts from "../../components/Blog/RelatedPosts";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import { BLOCKS } from "@contentful/rich-text-types";
+import { createClient } from "contentful";
 
 // import CustomLink from "../../components/CustomLink";
 // Custom components/renderers to pass to MDX.
@@ -57,8 +60,7 @@ const PostHeader = styled.div`
   margin: 2em auto;
   padding: 0 2em;
   display: flex;
-  flex-align: center;
-  justify-content: top;
+  justify-content: flex-start;
   flex-direction: column;
   @media (min-width: 960px) {
     flex-direction: row;
@@ -106,7 +108,7 @@ const Category = styled.a`
   margin-top: 1.5rem;
 `;
 
-export default function PostPage({
+function OldPostPage({
   source,
   frontMatter,
   allPosts,
@@ -171,35 +173,150 @@ export default function PostPage({
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
-  const localizedPostFilePath = path.join(
-    POSTS_PATH,
-    `${params?.slug}.${locale}.md`
-  );
-  const postFilePath = path.join(POSTS_PATH, `${params?.slug}.md`);
-  const postFilePathToLoad = fs.existsSync(localizedPostFilePath)
-    ? localizedPostFilePath
-    : postFilePath;
+export default function PostPage({
+  source,
+  frontMatter,
+  allPosts,
+  contentfulEntry,
+}: {
+  source: { compiledSource: string; scope: any };
+  frontMatter: any;
+  allPosts: Post[];
+  contentfulEntry?: any;
+}) {
+  if (source && frontMatter)
+    // old non-contentful pages
+    return (
+      <OldPostPage
+        source={source}
+        frontMatter={frontMatter}
+        allPosts={allPosts}
+      />
+    );
 
-  const source = fs.readFileSync(postFilePathToLoad);
-  const { content, data } = matter(source);
-  const mdxSource = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [],
-      rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
-    },
-    scope: data,
-  });
+  const title = contentfulEntry.fields.title;
 
-  const allPostProps = await getStatic__allBlogPosts({ params, locale });
+  console.log(contentfulEntry.fields.previewImage.fields.file.url);
 
-  return {
-    props: {
-      source: mdxSource,
-      frontMatter: data,
-      allPosts: (allPostProps as any).props?.posts || [],
-    },
+  const ogImageProps = {
+    title: title,
+    images: `https:${contentfulEntry.fields.previewImage.fields.file.url}`,
   };
+  const coverImageUrl = ogImageURL(ogImageProps);
+
+  const category = contentfulEntry.fields.category;
+  const description = contentfulEntry.fields.description;
+
+  return (
+    <Layout
+      title={`${title} | Forgotten Runes Wizard's Cult: 10,000 on-chain Wizard NFTs`}
+      description={description}
+      afterContent={null}
+    >
+      <OgImage {...ogImageProps} />
+      <header></header>
+      <PostHeader className="post-header full-bleed">
+        <PostNameDesc>
+          <Link
+            as={category ? `/category/${category}` : "/posts"}
+            href={category ? `/category/${category}` : "/posts"}
+            passHref={true}
+          >
+            <Category>{category || "Post"}</Category>
+          </Link>
+
+          <h1>{title}</h1>
+          {description && <p className="description">{description}</p>}
+        </PostNameDesc>
+        <StyledImageWrap>
+          <img src={coverImageUrl} />
+        </StyledImageWrap>
+      </PostHeader>
+      {documentToReactComponents(contentfulEntry.fields.body, {
+        renderText: (text: string) => {
+          return text
+            .split("\n")
+            .reduce((children: any[], textSegment: string, index: number) => {
+              return [
+                ...children,
+                index > 0 && <br key={index} />,
+                textSegment,
+              ];
+            }, []);
+        },
+        renderNode: {
+          [BLOCKS.EMBEDDED_ASSET]: (node) => (
+            <img
+              src={node.data?.target?.fields?.file?.url}
+              alt={node.data?.target?.fields?.title}
+              style={{ objectFit: "cover", alignSelf: "center" }}
+            />
+          ),
+        },
+      })}
+      <style jsx>{`
+        .post-header h1 {
+          margin-bottom: 0.5em;
+        }
+        .description {
+          opacity: 0.6;
+        }
+      `}</style>
+    </Layout>
+  );
+}
+
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+  const slug = params?.slug;
+
+  const localizedPostFilePath = path.join(POSTS_PATH, `${slug}.${locale}.md`);
+  const postFilePath = path.join(POSTS_PATH, `${slug}.md`);
+
+  if (fs.existsSync(localizedPostFilePath) || fs.existsSync(postFilePath)) {
+    // old posts
+    const postFilePathToLoad = fs.existsSync(localizedPostFilePath)
+      ? localizedPostFilePath
+      : postFilePath;
+
+    const source = fs.readFileSync(postFilePathToLoad);
+    const { content, data } = matter(source);
+    const mdxSource = await serialize(content, {
+      mdxOptions: {
+        remarkPlugins: [],
+        rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
+      },
+      scope: data,
+    });
+
+    const allPostProps = await getStatic__allBlogPosts({ params, locale });
+
+    return {
+      props: {
+        source: mdxSource,
+        frontMatter: data,
+        allPosts: (allPostProps as any).props?.posts || [],
+      },
+    };
+  } else {
+    const client = createClient({
+      space: process.env.CONTENTFUL_SPACE as string,
+      accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
+    });
+
+    const entries = await client.getEntries({
+      content_type: "blogPost",
+      "fields.slug[match]": slug,
+      locale: locale,
+    });
+    // console.log("got it...");
+    // console.log(entries);
+
+    return {
+      props: {
+        contentfulEntry: entries.items?.[0],
+      },
+    };
+  }
 };
 
 export const getStaticPaths: GetStaticPaths = async ({
@@ -220,6 +337,24 @@ export const getStaticPaths: GetStaticPaths = async ({
     })
     // Map the path into the static paths object required by Next.js
     .map(({ slug, locale }) => ({ params: { slug }, locale }));
+
+  const client = createClient({
+    space: process.env.CONTENTFUL_SPACE as string,
+    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
+  });
+
+  const entries = await client.getEntries({
+    content_type: "blogPost",
+  });
+
+  paths.push(
+    ...entries.items.map((entry: any) => ({
+      params: {
+        slug: entry.fields.slug,
+      },
+      locale: entry.sys.locale,
+    }))
+  );
 
   return {
     paths,
