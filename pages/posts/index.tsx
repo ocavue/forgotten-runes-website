@@ -79,7 +79,10 @@ export const getStaticProps: GetStaticProps = async ({
     ...entries.items.map((entry: any) => ({
       slug: entry.fields.slug,
       locale: entry.sys.locale,
-      coverImageUrl: `https:${entry.fields.previewImage.fields.file.url}`,
+      coverImageUrl: ogImageURL({
+        images: `https:${entry.fields.previewImage.fields.file.url}`,
+        title: entry.fields.title,
+      }),
       data: {
         title: entry.fields.title,
         description: entry.fields.description,
