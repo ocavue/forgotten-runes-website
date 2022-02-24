@@ -15,7 +15,7 @@ export default function FaqPage({ entry }: { entry: Entry<any> }) {
               <img
                 src={node.data?.target?.fields?.file?.url}
                 alt={node.data?.target?.fields?.title}
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", alignSelf: "center" }}
               />
             ),
             [BLOCKS.PARAGRAPH]: (node, children) => (
