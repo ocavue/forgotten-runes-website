@@ -40,7 +40,7 @@ export default function RecentLoreEntry({
   return (
     <Flex flexDirection={"column"} justifyContent={"space-between"}>
       <Box>
-        <Link href={entry.url} passHref={true} prefetch={true}>
+        <Link href={entry.url} passHref={true}>
           <StyledImageAnchor title={entry.title}>
             <BlogPostImgWrap>
               <BlogPostImgWrapInner
@@ -58,11 +58,11 @@ export default function RecentLoreEntry({
           </StyledImageAnchor>
         </Link>
         <Spacer pt={3} />
-        <Link href={entry.url} passHref={true} prefetch={true}>
+        <Link href={entry.url} passHref={true}>
           <Category>{entry.title}</Category>
         </Link>
         <Spacer pt={2} />
-        <Link href={entry.url} passHref={true} prefetch={true}>
+        <Link href={entry.url} passHref={true}>
           <StyledAnchor title={entry.title}>
             <Description>
               {dayjs.unix(entry.createdAtTimestamp).format("MMM D, YYYY")}{" "}
