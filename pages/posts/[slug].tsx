@@ -358,12 +358,20 @@ export const getStaticPaths: GetStaticPaths = async ({
     accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
   });
 
-  const entries = await client.getEntries({
+  const englishEntries = await client.getEntries({
     content_type: "blogPost",
+    locale: "en-US",
   });
 
+  const japaneseEntries = await client.getEntries({
+    content_type: "blogPost",
+    locale: "ja",
+  });
+
+  const entries = englishEntries.items.concat(japaneseEntries.items);
+
   paths.push(
-    ...entries.items.map((entry: any) => ({
+    ...entries.map((entry: any) => ({
       params: {
         slug: entry.fields.slug,
       },
