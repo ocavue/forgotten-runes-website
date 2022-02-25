@@ -26,6 +26,7 @@ import RelatedPosts from "../../components/Blog/RelatedPosts";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS } from "@contentful/rich-text-types";
 import { createClient } from "contentful";
+import { Flex } from "rebass";
 
 // import CustomLink from "../../components/CustomLink";
 // Custom components/renderers to pass to MDX.
@@ -232,28 +233,34 @@ export default function PostPage({
           <img src={coverImageUrl} />
         </StyledImageWrap>
       </PostHeader>
-      {documentToReactComponents(contentfulEntry.fields.body, {
-        renderText: (text: string) => {
-          return text
-            .split("\n")
-            .reduce((children: any[], textSegment: string, index: number) => {
-              return [
-                ...children,
-                index > 0 && <br key={index} />,
-                textSegment,
-              ];
-            }, []);
-        },
-        renderNode: {
-          [BLOCKS.EMBEDDED_ASSET]: (node) => (
-            <img
-              src={node.data?.target?.fields?.file?.url}
-              alt={node.data?.target?.fields?.title}
-              style={{ objectFit: "cover", alignSelf: "center" }}
-            />
-          ),
-        },
-      })}
+      <Flex flexDirection={"column"}>
+        {documentToReactComponents(contentfulEntry.fields.body, {
+          renderText: (text: string) => {
+            return text
+              .split("\n")
+              .reduce((children: any[], textSegment: string, index: number) => {
+                return [
+                  ...children,
+                  index > 0 && <br key={index} />,
+                  textSegment,
+                ];
+              }, []);
+          },
+          renderNode: {
+            [BLOCKS.EMBEDDED_ASSET]: (node) => (
+              <img
+                src={node.data?.target?.fields?.file?.url}
+                alt={node.data?.target?.fields?.title}
+                style={{
+                  objectFit: "cover",
+                  alignSelf: "center",
+                  maxWidth: "100%",
+                }}
+              />
+            ),
+          },
+        })}
+      </Flex>
       <style jsx>{`
         .post-header h1 {
           margin-bottom: 0.5em;
@@ -303,11 +310,19 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
       accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
     });
 
-    const entries = await client.getEntries({
+    let entries = await client.getEntries({
       content_type: "blogPost",
       "fields.slug[match]": slug,
       locale: locale,
     });
+
+    if (entries.items.length == 0) {
+      entries = await client.getEntries({
+        content_type: "blogPost",
+        "fields.slug[match]": slug,
+        locale: "en-US",
+      });
+    }
     // console.log("got it...");
     // console.log(entries);
 
@@ -358,6 +373,6 @@ export const getStaticPaths: GetStaticPaths = async ({
 
   return {
     paths,
-    fallback: false,
+    fallback: "blocking",
   };
 };

@@ -73,6 +73,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   const entries = await client.getEntries({
     content_type: "blogPost",
+    locale: locale,
   });
 
   posts.push(
