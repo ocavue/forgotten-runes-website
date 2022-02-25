@@ -1,8 +1,6 @@
 import { toast } from "react-toastify";
 import { getBookOfLoreContract } from "../../contracts/ForgottenRunesWizardsCultContract";
 import { LoreAPISubmitParams } from "../../pages/lore/wait-for-lore-tx";
-import Bluebird from "bluebird";
-import parseDataUrl from "parse-data-url";
 import { client } from "../../lib/graphql";
 import { gql } from "@apollo/client";
 import { bustLoreCache } from "../Lore/loreFetchingUtils";
@@ -52,9 +50,9 @@ export const pinFileToIPFS = async (
     headers: {
       // @ts-ignore
       "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
-      pinata_api_key: process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_ID,
-      pinata_secret_api_key:
-        process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_SECRET_KEY,
+      pinata_api_key: process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_ID as string,
+      pinata_secret_api_key: process.env
+        .NEXT_PUBLIC_LORE_IMAGES_PINATA_SECRET_KEY as string,
     },
   });
 
@@ -513,9 +511,9 @@ export const pinFileToIpfs = async (
     headers: {
       // @ts-ignore
       "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
-      pinata_api_key: process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_ID,
-      pinata_secret_api_key:
-        process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_SECRET_KEY,
+      pinata_api_key: process.env.NEXT_PUBLIC_LORE_IMAGES_PINATA_ID as string,
+      pinata_secret_api_key: process.env
+        .NEXT_PUBLIC_LORE_IMAGES_PINATA_SECRET_KEY as string,
     },
   });
 
