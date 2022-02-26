@@ -7,7 +7,7 @@ import { Box, Flex } from "rebass";
 import LoreMarkdownRenderer from "../../components/Lore/LoreMarkdownRenderer";
 import { useExtractColors } from "../../hooks/useExtractColors";
 import {
-  WizardConfiguration,
+  TokenConfiguration,
   WizardList,
 } from "../../components/AddLore/WizardPicker";
 import Spacer from "../../components/Spacer";
@@ -48,7 +48,7 @@ const WriteLore = ({}: {}) => {
 
   const [currentBgColor, setCurrentBgColor] = useState<string>("#3A110F");
   const [nsfw, setNsfw] = useState<boolean>();
-  const [pickedToken, setPickedToken] = useState<WizardConfiguration>();
+  const [pickedToken, setPickedToken] = useState<TokenConfiguration>();
 
   const [firstImageUrl, setFirstImageUrl] = useState<string | undefined>();
   const { bgColor: firstImageBgColor } = useExtractColors(firstImageUrl);
