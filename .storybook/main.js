@@ -24,6 +24,7 @@ module.exports = {
     "../stories/**/*.stories.mdx",
     "../stories/**/*.stories.@(js|jsx|ts|tsx)",
     "../components/**/*.stories.@(js|jsx|ts|tsx)",
+    "../lib/**/*.stories.@(js|jsx|ts|tsx)",
   ],
   addons: [
     "storybook-addon-next-router",
@@ -33,11 +34,7 @@ module.exports = {
   webpackFinal: async (config) => {
     return merge(config, {
       resolve: {
-        alias: {
-          "@emotion/core": getPackageDir("@emotion/react"),
-          "@emotion/styled": getPackageDir("@emotion/styled"),
-          "emotion-theming": getPackageDir("@emotion/react"),
-        },
+        alias: {},
       },
     });
   },

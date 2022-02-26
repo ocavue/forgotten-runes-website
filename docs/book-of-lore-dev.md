@@ -66,9 +66,9 @@ Admin: http://localhost:8020/
 
 ### Adding Lore
 
-`/lore/add` - `pages/lore/add.tsx`
+`/lore/write`
 
-On submit, the form hits: `/api/lore`
+On submit, the form hits: `/api/lore` and then uses `pages/lore/wait-for-lore-tx.tsx` to wait for the tx
 
 `/api/lore` - `pages/api/lore.tsx`
 

@@ -1,0 +1,422 @@
+[
+  {
+    "idx": "0",
+    "filename": "bg_black.png",
+    "trait": "background",
+    "label": "Black"
+  },
+  {
+    "idx": "1",
+    "filename": "bg_blue.png",
+    "trait": "background",
+    "label": "Blue"
+  },
+  {
+    "idx": "2",
+    "filename": "bg_green.png",
+    "trait": "background",
+    "label": "Green"
+  },
+  {
+    "idx": "3",
+    "filename": "bg_red.png",
+    "trait": "background",
+    "label": "Red"
+  },
+  {
+    "idx": "4",
+    "filename": "pony_socks_white.png",
+    "trait": "pony",
+    "label": "Valley Pony"
+  },
+  {
+    "idx": "5",
+    "filename": "pony_socks_dark.png",
+    "trait": "pony",
+    "label": "Steppe Pony"
+  },
+  {
+    "idx": "6",
+    "filename": "pony_grey.png",
+    "trait": "pony",
+    "label": "Ash Pony"
+  },
+  {
+    "idx": "7",
+    "filename": "pony_brown_white.png",
+    "trait": "pony",
+    "label": "Wold Pony"
+  },
+  {
+    "idx": "8",
+    "filename": "pony_dark.png",
+    "trait": "pony",
+    "label": "Fell Pony"
+  },
+  {
+    "idx": "9",
+    "filename": "pony_blackwhite.png",
+    "trait": "pony",
+    "label": "Dusk Pony"
+  },
+  {
+    "idx": "10",
+    "filename": "pony_brown.png",
+    "trait": "pony",
+    "label": "Little Brown Pony"
+  },
+  {
+    "idx": "11",
+    "filename": "pony_rust.png",
+    "trait": "pony",
+    "label": "Proto Pony"
+  },
+  {
+    "idx": "12",
+    "filename": "pony_draft.png",
+    "trait": "pony",
+    "label": "Draft Pony"
+  },
+  {
+    "idx": "13",
+    "filename": "pony_yellow.png",
+    "trait": "pony",
+    "label": "Xanthous Pony"
+  },
+  {
+    "idx": "14",
+    "filename": "pony_black.png",
+    "trait": "pony",
+    "label": "Necro Pony"
+  },
+  {
+    "idx": "15",
+    "filename": "pony_white.png",
+    "trait": "pony",
+    "label": "Pearl Pony"
+  },
+  {
+    "idx": "16",
+    "filename": "pony_dapple.png",
+    "trait": "pony",
+    "label": "Dappled Pony"
+  },
+  {
+    "idx": "17",
+    "filename": "pony_whitepink.png",
+    "trait": "pony",
+    "label": "Dream Pony"
+  },
+  {
+    "idx": "18",
+    "filename": "pony_purple.png",
+    "trait": "pony",
+    "label": "Cosmic Pony"
+  },
+  {
+    "idx": "19",
+    "filename": "pony_pink.png",
+    "trait": "pony",
+    "label": "Pamplemousse Pony"
+  },
+  {
+    "idx": "20",
+    "filename": "pony_zebra.png",
+    "trait": "pony",
+    "label": "Dazzling Zebra"
+  },
+  {
+    "idx": "21",
+    "filename": "pony_quagga.png",
+    "trait": "pony",
+    "label": "Quagga"
+  },
+  {
+    "idx": "22",
+    "filename": "pony_cyber.png",
+    "trait": "pony",
+    "label": "Cyber Pony"
+  },
+  {
+    "idx": "23",
+    "filename": "pony_sleipnir.png",
+    "trait": "pony",
+    "label": "Sleipnir's Foal"
+  },
+  {
+    "idx": "24",
+    "filename": "clothes_bowtie.png",
+    "trait": "clothes",
+    "label": "Little Bowtie"
+  },
+  {
+    "idx": "25",
+    "filename": "clothes_bandana_red.png",
+    "trait": "clothes",
+    "label": "Red Bandana"
+  },
+  {
+    "idx": "26",
+    "filename": "clothes_bandana_brown.png",
+    "trait": "clothes",
+    "label": "Brown Bandana"
+  },
+  {
+    "idx": "27",
+    "filename": "clothes_bandana_yellow.png",
+    "trait": "clothes",
+    "label": "Yellow Bandana"
+  },
+  {
+    "idx": "28",
+    "filename": "clothes_bandana_green.png",
+    "trait": "clothes",
+    "label": "Green Bandana"
+  },
+  {
+    "idx": "29",
+    "filename": "clothes_bandana_blue.png",
+    "trait": "clothes",
+    "label": "Blue Bandana"
+  },
+  {
+    "idx": "30",
+    "filename": "clothes_bandana_purple.png",
+    "trait": "clothes",
+    "label": "Purple Bandana"
+  },
+  {
+    "idx": "31",
+    "filename": "clothes_caparison_rainbow.png",
+    "trait": "clothes",
+    "label": "Rainbow Caparison"
+  },
+  {
+    "idx": "32",
+    "filename": "clothes_caparison_red.png",
+    "trait": "clothes",
+    "label": "Red Caparison"
+  },
+  {
+    "idx": "33",
+    "filename": "clothes_caparison_brown.png",
+    "trait": "clothes",
+    "label": "Brown Caparison"
+  },
+  {
+    "idx": "34",
+    "filename": "clothes_caparison_yellow.png",
+    "trait": "clothes",
+    "label": "Yellow Caparison"
+  },
+  {
+    "idx": "35",
+    "filename": "clothes_caparison_green.png",
+    "trait": "clothes",
+    "label": "Green Caparison"
+  },
+  {
+    "idx": "36",
+    "filename": "clothes_caparison_blue.png",
+    "trait": "clothes",
+    "label": "Blue Caparison"
+  },
+  {
+    "idx": "37",
+    "filename": "clothes_caparison_purple.png",
+    "trait": "clothes",
+    "label": "Purple Caparison"
+  },
+  {
+    "idx": "38",
+    "filename": "clothes_drape_purple.png",
+    "trait": "clothes",
+    "label": "Purple Drape"
+  },
+  {
+    "idx": "39",
+    "filename": "clothes_drape_red.png",
+    "trait": "clothes",
+    "label": "Red Drape"
+  },
+  {
+    "idx": "40",
+    "filename": "clothes_armor_gold.png",
+    "trait": "clothes",
+    "label": "Legendary Armour"
+  },
+  {
+    "idx": "41",
+    "filename": "clothes_armor_steel.png",
+    "trait": "clothes",
+    "label": "Steel Armor"
+  },
+  {
+    "idx": "42",
+    "filename": "clothes_armor_leather.png",
+    "trait": "clothes",
+    "label": "Leather Armor"
+  },
+  {
+    "idx": "43",
+    "filename": "clothes_saddle.png",
+    "trait": "clothes",
+    "label": "Saddle"
+  },
+  {
+    "idx": "44",
+    "filename": "head_bridle_red.png",
+    "trait": "head",
+    "label": "Red Bridle"
+  },
+  {
+    "idx": "45",
+    "filename": "head_bridle_yellow.png",
+    "trait": "head",
+    "label": "Yellow Bridle"
+  },
+  {
+    "idx": "46",
+    "filename": "head_bridle_brown.png",
+    "trait": "head",
+    "label": "Leather Bridle"
+  },
+  {
+    "idx": "47",
+    "filename": "head_wizhat.png",
+    "trait": "head",
+    "label": "Pony Wizard Hat"
+  },
+  {
+    "idx": "48",
+    "filename": "head_unihorn.png",
+    "trait": "head",
+    "label": "Unicorn Horn"
+  },
+  {
+    "idx": "49",
+    "filename": "head_sunglasses.png",
+    "trait": "head",
+    "label": "Sunglasses"
+  },
+  {
+    "idx": "50",
+    "filename": "head_glasses.png",
+    "trait": "head",
+    "label": "Spectacles"
+  },
+  {
+    "idx": "51",
+    "filename": "head_3dglasses.png",
+    "trait": "head",
+    "label": "3D Glasses"
+  },
+  {
+    "idx": "52",
+    "filename": "mouth_carrot.png",
+    "trait": "mouth",
+    "label": "Carrot"
+  },
+  {
+    "idx": "53",
+    "filename": "mouth_horsepipe.png",
+    "trait": "mouth",
+    "label": "Pipe"
+  },
+  {
+    "idx": "54",
+    "filename": "mouth_horsepipebubble.png",
+    "trait": "mouth",
+    "label": "Bubble Pipe"
+  },
+  {
+    "idx": "55",
+    "filename": "mouth_rose.png",
+    "trait": "mouth",
+    "label": "Rose"
+  },
+  {
+    "idx": "56",
+    "filename": "rune_sun.png",
+    "trait": "rune",
+    "label": "Rune of Sun"
+  },
+  {
+    "idx": "57",
+    "filename": "rune_mercury.png",
+    "trait": "rune",
+    "label": "Rune of Mercury"
+  },
+  {
+    "idx": "58",
+    "filename": "rune_venus.png",
+    "trait": "rune",
+    "label": "Rune of Venus"
+  },
+  {
+    "idx": "59",
+    "filename": "rune_mars.png",
+    "trait": "rune",
+    "label": "Rune of Mars"
+  },
+  {
+    "idx": "60",
+    "filename": "rune_jupiter.png",
+    "trait": "rune",
+    "label": "Rune of Jupiter"
+  },
+  {
+    "idx": "61",
+    "filename": "rune_saturn.png",
+    "trait": "rune",
+    "label": "Rune of Saturn"
+  },
+  {
+    "idx": "62",
+    "filename": "rune_uranus.png",
+    "trait": "rune",
+    "label": "Rune of Uranus"
+  },
+  {
+    "idx": "63",
+    "filename": "rune_neptune.png",
+    "trait": "rune",
+    "label": "Rune of Neptune"
+  },
+  {
+    "idx": "64",
+    "filename": "rune_pluto.png",
+    "trait": "rune",
+    "label": "Rune of Pluto"
+  },
+  {
+    "idx": "65",
+    "filename": "rune_air.png",
+    "trait": "rune",
+    "label": "Rune of Air"
+  },
+  {
+    "idx": "66",
+    "filename": "rune_earth.png",
+    "trait": "rune",
+    "label": "Rune of Earth"
+  },
+  {
+    "idx": "67",
+    "filename": "rune_water.png",
+    "trait": "rune",
+    "label": "Rune of Water"
+  },
+  {
+    "idx": "68",
+    "filename": "rune_fire.png",
+    "trait": "rune",
+    "label": "Rune of Fire"
+  },
+  {
+    "idx": "69",
+    "filename": "rune_omega.png",
+    "trait": "rune",
+    "label": "Rune of Omega"
+  }
+]

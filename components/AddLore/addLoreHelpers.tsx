@@ -1,14 +1,11 @@
 import { toast } from "react-toastify";
-import {
-  getBookOfLoreContract,
-  isWizardsContract,
-} from "../../contracts/ForgottenRunesWizardsCultContract";
-import { LoreAPISubmitParams } from "../../pages/lore/add";
+import { getBookOfLoreContract } from "../../contracts/ForgottenRunesWizardsCultContract";
+import { LoreAPISubmitParams } from "../../pages/lore/wait-for-lore-tx";
 import Bluebird from "bluebird";
 import parseDataUrl from "parse-data-url";
-import client from "../../lib/graphql";
+import { client } from "../../lib/graphql";
 import { gql } from "@apollo/client";
-import { bustLoreCache } from "../Lore/loreSubgraphUtils";
+import { bustLoreCache } from "../Lore/loreFetchingUtils";
 import { NETWORK } from "../../constants";
 import replaceAsync from "string-replace-async";
 import axios from "axios";
@@ -17,10 +14,11 @@ import { ethers } from "ethers";
 import { getLoreUrl } from "../Lore/loreUtils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { WizardConfiguration } from "./WizardPicker";
+import { TokenConfiguration } from "./WizardPicker";
 import { useEthers } from "@usedapp/core";
 import { getTokenName } from "../../lib/nftUtilis";
 import { fetchFromIpfs } from "../../lib/web3Utils";
+import fetch from "node-fetch";
 
 export const pinFileToIPFS = async (
   base64string: string,
@@ -34,15 +32,9 @@ export const pinFileToIPFS = async (
 
   //we gather a local file for this example, but any valid readStream source will work here.
   let data = new FormData();
+  // @ts-ignore
   data.append("file", blob);
 
-  //pinataOptions are optional
-  // data.append(
-  //   "pinataOptions",
-  //   JSON.stringify({
-  //     wrapWithDirectory: true,
-  //   })
-  // );
   data.append(
     "pinataMetadata",
     JSON.stringify({
@@ -267,7 +259,6 @@ export const onSubmitAddLoreForm = async ({
   let loreBody: LoreAPISubmitParams = {
     token_address: currentWizard.tokenAddress,
     token_id: currentWizard.tokenId,
-    signature: signature,
     title: currentTitle,
     story: storyWithUploadedImages,
     pixel_art: values?.pixelArt ?? false,
@@ -373,15 +364,9 @@ export const onSubmitAddLoreForm = async ({
     const receipt = await tx.wait();
     console.log(`receipt: ${JSON.stringify(receipt)}`);
 
-    // right here
-    // freeze the editor
-    // pulse the text
-    // make a loader
-    // and redirect only after the page is done, go directly to the lore page
-    // pass waiting for indexing / confetti
     if (receipt.status === 1) {
       await router.push(
-        `/lore/add?waitForTxHash=${receipt.transactionHash}&tokenId=${currentWizard.tokenId}&tokenAddress=${currentWizard.tokenAddress}`
+        `/lore/wait-for-lore-tx?waitForTxHash=${receipt.transactionHash}`
       );
       //
     } else {
@@ -416,20 +401,23 @@ export const onSubmitAddLoreForm = async ({
     return false;
   }
 
-  setSubmitting(false);
   return true;
 };
 
 export const useExistingLoreData = () => {
   const router = useRouter();
-  const editLoreIndex = router?.query.loreIndex;
+
+  const editLoreIndex = router.query?.loreIndex;
   const editTokenId = router.query?.tokenId;
   const editTokenAddress = router.query?.tokenAddress;
 
-  const isEditMode = editTokenId && editLoreIndex && editTokenAddress;
+  const isEditMode =
+    editTokenId !== undefined &&
+    editLoreIndex !== undefined &&
+    editTokenAddress;
 
   const [existingLoreToken, setExistingLoreToken] =
-    useState<WizardConfiguration>();
+    useState<TokenConfiguration>();
   const [existingLore, setExistingLore] = useState<string>();
   const [existingLoreBgColor, setExistingLoreBgColor] = useState<string>();
   const [existingLoreError, setExistingLoreError] = useState<string>();
@@ -601,41 +589,41 @@ export const submitV2Lore = async ({
   const loreContract = await getBookOfLoreContract({
     provider: provider,
   });
-
-  toast.info("Signing wizard ID to verify ownership...", {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: false,
-    progress: undefined,
-  });
-
-  let signature: string;
-
-  try {
-    // Note: we can't use signer.signMessage as it doesn't work consistently across wallets: https://github.com/ethers-io/ethers.js/issues/1840
-    signature = await provider.send("personal_sign", [
-      ethers.utils.hexlify(ethers.utils.toUtf8Bytes(tokenId.toString())),
-      (await signer.getAddress()).toLowerCase(),
-    ]);
-  } catch (err: any) {
-    console.log("err: ", err);
-    toast.error(`Sorry, there was a problem when signing: ${err.message}`, {
-      position: "top-right",
-      autoClose: false,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-    });
-    setSubmitting(false);
-    return false;
-  }
-
-  toast.dismiss();
+  //
+  // toast.info("Signing wizard ID to verify ownership...", {
+  //   position: "top-right",
+  //   autoClose: 5000,
+  //   hideProgressBar: false,
+  //   closeOnClick: true,
+  //   pauseOnHover: true,
+  //   draggable: false,
+  //   progress: undefined,
+  // });
+  //
+  // let signature: string;
+  //
+  // try {
+  //   // Note: we can't use signer.signMessage as it doesn't work consistently across wallets: https://github.com/ethers-io/ethers.js/issues/1840
+  //   signature = await provider.send("personal_sign", [
+  //     ethers.utils.hexlify(ethers.utils.toUtf8Bytes(tokenId.toString())),
+  //     (await signer.getAddress()).toLowerCase(),
+  //   ]);
+  // } catch (err: any) {
+  //   console.log("err: ", err);
+  //   toast.error(`Sorry, there was a problem when signing: ${err.message}`, {
+  //     position: "top-right",
+  //     autoClose: false,
+  //     hideProgressBar: false,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: false,
+  //     progress: undefined,
+  //   });
+  //   setSubmitting(false);
+  //   return false;
+  // }
+  //
+  // toast.dismiss();
 
   toast.info("Uploading lore...", {
     position: "top-right",
@@ -650,7 +638,6 @@ export const submitV2Lore = async ({
   let loreBody: LoreAPISubmitParams = {
     token_address: tokenContract,
     token_id: tokenId,
-    signature: signature,
     title: title,
     story: body,
     pixel_art: false,
@@ -758,7 +745,7 @@ export const submitV2Lore = async ({
 
     if (receipt.status === 1) {
       await router.push(
-        `/lore/add?waitForTxHash=${receipt.transactionHash}&tokenId=${tokenId}&tokenAddress=${tokenContract}`
+        `/lore/wait-for-lore-tx?waitForTxHash=${receipt.transactionHash}`
       );
       //
     } else {
@@ -797,132 +784,53 @@ export const submitV2Lore = async ({
   return true;
 };
 
-export type ImageUploadAPIParams = {
-  address: string;
-  signature: string;
-  wizardId: string;
-  img: any;
-};
-
-export async function uploadBookOfLoreImage({
-  imgDataUri,
-  wizardId,
-  toastId,
-}: {
-  wizardId: string; // just for metadata, not technically require
-  imgDataUri: string;
-  toastId: any;
-}) {
-  const address = "0x0";
-  const signature = "0x0";
-  // https://github.com/killmenot/parse-data-url
-  const parsedImg = parseDataUrl(imgDataUri);
-  const imgBuffer = parsedImg.toBuffer();
-
-  // TODO all of this
-  let imageUploadParams: ImageUploadAPIParams = {
-    address,
-    signature,
-    wizardId,
-    img: imgBuffer,
-  };
-
-  // const response = await fetch("/api/lore", {
-  //   method: "post",
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Content-Type": "application/json"
-  //   },
-  //   body: JSON.stringify(loreBody)
-  // });
-  const response = { status: 200 };
-
-  // const apiResponse = await response.json();
-
-  if (response.status !== 201 && response.status !== 200) {
-    // console.error(apiResponse);
-    // toast.error(`Sorry, there was a problem with IPFS upload`, {
-    //   position: "top-right",
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: false,
-    //   progress: undefined
-    // });
-    // setSubmitting(false);
-    // return false;
-  } else {
-    // toast.update("uploaded")
-  }
-}
-
-// we can either do this from the blocks in markdown or maybe it's easier to
-// just upload them when the user drags them over
-export async function uploadBookOfLoreImages({
-  imgDataUris,
-  wizardId,
-}: {
-  imgDataUris: string[];
-  wizardId: string;
-}) {
-  const toastId = toast.info("Uploading Lore Images", {
-    position: "top-right",
-    autoClose: 60000,
-    hideProgressBar: false,
-    closeOnClick: false,
-    progress: 0,
-  });
-  await Bluebird.map(imgDataUris, async (imgDataUri) => {
-    uploadBookOfLoreImage({ imgDataUri, toastId, wizardId });
-  });
-  toast.done(toastId);
-}
-
 export const titlePrompts = ["The Lore of"];
 export const storyPrompts = [`Delete this text and write your Lore here`];
 
-export const getPendingLoreTxHashRedirection = async ({
-  waitForTxHash,
-  tokenAddress,
-  tokenId,
-  waitedOneRound,
-}: {
-  waitForTxHash: string;
-  tokenAddress: string;
-  tokenId: string;
-  waitedOneRound: boolean;
-}) => {
+export const getPendingLoreTxHashRedirection = async (
+  waitForTxHash: string,
+  hostname: string
+) => {
   const { data } = await client.query({
     query: gql`
-        query Lore{
-            lores(where: { struck: false, nsfw: false, txHash: "${waitForTxHash}" }) {
-                id
-                index
+        query Query {
+            PaginatedLore(where: {txHash: {_eq: "${waitForTxHash}"}}) {
                 txHash
+                slug
+                tokenId
+                page
             }
         }
     `,
     fetchPolicy: "no-cache",
   });
+
   console.log(data);
-  if (waitedOneRound || data?.lores[0]) {
+
+  if (data?.PaginatedLore?.length > 0) {
     await bustLoreCache();
+
+    const lore = data.PaginatedLore[0];
+    const revalidateUrl = `${hostname}/api/revalidate/lore?secret=${process.env.REVALIDATION_SECRET_TOKEN}&tokenSlug=${lore.slug}&tokenId=${lore.tokenId}&page=${lore.page}`;
+
+    console.log(`Revalidating url: ${revalidateUrl}`);
+
+    await fetch(revalidateUrl);
 
     return {
       redirect: {
-        destination: getLoreUrl(
-          isWizardsContract(tokenAddress) ? "wizards" : "souls",
-          parseInt(tokenId),
-          0
-        ),
+        destination: `/lore/wait-for-lore-tx?redirectTo=${getLoreUrl(
+          lore.slug,
+          lore.tokenId,
+          lore.page - 1
+        )}&client=true`,
       },
     };
   }
 
   return {
     redirect: {
-      destination: `/lore/add?waitForTxHash=${waitForTxHash}&tokenId=${tokenId}&tokenAddress=${tokenAddress}&client=true`,
+      destination: `/lore/wait-for-lore-tx?waitForTxHash=${waitForTxHash}&client=true`,
     },
   };
 };

@@ -3,86 +3,51 @@ import { GetStaticPropsContext } from "next";
 import Book from "../../../../components/Lore/Book";
 import { LorePageData } from "../../../../components/Lore/types";
 import OgImage from "../../../../components/OgImage";
-import dynamic from "next/dynamic";
 
 import {
-  bustLoreCache,
   getFirstAvailableWizardLoreUrl,
-  getLeftRightPages,
-  getLoreInChapterForm,
-  getWizardsWithLore,
-} from "../../../../components/Lore/loreSubgraphUtils";
-import { CHARACTER_CONTRACTS } from "../../../../contracts/ForgottenRunesWizardsCultContract";
+  getLeftRightPagesV2,
+} from "../../../../components/Lore/loreFetchingUtils";
 import { getLoreUrl } from "../../../../components/Lore/loreUtils";
 import { promises as fs } from "fs";
 import path from "path";
-import { useMedia } from "react-use";
-import { useEffect, useState } from "react";
-import flatMap from "lodash/flatMap";
-
-import productionWizardData from "../../../../data/nfts-prod.json";
-import productionSoulsData from "../../../../data/souls-prod.json";
-import stagingSoulsData from "../../../../data/souls-staging.json";
-import { Config } from "@usedapp/core";
-
-const soulsData = (
-  parseInt(process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID ?? "1") === 4
-    ? stagingSoulsData
-    : productionSoulsData
-) as { [soulId: string]: any };
-const wizData = productionWizardData as { [wizardId: string]: any };
-
-const WizardMapLeaflet = dynamic(
-  () => import("../../../../components/Lore/WizardMapLeaflet"),
-  { ssr: false }
-);
+import LoreSharedLayout from "../../../../components/Lore/LoreSharedLayout";
+import Spacer from "../../../../components/Spacer";
+import { getCloudinaryFrontedImageSrc } from "../../../../components/Lore/LoreMarkdownRenderer";
 
 const LorePage = ({
   loreTokenSlug,
   tokenId,
+  tokenName,
+  tokenImage,
+  tokenBg,
+  currentOwner,
   lorePageData,
-  wizardsWithLore,
 }: {
-  loreTokenSlug: "wizards" | "souls";
+  loreTokenSlug: "wizards" | "souls" | "ponies" | "narrative";
   tokenId: number;
+  tokenName: string;
+  tokenImage: string;
+  tokenBg?: string;
+  currentOwner?: string;
   lorePageData: LorePageData;
-  wizardsWithLore: { [key: number]: boolean };
 }) => {
-  const isWide = useMedia("(min-width: 1000px)");
-
-  const [showGallery, setShowGallery] = useState(false);
-
-  useEffect(() => {
-    // We use a small timeout before showing gallery as it fires image fetching that can often block/queue lore book image fetching
-    const timeout = window.setTimeout(() => setShowGallery(true), 200);
-
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, []);
-
-  let title = "The Book of Lore";
-
-  if (loreTokenSlug === "wizards") {
-    title = `The Lore of ${wizData[tokenId.toString()].name} (#${tokenId})`;
-  } else if (loreTokenSlug === "souls") {
-    title = `The Lore of ${
-      soulsData?.[tokenId.toString()]?.name ?? "a Soul"
-    } (#${tokenId})`;
-  }
+  const title = `The Lore of ${tokenName}`;
 
   let ogImage =
     lorePageData.leftPage?.firstImage ?? lorePageData.rightPage?.firstImage;
 
-  if (!ogImage && loreTokenSlug === "souls") {
-    // Hack to prevent modifying of image api
-    ogImage = `${process.env.NEXT_PUBLIC_SOULS_API}/api/souls/img/${tokenId}`;
+  if (!ogImage) {
+    ogImage = tokenImage;
   }
+
+  const { newSrc: cloudFrontedOgImage } = getCloudinaryFrontedImageSrc(ogImage);
+
   const og = (
     <OgImage
       title={title}
       wizard={tokenId}
-      images={ogImage}
+      images={cloudFrontedOgImage}
       bgColor={
         lorePageData.leftPage?.firstImage
           ? lorePageData.leftPage?.bgColor
@@ -92,25 +57,22 @@ const LorePage = ({
       }
     />
   );
-  const config: Config = {
-    readOnlyChainId: parseInt(
-      process.env.NEXT_PUBLIC_REACT_APP_CHAIN_ID as string
-    ),
-  };
 
   return (
     <Layout title={title}>
       {og}
-      <>
+      <LoreSharedLayout>
+        <Spacer pt={3} />
         <Book
           loreTokenSlug={loreTokenSlug}
           tokenId={tokenId}
+          tokenName={tokenName}
+          tokenImage={tokenImage}
+          tokenBg={tokenBg}
+          currentOwner={currentOwner}
           lorePageData={lorePageData}
         />
-      </>
-      {isWide && showGallery && (
-        <WizardMapLeaflet wizardsWithLore={wizardsWithLore} bookOfLore={true} />
-      )}
+      </LoreSharedLayout>
     </Layout>
   );
 };
@@ -134,7 +96,6 @@ async function getNarrativePageData(pageNum: number, loreTokenSlug: string) {
     return {
       redirect: {
         destination: getLoreUrl("narrative", 0, 0),
-        revalidate: 2,
       },
     };
   }
@@ -178,7 +139,6 @@ async function getNarrativePageData(pageNum: number, loreTokenSlug: string) {
           : await getFirstAvailableWizardLoreUrl(),
       },
     },
-    revalidate: 2,
   };
 }
 
@@ -219,7 +179,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     return {
       redirect: {
         destination: getLoreUrl(loreTokenSlug, tokenId, pageNum + 1),
-        revalidate: 2,
       },
     };
   }
@@ -232,67 +191,72 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   const leftPageNum = pageNum - 1;
   const rightPageNum = pageNum;
 
-  const [leftPage, rightPage, previousPageRoute, nextPageRoute] =
-    await getLeftRightPages(loreTokenSlug, tokenId, leftPageNum, rightPageNum);
+  const [
+    tokenName,
+    tokenImage,
+    tokenBg,
+    currentOwner,
+    leftPage,
+    rightPage,
+    previousPageRoute,
+    nextPageRoute,
+  ] = await getLeftRightPagesV2(
+    loreTokenSlug,
+    tokenId,
+    leftPageNum,
+    rightPageNum
+  );
 
   console.log(
     `Regenerated ${loreTokenSlug} - ${tokenId} pages ${leftPageNum} and ${rightPageNum}`
   );
-  // console.log({
-  //   // leftPage,
-  //   // rightPage,
-  //   previousPageRoute,
-  //   nextPageRoute,
-  // });
+
   return {
     props: {
       loreTokenSlug,
       tokenId,
+      tokenName,
+      tokenImage,
+      tokenBg: tokenBg ?? null,
+      currentOwner: currentOwner ?? null,
       lorePageData: {
         leftPage,
         rightPage,
-        previousPageRoute,
-        nextPageRoute,
+        previousPageRoute: previousPageRoute ?? null,
+        nextPageRoute: nextPageRoute ?? null,
       },
-      wizardsWithLore: await getWizardsWithLore(),
     },
-    revalidate: 2,
   };
 }
 
 export async function getStaticPaths() {
   const paths = [];
 
-  await bustLoreCache();
-
-  for (const [loreTokenSlug, loreTokenContract] of Object.entries(
-    CHARACTER_CONTRACTS
-  )) {
-    console.log(`Generating paths for ${loreTokenSlug} ${loreTokenContract}`);
-
-    const loreInChapterForm = await getLoreInChapterForm(
-      loreTokenContract,
-      true
-    );
-
-    // console.log(data);
-    //Note: its so annoying NextJs doesn't let you pass extra data to getStaticProps so now we fetch inside there too sigh... https://github.com/vercel/next.js/discussions/11272
-    paths.push(
-      ...flatMap(loreInChapterForm, (tokenLoreData: any) => {
-        return (tokenLoreData?.lore ?? []).map(
-          (loreData: any, index: number) => {
-            return {
-              params: {
-                loreTokenSlug,
-                tokenId: tokenLoreData.tokenId.toString(),
-                page: (index % 2 === 0 ? index : index + 1).toString(),
-              },
-            };
-          }
-        );
-      })
-    );
-  }
+  // const { data } = await client.query({
+  //   query: gql`
+  //     query WizardLore {
+  //       PaginatedLore(order_by: { globalpage: asc }) {
+  //         slug
+  //         tokenId
+  //         page
+  //         globalpage
+  //       }
+  //     }
+  //   `,
+  //   fetchPolicy: "no-cache",
+  // });
+  // paths.push(
+  //   ...map(data.PaginatedLore, (loreData: any) => {
+  //     const page = loreData.page - 1;
+  //     return {
+  //       params: {
+  //         loreTokenSlug: loreData.slug,
+  //         tokenId: loreData.tokenId.toString(),
+  //         page: getLoreAsEvenPage(page).toString(),
+  //       },
+  //     };
+  //   })
+  // );
 
   paths.push(...(await getNarrativePaths()));
 

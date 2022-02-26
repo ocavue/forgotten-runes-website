@@ -7,7 +7,7 @@ import { Box, Flex } from "rebass";
 import LoreMarkdownRenderer from "../../components/Lore/LoreMarkdownRenderer";
 import { useExtractColors } from "../../hooks/useExtractColors";
 import {
-  WizardConfiguration,
+  TokenConfiguration,
   WizardList,
 } from "../../components/AddLore/WizardPicker";
 import Spacer from "../../components/Spacer";
@@ -31,7 +31,6 @@ import "react-toastify/dist/ReactToastify.css";
 import StyledToastContainer from "../../components/StyledToastContainer";
 import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
 import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
-import { NETWORKS } from "../../constants";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
@@ -47,7 +46,7 @@ const WriteLore = ({}: {}) => {
 
   const [currentBgColor, setCurrentBgColor] = useState<string>("#3A110F");
   const [nsfw, setNsfw] = useState<boolean>();
-  const [pickedToken, setPickedToken] = useState<WizardConfiguration>();
+  const [pickedToken, setPickedToken] = useState<TokenConfiguration>();
 
   const [firstImageUrl, setFirstImageUrl] = useState<string | undefined>();
   const { bgColor: firstImageBgColor } = useExtractColors(firstImageUrl);
@@ -93,6 +92,8 @@ const WriteLore = ({}: {}) => {
     }
     if (existingLoreToken) setPickedToken(existingLoreToken);
   }, [existingLoreToken, existingLore, existingLoreBgColor]);
+
+  const fetchingExistingLore = !existingLore && isEditMode;
 
   return (
     <Flex flexDirection={"column"} pb={6} p={4} pr={4}>
@@ -158,9 +159,9 @@ const WriteLore = ({}: {}) => {
           </Flex>
         </>
       )}
-      {!existingLore && isEditMode && <h1>Fetching existing lore entry...</h1>}
+      {fetchingExistingLore && <h1>Fetching existing lore entry...</h1>}
 
-      {pickedToken && (
+      {pickedToken && !fetchingExistingLore ? (
         <>
           <Flex
             flexDirection={"row"}
@@ -297,7 +298,7 @@ const WriteLore = ({}: {}) => {
             </Flex>
           </Flex>
         </>
-      )}
+      ) : null}
       <StyledToastContainer theme="dark" />
     </Flex>
   );

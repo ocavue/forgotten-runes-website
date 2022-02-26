@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import convert from "color-convert";
 import { sortBy, toPairs } from "lodash";
-import { IPFS_HTTP_SERVER } from "../components/Lore/IndividualLorePage";
-import { IPFS_SERVER } from "../constants";
+import { getCloudinaryFrontedImageSrc } from "../components/Lore/LoreMarkdownRenderer";
 
 const getImageData = function (imageUrl: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -58,12 +57,9 @@ export function useExtractColors(url?: string | null) {
     async function run() {
       if (!url) return;
 
-      let imageData;
-      if (url?.startsWith("ipfs://")) {
-        imageData = url.replace(/^ipfs:\/\//, IPFS_HTTP_SERVER);
-      } else {
-        imageData = url; //base64
-      }
+      const { newSrc: imageData, fallbackSrc } =
+        getCloudinaryFrontedImageSrc(url);
+
       const image: HTMLImageElement = document.createElement("img");
       image.addEventListener("load", function () {
         const canvas = document.createElement("canvas");

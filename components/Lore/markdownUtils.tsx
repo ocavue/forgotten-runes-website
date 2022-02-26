@@ -1,14 +1,13 @@
 import { IndividualLorePageData } from "./types";
 import { IPFS_SERVER } from "../../constants";
 import productionWizardData from "../../data/nfts-prod.json";
-import dayjs from "dayjs";
-import { fetchFromIpfs } from "../../lib/web3Utils";
+import truncateEthAddress from "truncate-eth-address";
 
 const wizData = productionWizardData as { [wizardId: string]: any };
 
-export async function hydratePageDataFromMetadata(
-  loreMetadataURI: string,
-  createdAtTimestamp: number,
+export async function hydratePageDataFromRawContent(
+  rawContent: any,
+  createdAtBlock: number,
   creator: string,
   tokenId: number
 ): Promise<IndividualLorePageData> {
@@ -27,15 +26,11 @@ export async function hydratePageDataFromMetadata(
       isEmpty: false,
       bgColor: `#${wizard.background_color}`, //TODO: Hmm wiz colour, or some reddish hue?
       title: `Wizard ${tokenId} Burned`,
-      story: `On ${dayjs.unix(createdAtTimestamp).format("D MMMM YYYY")}, ${
-        wizard.name
-      } passed through The Sacred Flame and became a Soul \n\n![Soul Image](${
-        process.env.NEXT_PUBLIC_SOULS_API
-      }/api/souls/img/${tokenId}) \n\n[Go to Lore for this Soul](/lore/souls/${tokenId}/0)`,
+      story: `On Ethereum block ${createdAtBlock}, ${wizard.name} passed through The Sacred Flame and became a Soul \n\n![Soul Image](${process.env.NEXT_PUBLIC_SOULS_API}/api/souls/img/${tokenId}) \n\n[Go to Lore for this Soul](/lore/souls/${tokenId}/0)`,
     };
   }
 
-  const metadata = await fetchFromIpfs(loreMetadataURI);
+  const metadata = rawContent;
 
   // We use first image for og metadata, and yes regex not the coolest method but it works :)
   let firstImage = metadata?.description?.match(
@@ -52,8 +47,12 @@ export async function hydratePageDataFromMetadata(
     isEmpty: false,
     bgColor: metadata?.background_color ?? "#000000",
     title: metadata?.name ?? "Untitled",
-    story: (metadata?.description ?? "")
-      // .replace(/([^\s]+)\n/gi, "$1  \n") // Markdown needs two spaces before a \n for line break but our editor doesn't do this if you c/p content into it...
-      .replace("Delete this text and write your Lore here", ""),
+    story:
+      (metadata?.description ?? "")
+        // .replace(/([^\s]+)\n/gi, "$1  \n") // Markdown needs two spaces before a \n for line break but our editor doesn't do this if you c/p content into it...
+        .replace("Delete this text and write your Lore here", "") +
+      `  \n  \n_Entered by: [${truncateEthAddress(
+        creator
+      )}](https://opensea.io/${creator})_`,
   };
 }

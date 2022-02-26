@@ -4,7 +4,10 @@ import wizardLayers from "../../public/static/nfts/wizards/wizards-layers.json";
 import wizardTraits from "../../public/static/nfts/wizards/wizards-traits.json";
 import soulLayers from "../../public/static/nfts/souls/souls-layers.json";
 import soulTraits from "../../public/static/nfts/souls/souls-traits.json";
-import { compact, groupBy, keyBy, map } from "lodash";
+import ponyLayers from "../../public/static/nfts/ponies/ponies-layers.json";
+import ponyTraits from "../../public/static/nfts/ponies/ponies-traits.json";
+
+import { compact, groupBy, keyBy, map, sortBy } from "lodash";
 import fs from "fs";
 import fetch from "node-fetch";
 import fileType from "file-type";
@@ -69,6 +72,7 @@ export const wizardLayersIdx: { [key: string]: any } = keyBy(
   "idx"
 );
 export const soulLayersIdx: { [key: string]: any } = keyBy(soulLayers, "idx");
+export const poniesLayersIdx: { [key: string]: any } = keyBy(ponyLayers, "idx");
 
 export async function getWizardPartsBuffer() {
   return sharp(
@@ -101,9 +105,19 @@ export const soulsLayerNames = [
   "undesirable",
 ];
 
+const poniesLayerNames = [
+  "background",
+  "pony",
+  "clothes",
+  "head",
+  "mouth",
+  "rune",
+];
+
 export const tokenLayerNames: { [key: string]: string[] } = {
   wizards: wizardLayerNames,
   souls: soulsLayerNames,
+  ponies: poniesLayerNames,
   "wizard-familiars": wizardFamiliarLayernames,
 };
 
@@ -112,6 +126,10 @@ export type TraitsLayerDescription = {
   filename: string;
   trait: string;
   label: string;
+};
+
+export type ExtendedSharpBuffer = sharp.OverlayOptions & {
+  zIndex?: number;
 };
 
 function doubleKeyBy(collection: any[], key1: string, key2: string) {
@@ -132,6 +150,9 @@ const wizardsTraitsLayerDescriptionByLabel: {
 const soulsTraitsLayerDescriptionByLabel: {
   [trait: string]: { [label: string]: TraitsLayerDescription };
 } = doubleKeyBy(soulTraits, "trait", "label");
+const poniesTraitsLayerDescriptionByLabel: {
+  [trait: string]: { [label: string]: TraitsLayerDescription };
+} = doubleKeyBy(ponyTraits, "trait", "label");
 
 export const tokenTraitsByLabel: {
   [tokenSlug: string]: {
@@ -140,6 +161,7 @@ export const tokenTraitsByLabel: {
 } = {
   wizards: wizardsTraitsLayerDescriptionByLabel,
   souls: soulsTraitsLayerDescriptionByLabel,
+  ponies: poniesTraitsLayerDescriptionByLabel,
 };
 
 const wizardTraitsLayerDescriptionByIndex: {
@@ -148,6 +170,9 @@ const wizardTraitsLayerDescriptionByIndex: {
 const soulTraitsLayerDescriptionByIndex: {
   [idx: string]: TraitsLayerDescription;
 } = keyBy(soulTraits, "idx");
+const ponyTraitsLayerDescriptionByIndex: {
+  [idx: string]: TraitsLayerDescription;
+} = keyBy(ponyTraits, "idx");
 
 export const tokenTraitsByIndex: {
   [tokenSlug: string]: {
@@ -156,6 +181,7 @@ export const tokenTraitsByIndex: {
 } = {
   wizards: wizardTraitsLayerDescriptionByIndex,
   souls: soulTraitsLayerDescriptionByIndex,
+  ponies: ponyTraitsLayerDescriptionByIndex,
 };
 
 export async function extractTokenFrameBuffer({
@@ -178,19 +204,23 @@ export async function extractTokenFrameBuffer({
         frameNum,
       });
     }
-    case "souls": {
+    case "souls":
+    case "ponies": {
       const filename = tokenTraitsByIndex[tokenSlug][frameNum].filename;
-      return sharp(
-        path.join(
-          ROOT_PATH,
-          `public/static/nfts/${tokenSlug}/layers/${filename}`
-        )
-      )
-        .png()
-        .toBuffer();
+      const fullFilename = path.join(
+        ROOT_PATH,
+        `public/static/nfts/${tokenSlug}/layers/${filename}`
+      );
+      if (!fs.existsSync(fullFilename)) {
+        console.log("can't find: ", fullFilename);
+      }
+
+      return sharp(fullFilename).png().toBuffer();
     }
   }
 }
+
+const MOUNT_OFFSET = -2; // ugh
 
 export async function extractWizardFrame({
   partsBuffer,
@@ -250,6 +280,9 @@ export async function getTokenLayersData({
     case "souls": {
       return soulLayersIdx[tokenId];
     }
+    case "ponies": {
+      return poniesLayersIdx[tokenId];
+    }
   }
 }
 
@@ -278,14 +311,14 @@ export async function getTokenFrameNumber({
 export async function getTraitLayerBufferForTokenId({
   tokenSlug,
   tokenId,
-  width,
   traitSlug,
+  width,
   trim,
 }: {
   tokenSlug: string;
   tokenId: string;
-  width: number;
   traitSlug: string;
+  width?: number;
   trim?: boolean;
 }) {
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
@@ -302,9 +335,13 @@ export async function getTraitLayerBufferForTokenId({
     frameNum,
   });
 
-  const size = width;
-  let buffer = await sharp(layerPartBuffer)
-    .resize(size, size, {
+  let layerPartBufferSharp = await sharp(layerPartBuffer);
+  const imgMetadata = await layerPartBufferSharp.metadata();
+  const newWidth = width || imgMetadata.width;
+  const newHeight = width || imgMetadata.height;
+
+  let buffer = await layerPartBufferSharp
+    .resize(newWidth, newHeight, {
       fit: sharp.fit.fill,
       kernel: sharp.kernel.nearest,
     })
@@ -358,11 +395,11 @@ export async function getTraitLayerBuffer({
 export type GetStyledTokenBufferProps = {
   tokenSlug: string;
   tokenId: string;
-  width: number;
-  //   style?: string;
+  width?: number;
   trim?: boolean;
   noBg?: boolean;
   sepia?: boolean;
+  layers?: string[];
 };
 
 export const VALID_TOKEN_STYLES = ["default", "nobg", "sepia"];
@@ -370,15 +407,15 @@ export async function getStyledTokenBuffer({
   tokenSlug,
   tokenId,
   width,
-  //   style,
   trim,
   noBg,
   sepia,
+  layers,
 }: GetStyledTokenBufferProps) {
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
   // const wizardLayerData = await getTokenLayersData({ tokenSlug, tokenId });
 
-  const layerNames = tokenLayerNames[tokenSlug];
+  const layerNames = layers || tokenLayerNames[tokenSlug];
 
   let buffers: Buffer[] = [];
 
@@ -394,6 +431,7 @@ export async function getStyledTokenBuffer({
       continue;
     }
 
+    // console.log({ tokenSlug, tokenId, frameNum });
     const layerPartBuffer = await extractTokenFrameBuffer({
       tokenSlug,
       partsBuffer,
@@ -415,12 +453,16 @@ export async function getStyledTokenBuffer({
 
   let [bgBuffer, ...rest] = buffers;
 
+  let bgSharp = await sharp(bgBuffer);
+  const imgMetadata = await bgSharp.metadata();
+  const newWidth = width || imgMetadata.width;
+  const newHeight = width || imgMetadata.height;
+
   const restBuffers = rest.map((r: any) => ({ input: r }));
   const canvas = await sharp(bgBuffer).composite(restBuffers).png().toBuffer();
 
-  const size = width;
   let buffer = await sharp(canvas)
-    .resize(size, size, {
+    .resize(newWidth, newHeight, {
       fit: sharp.fit.fill,
       kernel: sharp.kernel.nearest,
     })
@@ -487,8 +529,51 @@ export type AseSpriteFrames = {
   [key: string]: AsepriteFrame;
 };
 
+export const MountZIndex = {
+  bg: 0,
+  arm: 10,
+  prop: 20,
+  mount: 30,
+  body: 40,
+  head: 50,
+  fg: 60,
+};
+
 const frameBaseURL = `https://nftz.forgottenrunes.com/frames`;
 const turnaroundsBaseURL = `https://nftz.forgottenrunes.com/turnarounds`;
+
+const defaultSpritesheetSettings = {
+  tags: [
+    { name: "front", frames: 4 },
+    { name: "left", frames: 4 },
+    { name: "back", frames: 4 },
+    { name: "right", frames: 4 },
+  ],
+  width: 50,
+  height: 50,
+  duration: 200,
+  columns: 4,
+  rows: 4,
+};
+
+const familiarSpritesheetSettings = {
+  tags: [
+    { name: "front", frames: 4 },
+    { name: "front_idle", frames: 4 },
+    { name: "left", frames: 4 },
+    { name: "left_idle", frames: 4 },
+    { name: "back", frames: 4 },
+    { name: "back_idle", frames: 4 },
+    { name: "right", frames: 4 },
+    { name: "right_idle", frames: 4 },
+  ],
+  width: 50,
+  height: 50,
+  duration: 200,
+  columns: 4,
+  rows: 8,
+};
+
 export async function buildSpritesheet({
   tokenSlug,
   tokenId,
@@ -500,25 +585,24 @@ export async function buildSpritesheet({
   json?: boolean;
   image?: boolean;
 }) {
-  const tags = [
-    { name: "front", frames: 4 },
-    { name: "left", frames: 4 },
-    { name: "back", frames: 4 },
-    { name: "right", frames: 4 },
-  ];
-  const WIDTH = 50;
-  const HEIGHT = 50;
-  const DURATION = 200;
-  const columns = 4;
-  const rows = 4;
+  const tokenSlugLookup =
+    tokenSlug === "wizard-familiars" ? "wizards" : tokenSlug;
+
+  const settings =
+    tokenSlug === "wizard-familiars"
+      ? familiarSpritesheetSettings
+      : defaultSpritesheetSettings;
+
+  const { tags, width, height, duration, columns, rows } = settings;
+
+  const WIDTH = width;
+  const HEIGHT = height;
+  const DURATION = duration;
   const imageWidth = columns * WIDTH;
   const imageHeight = rows * HEIGHT;
 
   // get the familiar slug
   // we can get this two ways, either from the wizzyId or the name as the tokenId
-
-  const tokenSlugLookup =
-    tokenSlug === "wizard-familiars" ? "wizards" : tokenSlug;
 
   const tokenLayerData = await getTokenLayersData({
     tokenSlug: tokenSlugLookup,
@@ -630,7 +714,8 @@ export async function buildSpritesheet({
     }
 
     frameTags.push({
-      name: `${tokenSlug}-${tokenId}-${tagDescription.name}`,
+      // name: `${tokenSlug}-${tokenId}-${tagDescription.name}`,
+      name: `${tagDescription.name}`,
       from: frameFromIndex,
       to: frameFromIndex + tagDescription.frames - 1,
       direction: "forward",
@@ -921,12 +1006,154 @@ export async function extractRidingTraitBuffer({
   }
 }
 
-// This is different than getRidingTokenBodyBuffer, unfortunately, because when
-// we mount the rider on a mount, there are several z-index changes required e.g. to put
-// the prop behind the mount
+export async function getMountInCasketImageBuffer({
+  tokenSlug,
+  tokenId,
+  ridingTokenSlug,
+  ridingTokenId,
+  width,
+  scale,
+}: {
+  tokenSlug: string;
+  tokenId: string;
+  ridingTokenSlug: string;
+  ridingTokenId: string;
+  width: number;
+  scale: number;
+  trim?: boolean;
+}) {
+  let buffers: ExtendedSharpBuffer[] = [];
+  let resizeArgs = { fit: sharp.fit.fill, kernel: sharp.kernel.nearest };
+  // get mount
+  let mountBuffer = await getMountImageBuffer({
+    tokenId: ridingTokenId,
+    tokenSlug: ridingTokenSlug,
+  });
+
+  const mountSharp = await sharp(mountBuffer);
+  const imgMetadata = await mountSharp.metadata();
+  const newImgWidth = Math.floor(imgMetadata.width || 59);
+  const newImgHeight = Math.floor(imgMetadata.height || 59);
+  console.log("imgMetadata: ", imgMetadata);
+
+  let maskBuffer = await sharp(
+    path.join(
+      ROOT_PATH,
+      `public/static/nfts/souls/wiz_body_rider/bg_coffin_mask_black.png`
+    )
+  )
+    .resize(newImgWidth, newImgHeight, resizeArgs)
+    .png()
+    .toBuffer();
+
+  mountBuffer = await sharp({
+    create: {
+      width: newImgWidth,
+      height: newImgHeight,
+      channels: 4,
+      background: "rgba(0,0,0,0)",
+    },
+  })
+    .composite([
+      {
+        input: await sharp(mountBuffer).flip().png().toBuffer(),
+        top: 27 * scale,
+        left: 0,
+      },
+    ])
+    .png()
+    .toBuffer();
+
+  let newBuffer = await sharp({
+    create: {
+      width: newImgWidth,
+      height: newImgHeight,
+      channels: 4,
+      background: "rgba(0,0,0,0)",
+    },
+  })
+    .composite([
+      {
+        input: await sharp(maskBuffer).png().toBuffer(),
+        top: 0,
+        left: 0,
+      },
+    ])
+    .boolean(await sharp(mountBuffer).png().toBuffer(), "and")
+    .png()
+    .toBuffer();
+
+  mountBuffer = await sharp(mountBuffer)
+    .boolean(await sharp(newBuffer).png().toBuffer(), "eor")
+    .png()
+    .toBuffer();
+
+  buffers.push({
+    input: mountBuffer,
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: 10,
+  });
+
+  const undesirableLayer = await getTokenTraitLayerDescription({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
+  console.log("undesirableLayer: ", undesirableLayer);
+
+  const undesirableBottomBuffer = await extractRidingTraitBuffer({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+    suffix: "_bottom",
+  });
+  buffers.push({
+    input: await sharp(undesirableBottomBuffer)
+      .resize(newImgWidth, newImgHeight, resizeArgs)
+      .toBuffer(),
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: 0,
+  });
+
+  const undesirableTopBuffer = await extractRidingTraitBuffer({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+    suffix: "_top",
+  });
+  buffers.push({
+    input: await sharp(undesirableTopBuffer)
+      .resize(newImgWidth, newImgHeight, resizeArgs)
+      .toBuffer(),
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: 20,
+  });
+
+  // buffers.push({
+  //   input: maskBuffer,
+  //   top: 0,
+  //   left: MOUNT_OFFSET * scale,
+  //   zIndex: 60,
+  // });
+
+  const canvas = await sharp({
+    create: {
+      width: newImgWidth,
+      height: newImgHeight,
+      channels: 4,
+      background: "rgba(0,0,0,0)",
+    },
+  }).composite(sortBy(buffers, (b) => b.zIndex));
+
+  return canvas.png().toBuffer();
+}
+
+// This is for getting a rider/mount pair
 //
-// But in getRidingTokenBodyBuffer we "simplify" the rider together to make it a
-// flat rider image for the zip download
+// getRidingTokenBodyBuffer is for the zip download and we "simplify" the rider together to make it a flat image
 export async function getRiderOnMountImageBuffer({
   tokenSlug,
   tokenId,
@@ -941,38 +1168,37 @@ export async function getRiderOnMountImageBuffer({
   width: number;
   trim?: boolean;
 }) {
+  const scale = 8;
+
+  {
+    // special case for coffins because art
+    const undesirableLayer = await getTokenTraitLayerDescription({
+      tokenSlug,
+      tokenId,
+      traitSlug: "undesirable",
+    });
+    if (undesirableLayer && undesirableLayer.filename.match(/coffin/)) {
+      return getMountInCasketImageBuffer({
+        tokenSlug,
+        tokenId,
+        ridingTokenSlug,
+        ridingTokenId,
+        width,
+        scale,
+      });
+    }
+  }
+
+  let buffers = await getRidingBodyBuffers({ tokenSlug, tokenId, scale });
+
+  // get mount
   let mountBuffer = await getMountImageBuffer({
     tokenId: ridingTokenId,
     tokenSlug: ridingTokenSlug,
   });
 
+  // get prop
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
-  const headFrameNum = await getTokenFrameNumber({
-    tokenSlug,
-    tokenId,
-    traitSlug: "head",
-  });
-  const ridingHeadBuffer =
-    parseInt(tokenId) >= 0 && headFrameNum >= 0 && headFrameNum != 7777
-      ? await extractRidingTraitBuffer({
-          tokenSlug,
-          tokenId,
-          traitSlug: "head",
-          suffix: "_rider",
-        })
-      : undefined;
-
-  const defaultHeadBuffer =
-    headFrameNum >= 0 && headFrameNum != 7777
-      ? await extractTokenFrameBuffer({
-          tokenSlug,
-          partsBuffer,
-          frameNum: headFrameNum,
-        })
-      : undefined;
-
-  const headBuffer = ridingHeadBuffer || defaultHeadBuffer;
-
   const propFrameNum = await getTokenFrameNumber({
     tokenSlug,
     tokenId,
@@ -987,74 +1213,28 @@ export async function getRiderOnMountImageBuffer({
         })
       : undefined;
 
-  const bodyFrameNum = await getTokenFrameNumber({
-    tokenSlug,
-    tokenId,
-    traitSlug: "body",
-  });
-  const bodyBuffer =
-    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
-      ? await extractRidingTraitBuffer({
-          tokenSlug,
-          tokenId,
-          traitSlug: "body",
-          suffix: "_rider",
-        })
-      : undefined;
-  const armBuffer =
-    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
-      ? await extractRidingTraitBuffer({
-          tokenSlug,
-          tokenId,
-          traitSlug: "body",
-          suffix: "_rider_arm",
-        })
-      : undefined;
-
   const mountSharp = await sharp(mountBuffer);
   const imgMetadata = await mountSharp.metadata();
   const newImgWidth = Math.floor(imgMetadata.width || 59);
   const newImgHeight = Math.floor(imgMetadata.height || 59);
-
-  const scale = 8;
   let resizeArgs = { fit: sharp.fit.fill, kernel: sharp.kernel.nearest };
 
   // ponies are 472x472 instead of original 59x59 so this gets more complicated
-  let buffers: any[] = [];
-
-  if (armBuffer) {
-    buffers.push({
-      input: await sharp(armBuffer).resize(472, 472, resizeArgs).toBuffer(),
-      top: 0,
-      left: 3 * scale,
-    });
-  }
-
   if (propBuffer) {
     buffers.push({
       input: await sharp(propBuffer).resize(400, 400, resizeArgs).toBuffer(),
       top: 0,
-      left: 6 * scale,
+      left: (6 + MOUNT_OFFSET) * scale,
+      zIndex: MountZIndex.prop,
     });
   }
 
-  buffers.push({ input: mountBuffer });
-
-  if (bodyBuffer) {
-    buffers.push({
-      input: await sharp(bodyBuffer).resize(472, 472, resizeArgs).toBuffer(),
-      top: 0,
-      left: 3 * scale,
-    });
-  }
-
-  if (headBuffer) {
-    buffers.push({
-      input: await sharp(headBuffer).resize(400, 400, resizeArgs).toBuffer(),
-      top: 0,
-      left: 6 * scale,
-    });
-  }
+  buffers.push({
+    input: mountBuffer,
+    top: 0,
+    left: MOUNT_OFFSET * scale, // ugh
+    zIndex: MountZIndex.mount,
+  });
 
   const canvas = await sharp({
     create: {
@@ -1063,21 +1243,12 @@ export async function getRiderOnMountImageBuffer({
       channels: 4,
       background: "rgba(0,0,0,0)",
     },
-  }).composite(
-    buffers
-    // compact([
-    //   armBuffer ? { input: armBuffer, top: 0, left: 3 } : null,
-    //   propBuffer ? { input: propBuffer, top: 0, left: 6 } : null,
-    //   { input: mountBuffer },
-    //   { input: bodyBuffer, top: 0, left: 3 },
-    //   headBuffer ? { input: headBuffer, top: 0, left: 6 } : null,
-    // ])
-  );
+  }).composite(sortBy(buffers, (b) => b.zIndex));
 
   return canvas.png().toBuffer();
 }
 
-export async function getRidingTokenBodyBuffer({
+export async function getRidingBodyBuffers({
   tokenSlug,
   tokenId,
   scale,
@@ -1085,13 +1256,30 @@ export async function getRidingTokenBodyBuffer({
   tokenSlug: string;
   tokenId: string;
   scale: number;
-}) {
+}): Promise<ExtendedSharpBuffer[]> {
   const partsBuffer = await getTokenPartsBuffer({ tokenSlug });
+
+  const bodyFrameNum = await getTokenFrameNumber({
+    tokenSlug,
+    tokenId,
+    traitSlug: "body",
+  });
   const headFrameNum = await getTokenFrameNumber({
     tokenSlug,
     tokenId,
     traitSlug: "head",
   });
+  const undesirableFrameNum = await getTokenFrameNumber({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
+  const undesirableLayer = await getTokenTraitLayerDescription({
+    tokenSlug,
+    tokenId,
+    traitSlug: "undesirable",
+  });
+
   const ridingHeadBuffer =
     parseInt(tokenId) >= 0 && headFrameNum >= 0 && headFrameNum != 7777
       ? await extractRidingTraitBuffer({
@@ -1114,7 +1302,7 @@ export async function getRidingTokenBodyBuffer({
   const headBuffer = ridingHeadBuffer || defaultHeadBuffer;
 
   const bodyBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingTraitBuffer({
           tokenSlug,
           tokenId,
@@ -1123,12 +1311,23 @@ export async function getRidingTokenBodyBuffer({
         })
       : undefined;
   const armBuffer =
-    parseInt(tokenId) >= 0
+    parseInt(tokenId) >= 0 && bodyFrameNum >= 0 && bodyFrameNum != 7777
       ? await extractRidingTraitBuffer({
           tokenSlug,
           tokenId,
           traitSlug: "body",
           suffix: "_rider_arm",
+        })
+      : undefined;
+  const undesirableBuffer =
+    parseInt(tokenId) >= 0 &&
+    undesirableFrameNum >= 0 &&
+    undesirableFrameNum != 7777
+      ? await extractRidingTraitBuffer({
+          tokenSlug,
+          tokenId,
+          traitSlug: "undesirable",
+          suffix: "_rider",
         })
       : undefined;
 
@@ -1138,7 +1337,7 @@ export async function getRidingTokenBodyBuffer({
   let resizeArgs = { fit: sharp.fit.fill, kernel: sharp.kernel.nearest };
 
   // ponies are 472x472 instead of original 59x59 so this gets more complicated
-  let buffers: any[] = [];
+  let buffers: ExtendedSharpBuffer[] = [];
 
   if (armBuffer) {
     buffers.push({
@@ -1146,7 +1345,8 @@ export async function getRidingTokenBodyBuffer({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(3 * scale),
+      left: Math.floor((2 + MOUNT_OFFSET) * scale),
+      zIndex: MountZIndex.arm,
     });
   }
 
@@ -1156,7 +1356,8 @@ export async function getRidingTokenBodyBuffer({
         .resize(newImgWidth, newImgHeight, resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(3 * scale),
+      left: Math.floor((2 + MOUNT_OFFSET) * scale),
+      zIndex: MountZIndex.body,
     });
   }
 
@@ -1166,9 +1367,43 @@ export async function getRidingTokenBodyBuffer({
         .resize(Math.floor(50 * scale), Math.floor(50 * scale), resizeArgs)
         .toBuffer(),
       top: 0,
-      left: Math.floor(6 * scale),
+      left: Math.floor((5 + MOUNT_OFFSET) * scale),
+      zIndex: MountZIndex.head,
     });
   }
+
+  if (undesirableBuffer && undesirableLayer) {
+    //
+    // exceptions because art
+    //
+    const undesirableZIndex = undesirableLayer.filename.match(/spiritorb/)
+      ? MountZIndex.bg
+      : MountZIndex.fg;
+
+    buffers.push({
+      input: await sharp(undesirableBuffer)
+        .resize(newImgWidth, newImgHeight, resizeArgs)
+        .toBuffer(),
+      top: 0,
+      left: Math.floor((2 + MOUNT_OFFSET) * scale),
+      zIndex: undesirableZIndex,
+    });
+  }
+  return buffers;
+}
+
+export async function getRidingTokenBodyBuffer({
+  tokenSlug,
+  tokenId,
+  scale,
+}: {
+  tokenSlug: string;
+  tokenId: string;
+  scale: number;
+}) {
+  const buffers = await getRidingBodyBuffers({ tokenSlug, tokenId, scale });
+  const newImgWidth = Math.floor(59 * scale);
+  const newImgHeight = Math.floor(59 * scale);
 
   const canvas = await sharp({
     create: {
@@ -1177,7 +1412,12 @@ export async function getRidingTokenBodyBuffer({
       channels: 4,
       background: "rgba(0,0,0,0)",
     },
-  }).composite(buffers);
+  }).composite(
+    sortBy(
+      buffers,
+      (b: ExtendedSharpBuffer) => b.zIndex
+    ) as ExtendedSharpBuffer[]
+  );
 
   return canvas.png().toBuffer();
 }
@@ -1226,11 +1466,21 @@ export async function fetchBufferFromUrlCached({
   }
 
   // console.log("cache miss", url);
-  const frameResponse = await fetch(url, {
+  let frameResponse = await fetch(url, {
     compress: false,
   });
   if (frameResponse.status !== 200) {
-    throw new Error(`Error can't find ${url} - ${frameResponse.status}`);
+    // small hack to try lowercase fetch as S3 is case sensitive and we have edge cases
+    frameResponse = await fetch(url.toLowerCase(), {
+      compress: false,
+    });
+    if (frameResponse.status !== 200) {
+      throw new Error(
+        `Error can't find ${url} or ${url.toLowerCase()} - ${
+          frameResponse.status
+        }`
+      );
+    }
   }
   let buffer = await frameResponse.buffer();
   __frameBufferCache[url] = buffer;

@@ -34,7 +34,7 @@ Loreは、特定のWizardトークンに付与されます。**誰もが本を�
 
 Loreを書くために、:
 
-- [Add Loreページにアクセスし](/lore/add)
+- [Add Loreページにアクセスし](/lore/write)
 
 ![](/static/lore/instructions/4jSfHkl.png)
 
