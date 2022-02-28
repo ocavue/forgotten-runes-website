@@ -10,7 +10,7 @@ import "../public/static/game/wizards/fonts.css";
 
 import "react-markdown-editor-lite/lib/index.css";
 import "../styles/root.css";
-import '../styles/markdown-editor.css';
+import "../styles/markdown-editor.css";
 
 import { ChainId, DAppProvider } from "@usedapp/core";
 
