@@ -1,6 +1,15 @@
+import {
+  ComponentItem,
+  EditorComponent,
+  Remirror,
+  ThemeProvider,
+  Toolbar,
+  ToolbarItemUnion,
+  useRemirror,
+} from "@remirror/react";
 import "@remirror/styles/all.css";
-
-import { FC, useCallback } from "react";
+import { CoreStyledComponent } from "@remirror/styles/emotion";
+import React, { FC, useCallback } from "react";
 import jsx from "refractor/lang/jsx";
 import typescript from "refractor/lang/typescript";
 import { ExtensionPriority, RemirrorEventListener } from "remirror";
@@ -12,33 +21,25 @@ import {
   CodeExtension,
   HardBreakExtension,
   HeadingExtension,
+  IframeExtension,
   ItalicExtension,
   LinkExtension,
   ListItemExtension,
   MarkdownExtension,
+  MentionAtomExtension,
   OrderedListExtension,
   PlaceholderExtension,
   StrikeExtension,
   TableExtension,
   TrailingNodeExtension,
-  IframeExtension,
 } from "remirror/extensions";
-import {
-  ComponentItem,
-  EditorComponent,
-  Remirror,
-  ThemeProvider,
-  Toolbar,
-  ToolbarItemUnion,
-  useRemirror,
-} from "@remirror/react";
-import { CoreStyledComponent } from "@remirror/styles/emotion";
-import { ImageExtension } from "./ImageExtension";
-
-import React from "react";
 import { pinFileToIpfs } from "../AddLore/addLoreHelpers";
-import type { ImageAttributes } from "./ImageExtension";
 import { BehaviorExtension } from "./BehaviourExtension";
+import { htmlToMarkdown } from "./html-to-markdown";
+import type { ImageAttributes } from "./ImageExtension";
+import { ImageExtension } from "./ImageExtension";
+import { markdownToHtml } from "./markdown-to-html";
+import { Tagging } from "./tagging";
 
 type UploadHandler = (file: File) => Promise<ImageAttributes>;
 
@@ -59,7 +60,7 @@ async function uploadImageHandler(file: File): Promise<ImageAttributes> {
 export interface MarkdownEditorProps {
   placeholder?: string;
   initialContent?: string;
-  onChangeMarkdown?(markdown: string): void;
+  onChangeMarkdown?: (markdown: string) => void;
 }
 
 /**
@@ -87,7 +88,11 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new CodeBlockExtension({ supportedLanguages: [jsx, typescript] }),
       new TrailingNodeExtension(),
       new TableExtension(),
-      new MarkdownExtension({ copyAsMarkdown: false }),
+      new MarkdownExtension({
+        copyAsMarkdown: false,
+        htmlToMarkdown,
+        markdownToHtml,
+      }),
       new IframeExtension(),
       /**
        * `HardBreakExtension` allows us to create a newline inside paragraphs.
@@ -96,34 +101,41 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new HardBreakExtension(),
       new ImageExtension({ enableResizing: false, uploadImageHandler }),
       new BehaviorExtension(),
+      new MentionAtomExtension({
+        matchers: [{ name: "at", char: "@", appendText: " ", matchOffset: 0 }],
+      }),
     ],
     [placeholder]
   );
 
-  const {
-    manager,
-    state,
-    onChange: onStateChange,
-  } = useRemirror({
+  const { manager, state } = useRemirror({
     extensions,
     stringHandler: "markdown",
-    content: initialContent,
   });
 
   const onChange: RemirrorEventListener<MarkdownExtension> = useCallback(
     (params) => {
       onChangeMarkdown?.(params.helpers.getMarkdown());
-      onStateChange(params);
     },
-    [onStateChange, onChangeMarkdown]
+    [onChangeMarkdown]
   );
 
   return (
-    <CoreStyledComponent>
+    <CoreStyledComponent
+      style={{
+        height: "500px",
+      }}
+    >
       <ThemeProvider>
-        <Remirror manager={manager} autoFocus onChange={onChange} state={state}>
+        <Remirror
+          manager={manager}
+          initialContent={initialContent}
+          autoFocus
+          onChange={onChange}
+        >
           <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
           <EditorComponent />
+          <Tagging />
           {children}
         </Remirror>
       </ThemeProvider>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -31,12 +31,21 @@ import StyledToastContainer from "../../components/StyledToastContainer";
 import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
 import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
 import { NETWORKS } from "../../constants";
-import { MarkdownEditor } from "~/components/editor";
 import { uploadImageIpfs } from "../../components/editor/uploadImageIpfs";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
 });
+
+const MarkdownEditor = dynamic(() => import("../../components/editor"), {
+  ssr: false,
+});
+
+const TEMP_LORE_DEFAULT_MARKDOWN = `
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+Best wizard of all is @wizard2140. His dreams of befriending @pony0 one day. Watch out for @soul1732!
+`;
 
 const WriteLore = ({}: {}) => {
   const [previewText, setPreviewText] = useState<string>(
@@ -95,14 +104,17 @@ const WriteLore = ({}: {}) => {
     if (existingLoreToken) setPickedToken(existingLoreToken);
   }, [existingLoreToken, existingLore, existingLoreBgColor]);
 
+  const onChangeMarkdown = useCallback((markdown: string) => {
+    console.log("[onChangeMarkdown] markdown:", markdown);
+  }, []);
+
   return (
     <Flex flexDirection={"column"} pb={6} p={4} pr={4}>
       <Flex flex={1} flexDirection={"column"}>
         <h4>{isEditMode ? "Editing existing entry" : "New lore entry"}</h4>
         <MarkdownEditor
-          initialContent={
-            /*NEW_LORE_DEFAULT_MARKDOWN*/ "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          }
+          initialContent={TEMP_LORE_DEFAULT_MARKDOWN}
+          onChangeMarkdown={onChangeMarkdown}
         />
         <div
           style={{ height: "100%" }}

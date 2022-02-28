@@ -1,0 +1,30 @@
+.remirror-theme,
+.remirror-editor-wrapper,
+.remirror-editor {
+  height: 100%;
+}
+
+.remirror-editor .mention {
+  background: #d26a6366;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.remirror-editor .suggestions {
+  border: 1px solid darkgray;
+  border-radius: 4px;
+}
+.remirror-editor .suggestion {
+  padding: 2px 8px;
+}
+.remirror-editor .highlighted {
+  background: #7dd26333;
+}
+.remirror-editor .hovered {
+  background: #d8cd2d22;
+}
+
+.remirror-editor .remirror-suggest-atom {
+  background-color: royalblue;
+  color: burlywood;
+}
