@@ -16,6 +16,7 @@ import {
   ogImageURL,
 } from "../../components/OgImage";
 import { BlogPostGrid } from "../../components/Blog/BlogPostGrid";
+import { createClient } from "contentful";
 
 export default function Index({ posts }: { posts: Post[] }) {
   // sort the blog posts by their index in the descending order
@@ -64,6 +65,32 @@ export const getStaticProps: GetStaticProps = async ({
     })
   );
   posts = pickBestByLocale(locale || "default", posts);
+
+  const client = createClient({
+    space: process.env.CONTENTFUL_SPACE as string,
+    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
+  });
+
+  const entries = await client.getEntries({
+    content_type: "blogPost",
+    locale: locale,
+  });
+
+  posts.push(
+    ...entries.items.map((entry: any) => ({
+      slug: entry.fields.slug,
+      locale: entry.sys.locale,
+      coverImageUrl: ogImageURL({
+        images: `https:${entry.fields.previewImage.fields.file.url}`,
+        title: entry.fields.title,
+      }),
+      data: {
+        title: entry.fields.title,
+        description: entry.fields.description,
+        category: entry.fields.category,
+      },
+    }))
+  );
 
   return { props: { posts } };
 };

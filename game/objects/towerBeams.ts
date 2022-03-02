@@ -197,7 +197,7 @@ export class TowerBeams {
       })
       .on("pointerup", () => {
         console.log("clicked the zone");
-        this.onClick();
+        // this.onClick(); // no summoning click for now
       });
 
     [

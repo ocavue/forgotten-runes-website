@@ -27,7 +27,7 @@ export function MetamaskWatchers({}: Props) {
   const emitProvider = useEventEmitter(events.ON_SITE_PROVIDER);
   const game = useContext(GameContext);
 
-  console.log("address:", address);
+  // console.log("address:", address);
 
   // you have to use the user's provider if you want any authenticated functions (because the user's provider is connected to their wallet)
 
@@ -44,7 +44,7 @@ export function MetamaskWatchers({}: Props) {
   });
 
   useEffect(() => {
-    console.log("MetamaskWatchers", game, provider);
+    // console.log("MetamaskWatchers", game, provider);
     if (game && provider) {
       emitProvider({ provider });
     }
