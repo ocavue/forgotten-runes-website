@@ -40,7 +40,7 @@
     "@react-hook/window-size": "^3.0.7",
     "@react-leaflet/core": "1.0.2",
     "@reduxjs/toolkit": "^1.5.0",
-    "@remirror/extension-file": "0.3.13",
+    "@remirror/extension-file": "^0.3.13",
     "@remirror/pm": "1.0.12",
     "@remirror/react": "1.0.25",
     "@remirror/styles": "1.1.3",

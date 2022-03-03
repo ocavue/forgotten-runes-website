@@ -33,29 +33,11 @@ import {
   TableExtension,
   TrailingNodeExtension,
 } from "remirror/extensions";
-import { pinFileToIpfs } from "../AddLore/addLoreHelpers";
 import { BehaviorExtension } from "./BehaviourExtension";
 import { htmlToMarkdown } from "./html-to-markdown";
-import type { ImageAttributes } from "./ImageExtension";
-import { ImageExtension } from "./ImageExtension";
+import { createImageExtension } from "./image-extension";
 import { markdownToHtml } from "./markdown-to-html";
 import { Tagging } from "./tagging";
-
-type UploadHandler = (file: File) => Promise<ImageAttributes>;
-
-async function uploadImageHandler(file: File): Promise<ImageAttributes> {
-  try {
-    const res = await pinFileToIpfs(file, 1, "1");
-    const src = `ipfs://${res.IpfsHash}`;
-    // if (!firstImageUrl) {
-    //   // setFirstImageUrl(url);
-    // }
-    return { src };
-  } catch (e: any) {
-    console.error(e);
-    return { error: "Problem uploading, please try again...", src: "" };
-  }
-}
 
 export interface MarkdownEditorProps {
   placeholder?: string;
@@ -99,11 +81,11 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
        * e.g. in a list item
        */
       new HardBreakExtension(),
-      new ImageExtension({ enableResizing: false, uploadImageHandler }),
       new BehaviorExtension(),
       new MentionAtomExtension({
         matchers: [{ name: "at", char: "@", appendText: " ", matchOffset: 0 }],
       }),
+      createImageExtension(),
     ],
     [placeholder]
   );

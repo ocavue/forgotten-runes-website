@@ -31,10 +31,11 @@ export function markdownToHtml(
     return `<span class="remirror-mention-atom remirror-mention-atom-at" data-mention-atom-id="${mentionId}" data-mention-atom-name="at">${mentionLabel}</span>`;
   });
 
-  return marked(markdown, {
+  const html = marked(markdown, {
     gfm: true,
     smartLists: true,
     xhtml: true,
     sanitizer,
   });
+  return html;
 }

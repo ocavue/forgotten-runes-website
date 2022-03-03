@@ -44,6 +44,8 @@ const MarkdownEditor = dynamic(() => import("../../components/editor"), {
 const TEMP_LORE_DEFAULT_MARKDOWN = `
 https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
+![wizards-2140-2-back.png](https://www.forgottenrunes.com/static/img/forgotten-runes-logo.png)
+
 Best wizard of all is @wizard2140. His dreams of befriending @pony0 one day. Watch out for @soul1732!
 `;
 

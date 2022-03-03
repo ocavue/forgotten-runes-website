@@ -2496,7 +2496,7 @@
     "@remirror/core" "^1.3.6"
     "@remirror/messages" "^1.0.6"
 
-"@remirror/extension-file@0.3.13":
+"@remirror/extension-file@^0.3.13":
   version "0.3.13"
   resolved "https://registry.yarnpkg.com/@remirror/extension-file/-/extension-file-0.3.13.tgz#9f67b2749d552634bad3ff802c04352a74b6ffb0"
   integrity sha512-AHOczjIyccI75i26RpVtb8emSV9g5b6TqteQyTBwziJLzR5yTcUjjFPvPMTLznn1xCZJxi5JVLS8Ytu8JB0C7Q==
