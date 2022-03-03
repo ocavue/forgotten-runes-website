@@ -1,14 +1,16 @@
 import * as React from "react";
-import { useState } from "react";
+import { ElementType, useState } from "react";
 import styled from "@emotion/styled";
 import { ResponsivePixelImg } from "./ResponsivePixelImg";
 import Link from "next/link";
+import { COLORS, FONTS } from "../styles/styleguide";
+import { useRouter } from "next/router";
+import { Url } from "url";
 
 type Props = {};
 
 const SiteNavElement = styled.nav`
-  font-family: "Roboto Mono", system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: ${FONTS.robotishText};
 
   display: flex;
   flex-direction: column;
@@ -21,11 +23,6 @@ const SiteNavElement = styled.nav`
     background-color: #1f200d;
     border-radius: 5px;
     padding: 5px 8px !important;
-  }
-
-  a {
-    color: white;
-    text-decoration: none;
   }
 
   .menu {
@@ -64,7 +61,8 @@ const SiteNavElement = styled.nav`
 
   .item:not(.button) a:hover,
   .item a:hover::after {
-    color: #ccc;
+    /* color: #ccc; */
+    color: ${COLORS.mustardLime};
   }
 
   .icon-link {
@@ -214,13 +212,33 @@ export const LogoToggleRow = styled.div`
   }
 `;
 
+export const StyledLink = styled.a<{
+  selected?: boolean;
+}>`
+  color: ${(props) => (props.selected ? COLORS.navBlurple : "white")};
+  text-decoration: ${(props) => (props.selected ? "underline" : "none")};
+  text-underline-offset: 6px;
+
+  &:hover {
+    color: ${COLORS.mustardLime};
+  }
+`;
+
 export default function SiteNav({
   hideNavItems = false,
 }: {
   hideNavItems: boolean | undefined;
 }) {
+  const { route, pathname } = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => setIsOpen(!isOpen);
+
+  const isOnSecretTowerRoute = route === "/";
+  const isOnStartHereRoute = route === "/wtf";
+  const isOnAnyLoreRoute = route.match(/\/lore/) ? true : false;
+  const isOnAnyBlogRoute = route.match(/\/posts/) ? true : false;
+  const isOnMapRoute = route === "/map";
+  const isOnGalleryRoute = route === "/gallery";
 
   return (
     <SiteNavElement>
@@ -244,35 +262,41 @@ export default function SiteNav({
           <SiteNavRow>
             <ul className={"menu" + (isOpen ? " active" : "")}>
               <li className="item">
-                <a href="/">The Secret Tower</a>
+                <StyledLink href="/" selected={isOnSecretTowerRoute}>
+                  The Secret Tower
+                </StyledLink>
               </li>
               <li className="item">
                 <Link as={"/wtf"} href={"/wtf"} passHref={true}>
-                  Start Here
+                  <StyledLink selected={isOnStartHereRoute}>
+                    Start Here
+                  </StyledLink>
                 </Link>
               </li>
 
               <li className="item">
-                <Link as={"/lore"} href={"/lore"} passHref={true}>
-                  <a>Lore</a>
+                <Link as={"/lore" as any} href={"/lore"} passHref={true}>
+                  <StyledLink selected={isOnAnyLoreRoute}>Lore</StyledLink>
                 </Link>
               </li>
 
               <li className="item">
                 <Link as={"/map"} href={"/map"} passHref={true}>
-                  <a>Map</a>
+                  <StyledLink selected={isOnMapRoute}>Map</StyledLink>
                 </Link>
               </li>
 
               <li className="item">
                 <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-                  <a>Gallery</a>
+                  <StyledLink selected={isOnGalleryRoute}>
+                    All Characters
+                  </StyledLink>
                 </Link>
               </li>
 
               <li className="item">
                 <Link as={"/posts"} href={"/posts"} passHref={true}>
-                  <a>Blog</a>
+                  <StyledLink selected={isOnAnyBlogRoute}>Blog</StyledLink>
                 </Link>
               </li>
             </ul>

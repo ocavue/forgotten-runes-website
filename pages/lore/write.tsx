@@ -191,12 +191,7 @@ const WriteLore = ({}: {}) => {
               <h4>
                 {isEditMode ? "Editing existing entry" : "New lore entry"}
               </h4>
-              <div
-                style={{ height: "100%" }}
-                onPaste={async () =>
-                  console.log(await navigator.clipboard.readText())
-                }
-              >
+              <div style={{ height: "100%" }}>
                 <MdEditor
                   allowPasteImage={false}
                   onChangeTrigger={"afterRender"}
@@ -223,9 +218,9 @@ const WriteLore = ({}: {}) => {
                   onChange={(value) => {
                     setEditorText(value.text);
                   }}
-                  onImageUpload={async (a: File) => {
+                  onImageUpload={async (f: File) => {
                     try {
-                      const res = await pinFileToIpfs(a, 1, "1");
+                      const res = await pinFileToIpfs(f, -1, "N/A");
 
                       const url = `ipfs://${res.IpfsHash}`;
                       if (!firstImageUrl) {

@@ -71,7 +71,7 @@ export class Web3Controller {
     game.events.on(
       events.ON_SITE_PROVIDER,
       ({ provider }: OnSiteProviderEventArgs) => {
-        console.log("we have a provider:", provider);
+        // console.log("we have a provider:", provider);
         this.web3Connected = true;
         this.provider = provider;
       }

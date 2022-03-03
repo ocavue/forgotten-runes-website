@@ -12,8 +12,10 @@ import { ImageButton } from "./ImageButton";
 
 const maxRunes = 18;
 
+const SIMPLIFIED = true;
+const ORIGINAL = false;
 const NIGHT = false;
-const WINTER = true;
+const WINTER = false;
 
 export class Tower {
   scene: Phaser.Scene;
@@ -31,6 +33,7 @@ export class Tower {
   preload() {
     const scene = this.scene;
     scene.load.aseprite("buttons", "buttons.png", "buttons.json");
+    scene.load.aseprite("interior", "Interior_v4.png", "Interior_v4.json");
 
     if (WINTER) {
       scene.load.aseprite(
@@ -55,6 +58,13 @@ export class Tower {
       );
       scene.load.image("towerTile", "souls/castle_Souls_tile.png");
     } else {
+      // we have some animations in souls too
+      scene.load.aseprite(
+        "castlePartsSouls",
+        "souls/castle_Souls.png",
+        "souls/castle_Souls.json"
+      );
+      scene.load.aseprite("castlePartsOrig", "castle_v2.png", "castle_v2.json");
       scene.load.aseprite("castleParts", "castle_v2.png", "castle_v2.json");
       scene.load.image("towerTile", "towerTile.png");
     }
@@ -84,6 +94,15 @@ export class Tower {
       );
     }
 
+    if (SIMPLIFIED) {
+      (scene as any).myAasepriteLoader?.createFromAsepriteWithLayers(
+        "castlePartsSouls"
+      );
+      (scene as any).myAasepriteLoader?.createFromAsepriteWithLayers(
+        "interior"
+      );
+    }
+
     const towerY = 0;
     const tower = NIGHT
       ? scene.add.sprite(centerX, towerY, "castleParts", "tower_dark-0")
@@ -100,15 +119,17 @@ export class Tower {
     );
     towerTile.setOrigin(originX, originY);
 
+    const xOffset = 52;
+
     {
       // buttons
       const faqButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 700 - 100,
         "buttons",
-        "faq_default.png",
-        "faq_hover.png",
+        "buttonWall_question.png",
+        "buttonWall_question.png",
         () => {
           let location: string = window.location.toString();
           if (location[location.length - 1] !== "/") {
@@ -117,45 +138,45 @@ export class Tower {
           window.open(location + "wtf", "_blank");
         }
       );
-      faqButton.setScale(0.5);
+      faqButton.setScale(1);
       scene.add.existing(faqButton);
 
       const discordButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 725 - 100,
         "buttons",
-        "social_discord_default.png",
-        "social_discord_hover.png",
+        "buttonWall_discord.png",
+        "buttonWall_discord.png",
         () => {
           console.log("discord");
           window.open("https://discord.com/invite/F7WbxwJuZC", "_blank");
         }
       );
-      discordButton.setScale(0.5);
+      discordButton.setScale(1);
       scene.add.existing(discordButton);
 
       const twitterButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 750 - 100,
         "buttons",
-        "social_twitter_default.png",
-        "social_twitter_hover.png",
+        "buttonWall_twitter.png",
+        "buttonWall_twitter.png",
         () => {
           window.open("https://twitter.com/forgottenrunes", "_blank");
         }
       );
-      twitterButton.setScale(0.5);
+      twitterButton.setScale(1);
       scene.add.existing(twitterButton);
 
       const openSeaButton = new ImageButton(
         scene,
-        centerX - 90,
+        centerX + xOffset,
         towerY + tower.height + 775 - 100,
         "buttons",
-        "social_opensea_default.png",
-        "social_opensea_hover.png",
+        "buttonWall_opensea.png",
+        "buttonWall_opensea.png",
         () => {
           const contractAddress =
             process.env.NEXT_PUBLIC_REACT_APP_WIZARDS_CONTRACT_ADDRESS;
@@ -165,7 +186,7 @@ export class Tower {
           );
         }
       );
-      openSeaButton.setScale(0.5);
+      openSeaButton.setScale(1);
       scene.add.existing(openSeaButton);
     }
 
@@ -399,8 +420,8 @@ export class Tower {
     const bottomDoor = scene.add.sprite(
       centerX,
       0 + bottomDoorY,
-      "castleParts",
-      "bottomDoor-with-snow-0" // WINTER ? "bottomDoor-with-snow-0" : "bottomDoor-0"
+      "castlePartsSouls",
+      "bottomDoor-0" // WINTER ? "bottomDoor-with-snow-0" : "bottomDoor-0"
     );
     fadeIn(scene, bottomDoor);
     bottomDoor.setOrigin(originX, originY);
@@ -454,9 +475,9 @@ export class Tower {
     lines.depth = 1;
     this.lines = lines;
 
-    const hatstaff = scene.add.sprite(centerX, 0, "castleParts", "hatStaff-0");
-    fadeIn(scene, hatstaff);
-    hatstaff.setOrigin(originX, originY);
+    // const hatstaff = scene.add.sprite(centerX, 0, "castleParts", "hatStaff-0");
+    // fadeIn(scene, hatstaff);
+    // hatstaff.setOrigin(originX, originY);
 
     // hatstaff.setInteractive({ useHandCursor: true }).on("pointerup", () => {
     //   (this.scene as any).launchShowScene();
@@ -491,6 +512,11 @@ export class Tower {
       yoyo: true,
       repeat: -1,
     });
+
+    const dice = scene.add.sprite(centerX, 120, "interior", "dice-0");
+    dice.setScale(0.3);
+    fadeIn(scene, dice);
+    dice.play({ key: "dice-dicePlay", repeat: -1 });
 
     // const palms1 = scene.add.sprite(
     //   centerX,

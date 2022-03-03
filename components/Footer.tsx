@@ -186,8 +186,8 @@ export default function Footer({}: Props) {
               <a href="https://discord.gg/forgottenrunes">Discord</a>
             </li>
             <li>
-              <a href="https://soundcloud.com/forgottenrunes">
-                Soundcloud (AmAs)
+              <a href="https://www.youtube.com/channel/UCK8UOUpF8XPcc3Ynhmchcxg">
+                YouTube
               </a>
             </li>
           </ul>
@@ -218,7 +218,7 @@ export default function Footer({}: Props) {
 
             <li className="item">
               <Link as={"/gallery"} href={"/gallery"} passHref={true}>
-                <a>All Wizards</a>
+                <a>All Characters</a>
               </Link>
             </li>
 
