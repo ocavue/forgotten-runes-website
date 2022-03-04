@@ -5,6 +5,10 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import { BLOCKS } from "@contentful/rich-text-types";
 import { Box, Flex } from "rebass";
 
+import { MediaContextProvider, Media } from "./media";
+import React from "react";
+import Spacer from "../components/Spacer";
+
 export default function FaqPage({ entry }: { entry: Entry<any> }) {
   return (
     <InfoPageLayout size={"wide"}>
@@ -13,6 +17,7 @@ export default function FaqPage({ entry }: { entry: Entry<any> }) {
           <img
             src={entry.fields.topBanner.fields.file.url}
             alt={entry.fields.topBanner.fields.title}
+            style={{ maxWidth: "100%" }}
           />
         )}
         <Flex flexDirection={"column"} px={[1, 2]} maxWidth={"860px"}>
@@ -21,8 +26,7 @@ export default function FaqPage({ entry }: { entry: Entry<any> }) {
               <img
                 style={{
                   objectFit: "contain",
-                  flex: "0 0 25%",
-                  width: "100%",
+                  maxWidth: "100%",
                   height: "auto",
                 }}
                 src={faqEntry.fields.inlineImage.fields.file.url}
@@ -47,57 +51,76 @@ export default function FaqPage({ entry }: { entry: Entry<any> }) {
                   }% ${columnImageWidthPercent}%`
               : "1fr";
 
+            const mainContentBody = (
+              <Flex flexDirection={"column"}>
+                <h2 style={{ margin: 0 }}>{faqEntry.fields.title}</h2>
+                {documentToReactComponents(faqEntry.fields.body, {
+                  renderText: (text: string) => {
+                    return text
+                      .split("\n")
+                      .reduce(
+                        (
+                          children: any[],
+                          textSegment: string,
+                          index: number
+                        ) => {
+                          return [
+                            ...children,
+                            index > 0 && <br key={index} />,
+                            textSegment,
+                          ];
+                        },
+                        []
+                      );
+                  },
+                  renderNode: {
+                    [BLOCKS.EMBEDDED_ASSET]: (node) => (
+                      <img
+                        src={node.data?.target?.fields?.file?.url}
+                        alt={node.data?.target?.fields?.title}
+                        style={{
+                          objectFit: "cover",
+                          alignSelf: "center",
+                          maxWidth: "100%",
+                        }}
+                      />
+                    ),
+                  },
+                })}
+              </Flex>
+            );
+
             return (
               <Box pt={4} key={faqEntry.sys.id}>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: columns,
-                  }}
-                >
-                  {columnImage && isColumnImageLeftAligned ? (
-                    <Box pr={3}>{columnImage}</Box>
-                  ) : null}
-                  <Flex flexDirection={"column"} flex={"1 0 75%"}>
-                    <h2 style={{ margin: 0 }}>{faqEntry.fields.title}</h2>
-                    {documentToReactComponents(faqEntry.fields.body, {
-                      renderText: (text: string) => {
-                        return text
-                          .split("\n")
-                          .reduce(
-                            (
-                              children: any[],
-                              textSegment: string,
-                              index: number
-                            ) => {
-                              return [
-                                ...children,
-                                index > 0 && <br key={index} />,
-                                textSegment,
-                              ];
-                            },
-                            []
-                          );
-                      },
-                      renderNode: {
-                        [BLOCKS.EMBEDDED_ASSET]: (node) => (
-                          <img
-                            src={node.data?.target?.fields?.file?.url}
-                            alt={node.data?.target?.fields?.title}
-                            style={{
-                              objectFit: "cover",
-                              alignSelf: "center",
-                              maxWidth: "100%",
-                            }}
-                          />
-                        ),
-                      },
-                    })}
-                  </Flex>
-                  {columnImage && !isColumnImageLeftAligned ? (
-                    <Box pl={3}>{columnImage}</Box>
-                  ) : null}
-                </div>
+                <MediaContextProvider>
+                  <Media at={"xs"}>
+                    <Flex flexDirection={"column"} alignItems={"center"}>
+                      {mainContentBody}
+                      {columnImage && (
+                        <>
+                          <Spacer pt={2} />
+                          {columnImage}
+                        </>
+                      )}
+                    </Flex>
+                  </Media>
+                  <Media greaterThanOrEqual={"sm"}>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: columns,
+                      }}
+                    >
+                      {columnImage && isColumnImageLeftAligned ? (
+                        <Box pr={3}>{columnImage}</Box>
+                      ) : null}
+                      {mainContentBody}
+                      {columnImage && !isColumnImageLeftAligned ? (
+                        <Box pl={3}>{columnImage}</Box>
+                      ) : null}
+                    </div>
+                  </Media>
+                </MediaContextProvider>
               </Box>
             );
           })}
