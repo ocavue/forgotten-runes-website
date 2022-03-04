@@ -5,7 +5,7 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import { BLOCKS } from "@contentful/rich-text-types";
 import { Box, Flex } from "rebass";
 
-import { MediaContextProvider, Media } from "./media";
+import { MediaContextProvider, Media } from "../lib/media";
 import React from "react";
 import Spacer from "../components/Spacer";
 

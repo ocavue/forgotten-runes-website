@@ -1,7 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 import { GA_TRACKING_ID } from "../lib/gtag";
-import { mediaStyles } from "./media";
+import { mediaStyles } from "../lib/media";
 
 export default class MyDocument extends Document {
   render() {
