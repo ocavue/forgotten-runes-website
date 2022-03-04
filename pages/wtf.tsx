@@ -17,7 +17,7 @@ export default function FaqPage({ entry }: { entry: Entry<any> }) {
           <img
             src={entry.fields.topBanner.fields.file.url}
             alt={entry.fields.topBanner.fields.title}
-            style={{ maxWidth: "100%" }}
+            style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }}
           />
         )}
         <Flex flexDirection={"column"} px={[1, 2]} maxWidth={"860px"}>
