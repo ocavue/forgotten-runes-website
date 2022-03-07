@@ -8,6 +8,7 @@ import {
   NodeSpecOverride,
   uniqueId,
 } from "remirror";
+import { sleep } from "./editor-utils";
 
 class ImageExtension extends FileExtension {
   createTags() {
@@ -44,21 +45,20 @@ class ImageExtension extends FileExtension {
   }
 }
 
-async function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+export type ImageUploader = (file: File) => Promise<{ url: string }>;
 
-// Upload the image to the server
-async function uploadImage(file: File): Promise<string> {
-  // TODO: wait for actual implementation. Below is just a demo.
-  console.log("uploading image");
+// TODO: replace this to actual implementation
+const defaultImageUploader: ImageUploader = async (file) => {
+  console.log("uploading image", file.name);
   await sleep(2000);
   const url = URL.createObjectURL(file);
   console.log("uploaded image", url);
-  return url;
-}
+  return { url };
+};
 
-function uploadFileHandler(): FileUploader<FileAttributes> {
+function uploadFileHandler(
+  imageUploader: ImageUploader = defaultImageUploader
+): FileUploader<FileAttributes> {
   let file: File;
   let attrs: FileAttributes;
 
@@ -74,9 +74,8 @@ function uploadFileHandler(): FileUploader<FileAttributes> {
     },
 
     upload: async (context): Promise<FileAttributes> => {
-      let url: string;
       try {
-        url = await uploadImage(file);
+        let { url } = await imageUploader(file);
         return { ...attrs, url };
       } catch (error) {
         return { ...attrs, error: `Failed to upload image: ${error}` };
@@ -87,7 +86,11 @@ function uploadFileHandler(): FileUploader<FileAttributes> {
   };
 }
 
-export function createImageExtension() {
+export function createImageExtension({
+  imageUploader,
+}: {
+  imageUploader?: ImageUploader;
+}) {
   return new ImageExtension({
     pasteRuleRegexp: /^.*image.*$/i,
 
@@ -100,6 +103,6 @@ export function createImageExtension() {
       }
     },
 
-    uploadFileHandler,
+    uploadFileHandler: () => uploadFileHandler(imageUploader),
   });
 }

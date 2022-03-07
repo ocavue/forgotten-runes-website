@@ -35,7 +35,7 @@ import {
 } from "remirror/extensions";
 import { BehaviorExtension } from "./BehaviourExtension";
 import { htmlToMarkdown } from "./html-to-markdown";
-import { createImageExtension } from "./image-extension";
+import { createImageExtension, ImageUploader } from "./image-extension";
 import { markdownToHtml } from "./markdown-to-html";
 import { Tagging } from "./tagging";
 
@@ -43,13 +43,21 @@ export interface MarkdownEditorProps {
   placeholder?: string;
   initialContent?: string;
   onChangeMarkdown?: (markdown: string) => void;
+  imageUploader?: ImageUploader;
 }
 
 /**
  * The editor which is used to create the annotation. Supports formatting.
  */
 export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
-  const { placeholder, initialContent, children, onChangeMarkdown } = props;
+  const {
+    placeholder,
+    initialContent,
+    children,
+    onChangeMarkdown,
+    imageUploader,
+  } = props;
+
   const extensions = useCallback(
     () => [
       new PlaceholderExtension({ placeholder }),
@@ -85,7 +93,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new MentionAtomExtension({
         matchers: [{ name: "at", char: "@", appendText: " ", matchOffset: 0 }],
       }),
-      createImageExtension(),
+      createImageExtension({ imageUploader }),
     ],
     [placeholder]
   );
