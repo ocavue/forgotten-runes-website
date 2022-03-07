@@ -1,12 +1,17 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 import { GA_TRACKING_ID } from "../lib/gtag";
+import { mediaStyles } from "../lib/media";
 
 export default class MyDocument extends Document {
   render() {
     return (
       <Html>
         <Head>
+          <style
+            type="text/css"
+            dangerouslySetInnerHTML={{ __html: mediaStyles }}
+          />
           {/* Global Site Tag (gtag.js) - Google Analytics */}
           <script
             async
