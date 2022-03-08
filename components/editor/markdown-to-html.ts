@@ -5,11 +5,12 @@
  */
 
 import { marked } from "marked";
+import {
+  YOUTUBE_REGEX,
+  TOKEN_TAG_REGEX,
+  createYouTubeUrl,
+} from "./editor-utils";
 import { allMentionItems } from "./mention-data";
-
-console.log("[marked:]", marked);
-
-const TOKEN_TAG_REGEX = /\@((?:wizard|soul|pony)[0-9]+)/g;
 
 /**
  * Converts the provided markdown to HTML.
@@ -29,6 +30,11 @@ export function markdownToHtml(
     }
 
     return `<span class="remirror-mention-atom remirror-mention-atom-at" data-mention-atom-id="${mentionId}" data-mention-atom-name="at">${mentionLabel}</span>`;
+  });
+
+  markdown = markdown.replace(YOUTUBE_REGEX, (match, group1) => {
+    const videoId = group1;
+    return `<iframe src="${createYouTubeUrl(videoId)}"></iframe>`;
   });
 
   const html = marked(markdown, {

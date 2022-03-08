@@ -4,8 +4,9 @@
  * Use `turndown` to provide a github flavoured markdown converter and the
  * default common mark converter.
  */
-import TurndownService from "turndown";
 import { ErrorConstant, invariant, isElementDomNode } from "@remirror/core";
+import TurndownService from "turndown";
+import { YOUTUBE_REGEX } from "./editor-utils";
 
 /**
  * Converts the provide HTML to markdown.
@@ -195,15 +196,38 @@ const turndownService = new TurndownService({
     replacement: (content, node, options) => {
       return `@${extractMentionId(node as HTMLElement) || content}`;
     },
+  })
+
+  .addRule("youtube_video", {
+    filter: (node, options) => {
+      return !!extractYoutubeVideoUrl(node);
+    },
+
+    replacement: (content, node, options) => {
+      return extractYoutubeVideoUrl(node as HTMLElement) || "";
+    },
   });
 
 const mentionIdKey = "data-mention-atom-id";
 
 function extractMentionId(node: HTMLElement): string | null {
-  const key = "data-mention-atom-id";
   if (node.nodeName === "SPAN") {
     const mentionId = node.attributes.getNamedItem(mentionIdKey)?.value;
     return mentionId || null;
+  }
+  return null;
+}
+
+function extractYoutubeVideoUrl(node: HTMLElement): string | null {
+  if (node.nodeName === "IFRAME") {
+    const src = node.attributes.getNamedItem("src")?.value;
+    if (!src) return null;
+
+    YOUTUBE_REGEX.lastIndex = 0;
+    let match = src.match(YOUTUBE_REGEX);
+    if (match) {
+      return match[0];
+    }
   }
   return null;
 }

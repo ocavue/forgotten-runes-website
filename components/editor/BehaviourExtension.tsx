@@ -14,9 +14,7 @@ import {
 } from "remirror";
 import { PasteRule } from "@remirror/pm/paste-rules";
 import { TextSelection } from "@remirror/pm/state";
-
-const YOUTUBE_REGEX =
-  /(?:(?:https:\/\/|\/\/)?(?:www\.|m\.)?(?:youtube\.com\/watch\?v=|youtu.be\/)([a-zA-Z0-9]{7,20}))/;
+import { YOUTUBE_REGEX, createYouTubeUrl } from "./editor-utils";
 
 @extension({ defaultPriority: ExtensionPriority.Highest })
 export class BehaviorExtension extends PlainExtension {
@@ -205,15 +203,4 @@ export class BehaviorExtension extends PlainExtension {
 
     return true;
   }
-}
-
-/**
- * Provide the video id.
- */
-function createYouTubeUrl(id: string) {
-  const urlStart = "https://www.youtube-nocookie.com";
-
-  return `${urlStart}/embed/${id}?autoplay=0&mute=0&controls=0&origin=${encodeURIComponent(
-    window.location.href
-  )}&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1`;
 }
