@@ -28,3 +28,7 @@
   background-color: royalblue;
   color: burlywood;
 }
+
+.remirror-editor img {
+  display: block;
+}
