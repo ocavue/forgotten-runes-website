@@ -1,45 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
-
+import { useEthers, useGasPrice } from "@usedapp/core";
 import dynamic from "next/dynamic";
-import Image from "next/image";
-
-import { Box, Flex } from "rebass";
+import { useRouter } from "next/router";
+import { memo, useCallback, useEffect, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { useDebounce } from "react-use";
+import { Flex } from "rebass";
+import { useExistingLoreData } from "../../components/AddLore/addLoreHelpers";
+import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
+import { TokenConfiguration } from "../../components/AddLore/WizardPicker";
 import LoreMarkdownRenderer from "../../components/Lore/LoreMarkdownRenderer";
 import { useExtractColors } from "../../hooks/useExtractColors";
-import {
-  TokenConfiguration,
-  WizardList,
-} from "../../components/AddLore/WizardPicker";
-import Spacer from "../../components/Spacer";
-import { ChainId, getChainById, useEthers, useGasPrice } from "@usedapp/core";
-import { formatUnits } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
-import {
-  BackgroundColorPickerField,
-  NSFWField,
-} from "../../components/AddLore/AddLoreFields";
-import { useDebounce } from "react-use";
-import { WriteButton } from "../../components/AddLore/AddLoreControls";
-import {
-  submitV2Lore,
-  useExistingLoreData,
-} from "../../components/AddLore/addLoreHelpers";
-import { useRouter } from "next/router";
-import { getTokenImageSrc } from "../../lib/nftUtilis";
-import "react-toastify/dist/ReactToastify.css";
-import StyledToastContainer from "../../components/StyledToastContainer";
-import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
-import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
-import { NETWORKS } from "../../constants";
-import { uploadImageIpfs } from "../../components/editor/uploadImageIpfs";
-
-const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
-  ssr: false,
-});
 
 const MarkdownEditor = dynamic(() => import("../../components/editor"), {
   ssr: false,
 });
+
+const MemoMarkdownEditor = memo(MarkdownEditor);
 
 const TEMP_LORE_DEFAULT_MARKDOWN = `
 https://www.youtube.com/watch?v=dQw4w9WgXcQ
@@ -115,45 +91,10 @@ const WriteLore = ({}: {}) => {
     <Flex flexDirection={"column"} pb={6} p={4} pr={4}>
       <Flex flex={1} flexDirection={"column"}>
         <h4>{isEditMode ? "Editing existing entry" : "New lore entry"}</h4>
-        <MarkdownEditor
+        <MemoMarkdownEditor
           initialContent={TEMP_LORE_DEFAULT_MARKDOWN}
           onChangeMarkdown={onChangeMarkdown}
         />
-        <div
-          style={{ height: "100%" }}
-          onPaste={async () =>
-            console.log(await navigator.clipboard.readText())
-          }
-        >
-          <MdEditor
-            allowPasteImage={false}
-            onChangeTrigger={"afterRender"}
-            value={editorText}
-            style={{ height: "100%" }}
-            view={{ menu: true, md: true, html: false }}
-            plugins={[
-              "header",
-              "font-bold",
-              "font-italic",
-              "font-underline",
-              "font-strikethrough",
-              "list-unordered",
-              "list-ordered",
-              "block-quote",
-              "block-wrap",
-              "block-code-inline",
-              "block-code-block",
-              "image",
-              "link",
-              "clear",
-            ]}
-            renderHTML={(text) => <></>}
-            onChange={(value) => {
-              setEditorText(value.text);
-            }}
-            onImageUpload={uploadImageIpfs(firstImageUrl, setFirstImageUrl)}
-          />
-        </div>
       </Flex>
       <Flex flex={1} pl={2} flexDirection={"column"}>
         <h4>Preview</h4>
