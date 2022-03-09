@@ -35,7 +35,9 @@ import { BehaviorExtension } from "./BehaviourExtension";
 import { EditorMenu } from "./EditorMenu";
 import { htmlToMarkdown } from "./html-to-markdown";
 import { createImageExtension, ImageUploader } from "./image-extension";
+import { createLinkExtension } from "./link-extension";
 import { markdownToHtml } from "./markdown-to-html";
+import { createMentionExtension } from "./mention-extension";
 import { Tagging } from "./tagging";
 
 export interface MarkdownEditorProps {
@@ -124,7 +126,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
   const extensions = useCallback(
     () => [
       new PlaceholderExtension({ placeholder }),
-      new LinkExtension({ autoLink: true }),
+      createLinkExtension(),
       new BoldExtension(),
       new StrikeExtension(),
       new ItalicExtension(),
@@ -154,9 +156,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
        */
       new HardBreakExtension(),
       new BehaviorExtension(),
-      new MentionAtomExtension({
-        matchers: [{ name: "at", char: "@", appendText: " ", matchOffset: 0 }],
-      }),
+      createMentionExtension(),
       createImageExtension({ imageUploader }),
     ],
     [placeholder]
