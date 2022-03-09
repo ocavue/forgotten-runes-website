@@ -38,6 +38,7 @@ import { htmlToMarkdown } from "./html-to-markdown";
 import { createImageExtension, ImageUploader } from "./image-extension";
 import { markdownToHtml } from "./markdown-to-html";
 import { Tagging } from "./tagging";
+import styled from "@emotion/styled";
 
 export interface MarkdownEditorProps {
   placeholder?: string;
@@ -45,6 +46,70 @@ export interface MarkdownEditorProps {
   onChangeMarkdown?: (markdown: string) => void;
   imageUploader?: ImageUploader;
 }
+
+const Wrapper = styled.div`
+  font-size: 16px;
+  font-family: "Alagard", serif;
+  background-color: #3a110f;
+  height: 500px;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    margin-top: 0.5em;
+    font-family: "Alagard", serif;
+    color: white;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+  h4 {
+    font-size: 16px;
+  }
+
+  .remirror-editor.ProseMirror blockquote {
+    background-color: #ffffff14;
+    margin: 0;
+    padding: 1em;
+    border-radius: 2px;
+    border-left: none;
+    font-style: normal;
+    p {
+      color: white;
+    }
+  }
+
+  .ProseMirror p {
+    color: white;
+  }
+
+  .remirror-mention-atom {
+    color: #a983ff;
+    background: none;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  .remirror-iframe {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    /* height: 360px; */
+  }
+
+  .ProseMirror:active,
+  .ProseMirror:focus {
+    box-shadow: none;
+  }
+`;
 
 /**
  * The editor which is used to create the annotation. Supports formatting.
@@ -111,25 +176,19 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
   );
 
   return (
-    <CoreStyledComponent
-      style={{
-        height: "500px",
-      }}
-    >
-      <ThemeProvider>
-        <Remirror
-          manager={manager}
-          initialContent={initialContent}
-          autoFocus
-          onChange={onChange}
-        >
-          <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
-          <EditorComponent />
-          <Tagging />
-          {children}
-        </Remirror>
-      </ThemeProvider>
-    </CoreStyledComponent>
+    <ThemeProvider as={Wrapper as any}>
+      <Remirror
+        manager={manager}
+        initialContent={initialContent}
+        autoFocus
+        onChange={onChange}
+      >
+        <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
+        <EditorComponent />
+        <Tagging />
+        {children}
+      </Remirror>
+    </ThemeProvider>
   );
 };
 

@@ -1,6 +1,5 @@
 import React from "react";
 import { pinFileToIpfs } from "../AddLore/addLoreHelpers";
-import type { ImageAttributes } from "./ImageExtension";
 
 export function uploadImageIpfs(
   firstImageUrl: string | undefined,
