@@ -108,7 +108,7 @@ const WriteLore = ({}: {}) => {
 
   const onChangeMarkdown = useCallback((markdown: string) => {
     console.log("[onChangeMarkdown] markdown:", markdown);
-    setEditorText(markdown)
+    setEditorText(markdown);
   }, []);
 
   return (
