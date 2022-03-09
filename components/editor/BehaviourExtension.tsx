@@ -14,7 +14,7 @@ import {
 } from "remirror";
 import { PasteRule } from "@remirror/pm/paste-rules";
 import { TextSelection } from "@remirror/pm/state";
-import { YOUTUBE_REGEX, createYouTubeUrl } from "./editor-utils";
+import { YOUTUBE_REGEX, createYouTubeUrl } from "./editorUtils";
 
 @extension({ defaultPriority: ExtensionPriority.Highest })
 export class BehaviorExtension extends PlainExtension {

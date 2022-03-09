@@ -6,7 +6,7 @@
  */
 import { ErrorConstant, invariant, isElementDomNode } from "@remirror/core";
 import TurndownService from "turndown";
-import { YOUTUBE_REGEX } from "./editor-utils";
+import { YOUTUBE_REGEX } from "./editorUtils";
 
 /**
  * Converts the provide HTML to markdown.

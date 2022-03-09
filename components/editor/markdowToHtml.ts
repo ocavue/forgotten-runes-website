@@ -9,8 +9,8 @@ import {
   YOUTUBE_REGEX,
   TOKEN_TAG_REGEX,
   createYouTubeUrl,
-} from "./editor-utils";
-import { allMentionItems } from "./mention-data";
+} from "./editorUtils";
+import { allMentionItems } from "./allMentionItems";
 
 /**
  * Converts the provided markdown to HTML.

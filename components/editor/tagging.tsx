@@ -2,9 +2,9 @@ import { FloatingWrapper, useMentionAtom } from "@remirror/react";
 import { useEffect, useState } from "react";
 import { cx } from "remirror";
 import { MentionAtomNodeAttributes } from "remirror/extensions";
-import { allMentionItems } from "./mention-data";
+import { allMentionItems } from "./allMentionItems";
 
-function UserSuggestor() {
+function UserSuggester() {
   const [items, setItems] = useState<MentionAtomNodeAttributes[]>([]);
   const { state, getMenuProps, getItemProps, indexIsHovered, indexIsSelected } =
     useMentionAtom({ items: items });
@@ -63,5 +63,5 @@ function UserSuggestor() {
 }
 
 export const Tagging = (): JSX.Element => {
-  return <UserSuggestor />;
+  return <UserSuggester />;
 };

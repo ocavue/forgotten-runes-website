@@ -33,11 +33,11 @@ import {
 } from "remirror/extensions";
 import { BehaviorExtension } from "./BehaviourExtension";
 import { EditorMenu } from "./EditorMenu";
-import { htmlToMarkdown } from "./html-to-markdown";
-import { createImageExtension, ImageUploader } from "./image-extension";
-import { createLinkExtension } from "./link-extension";
-import { markdownToHtml } from "./markdown-to-html";
-import { createMentionExtension } from "./mention-extension";
+import { htmlToMarkdown } from "./htmlToMarkdown";
+import { createImageExtension, ImageUploader } from "./ImageExtension";
+import { createLinkExtension } from "./createLinkExtension";
+import { markdownToHtml } from "./markdowToHtml";
+import { createMentionExtension } from "./createMentionExtension";
 import { Tagging } from "./tagging";
 
 export interface MarkdownEditorProps {

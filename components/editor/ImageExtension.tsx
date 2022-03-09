@@ -8,7 +8,7 @@ import {
   NodeSpecOverride,
   uniqueId,
 } from "remirror";
-import { sleep } from "./editor-utils";
+import { sleep } from "./editorUtils";
 
 class ImageExtension extends FileExtension {
   createTags() {
