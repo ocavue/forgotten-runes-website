@@ -32,6 +32,7 @@ import {
   StrikeExtension,
   TableExtension,
   TrailingNodeExtension,
+  UnderlineExtension,
 } from "remirror/extensions";
 import { BehaviorExtension } from "./BehaviourExtension";
 import { htmlToMarkdown } from "./html-to-markdown";
@@ -39,6 +40,7 @@ import { createImageExtension, ImageUploader } from "./image-extension";
 import { markdownToHtml } from "./markdown-to-html";
 import { Tagging } from "./tagging";
 import styled from "@emotion/styled";
+import { EditorMenu } from "./EditorMenu";
 
 export interface MarkdownEditorProps {
   placeholder?: string;
@@ -139,6 +141,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         priority: ExtensionPriority.High,
         enableCollapsible: true,
       }),
+      new UnderlineExtension(),
       new CodeExtension(),
       new CodeBlockExtension({ supportedLanguages: [jsx, typescript] }),
       new TrailingNodeExtension(),
@@ -184,6 +187,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         onChange={onChange}
       >
         <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
+        <EditorMenu />
         <EditorComponent />
         <Tagging />
         {children}
