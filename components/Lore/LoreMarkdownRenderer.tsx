@@ -1,7 +1,7 @@
 import ReactPlayer from "react-player";
 import { IPFS_SERVER } from "../../constants";
 import ReactMarkdown, { uriTransformer } from "react-markdown";
-import * as React from "react";
+import remarkGfm from "remark-gfm";
 import { CLOUDINARY_SERVER, TextPage } from "./IndividualLorePage";
 import Link from "next/link";
 import { getContrast } from "../../lib/colorUtils";
@@ -60,6 +60,7 @@ const LoreMarkdownRenderer = ({
     >
       <ReactMarkdown
         children={markdown}
+        remarkPlugins={[remarkGfm as any]}
         components={{
           pre: ({ node, children, ...props }) => (
             <pre {...props} style={{ whiteSpace: "pre-line" }}>
