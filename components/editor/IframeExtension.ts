@@ -260,7 +260,6 @@ export class IframeExtension extends NodeExtension<IframeOptions> {
 
   @keyBinding({ shortcut: "Space" })
   spaceKey({ dispatch, tr }: KeyBindingProps): boolean {
-    console.log("space key pressed!!!");
     if (!(isTextSelection(tr.selection) && tr.selection.empty)) {
       return false;
     }

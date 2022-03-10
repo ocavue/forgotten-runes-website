@@ -37,8 +37,8 @@ function UserSuggester() {
       positioner="cursor"
       enabled={enabled}
       placement="bottom-start"
-      containerClass="mention-container"
-      // renderOutsideEditor
+      // containerClass="mention-container"
+      renderOutsideEditor
     >
       <div
         {...getMenuProps()}

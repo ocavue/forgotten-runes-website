@@ -10,7 +10,7 @@ import { cx, ExtensionEmojiTheme } from "remirror";
 /**
  * Display the image for the emoji displayed via the CDN.
  */
-const EmojiFromCdn = (props: FlatEmojiWithUrl): JSX.Element => {
+export const EmojiFromCdn = (props: FlatEmojiWithUrl): JSX.Element => {
   return (
     <img
       role="presentation"

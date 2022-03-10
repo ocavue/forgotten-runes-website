@@ -49,10 +49,8 @@ export type ImageUploader = (file: File) => Promise<{ url: string }>;
 
 // TODO: replace this to actual implementation
 const defaultImageUploader: ImageUploader = async (file) => {
-  console.log("uploading image", file.name);
   await sleep(2000);
   const url = URL.createObjectURL(file);
-  console.log("uploaded image", url);
   return { url };
 };
 
