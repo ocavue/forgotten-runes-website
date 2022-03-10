@@ -89,8 +89,6 @@ function useLink() {
   const active = useActive(true);
   const linkActive = active.link();
 
-  console.log({ range });
-
   const onEditLink = useCallback(() => {
     if (selection.empty && !range) {
       return;
@@ -114,7 +112,6 @@ function useLink() {
       if (!href) {
         chain.removeLink();
       } else {
-        console.log("updating link", href);
         chain.updateLink({ href, auto: false });
       }
 
