@@ -176,6 +176,7 @@
     "seedrandom": "^3.0.5",
     "storybook-addon-next-router": "^3.1.1",
     "string-replace-async": "^2.0.0",
+    "svgmoji": "3.2.0",
     "swr": "^1.0.0",
     "tiny-invariant": "^1.1.0",
     "title-case": "^3.0.3",

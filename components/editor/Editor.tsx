@@ -4,12 +4,15 @@ import {
   Remirror,
   ThemeProvider,
   useRemirror,
+  // EmojiPopupComponent,
 } from "@remirror/react";
+import {EmojiPopupComponent} from './Emoji'
 import "@remirror/styles/all.css";
-import { useCallback } from "react";
+import { useCallback, type FC } from "react";
 import jsx from "refractor/lang/jsx";
 import typescript from "refractor/lang/typescript";
 import { ExtensionPriority, RemirrorEventListener } from "remirror";
+import emojiData from "svgmoji/emoji.json";
 import {
   BlockquoteExtension,
   BoldExtension,
@@ -30,6 +33,7 @@ import {
   UnderlineExtension,
   DropCursorExtension,
   GapCursorExtension,
+  EmojiExtension,
 } from "remirror/extensions";
 import { EditorMenu } from "./EditorMenu";
 import { htmlToMarkdown } from "./htmlToMarkdown";
@@ -38,7 +42,7 @@ import { createLinkExtension } from "./createLinkExtension";
 import { IframeExtension } from "./IframeExtension";
 import { markdownToHtml } from "./markdowToHtml";
 import { createMentionExtension } from "./createMentionExtension";
-import { Tagging } from "./tagging";
+import { Tagging } from "./Mentions";
 
 export interface MarkdownEditorProps {
   placeholder?: string;
@@ -126,6 +130,16 @@ const Wrapper = styled.div`
   .remirror-collapsible-list-item-button {
     background-color: #ddd;
   }
+
+  .remirror-editor {
+    min-height: 500px;
+    caret-color: white;
+
+    .ProseMirror-gapcursor:after {
+      border-top: 1px solid white;
+    }
+
+  }
 `;
 
 /**
@@ -175,12 +189,13 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new HardBreakExtension(),
       new IframeExtension(),
       createMentionExtension(),
+      new EmojiExtension({ data: emojiData, plainText: true }),
       createImageExtension({ imageUploader }),
     ],
     [placeholder]
   );
 
-  const { manager, state } = useRemirror({
+  const { manager } = useRemirror({
     extensions,
     stringHandler: "markdown",
   });
@@ -203,6 +218,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         <EditorMenu />
         <EditorComponent />
         <Tagging />
+        <EmojiPopupComponent />
         {children}
       </Remirror>
     </ThemeProvider>

@@ -1,6 +1,9 @@
 import { FloatingWrapper, useMentionAtom, useActive } from "@remirror/react";
 import { useEffect, useState } from "react";
-import { cx } from "remirror";
+import {
+  cx,
+  // ExtensionMentionAtomTheme
+} from "remirror";
 import { MentionAtomNodeAttributes } from "remirror/extensions";
 import { allMentionItems } from "./allMentionItems";
 
@@ -35,8 +38,15 @@ function UserSuggester() {
       enabled={enabled}
       placement="bottom-start"
       containerClass="mention-container"
+      // renderOutsideEditor
     >
-      <div {...getMenuProps()} className="suggestions">
+      <div
+        {...getMenuProps()}
+        className={cx(
+          "suggestions"
+          // ExtensionMentionAtomTheme.MENTION_ATOM_POPUP_WRAPPER
+        )}
+      >
         {enabled &&
           items.map((item, index) => {
             const isHighlighted = indexIsSelected(index);
