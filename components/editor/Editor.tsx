@@ -157,7 +157,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         htmlToMarkdown,
         markdownToHtml,
       }),
-      new IframeExtension({}),
+      new IframeExtension(),
       /**
        * `HardBreakExtension` allows us to create a newline inside paragraphs.
        * e.g. in a list item
