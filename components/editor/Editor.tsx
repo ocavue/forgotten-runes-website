@@ -6,7 +6,7 @@ import {
   useRemirror,
   // EmojiPopupComponent,
 } from "@remirror/react";
-import {EmojiPopupComponent} from './Emoji'
+import { EmojiPopupComponent } from "./Emoji";
 import "@remirror/styles/all.css";
 import { useCallback, type FC } from "react";
 import jsx from "refractor/lang/jsx";
@@ -138,7 +138,6 @@ const Wrapper = styled.div`
     .ProseMirror-gapcursor:after {
       border-top: 1px solid white;
     }
-
   }
 `;
 
