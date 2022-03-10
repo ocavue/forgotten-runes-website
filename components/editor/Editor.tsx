@@ -138,7 +138,7 @@ const Wrapper = styled.div`
       border-top: 1px solid white;
     }
 
-    pre[class*='language-'] {
+    pre[class*="language-"] {
       background: initial;
       padding-left: 0;
       padding-right: 0;
@@ -147,7 +147,6 @@ const Wrapper = styled.div`
     p {
       margin-block: 16px;
     }
-
   }
 `;
 
