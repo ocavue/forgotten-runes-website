@@ -12,6 +12,7 @@ import { YOUTUBE_REGEX } from "./editorUtils";
  * Converts the provide HTML to markdown.
  */
 export function htmlToMarkdown(html: string): string {
+  html = html.replace(/<p><\/p>/g, "<p><br /></p>");
   const value = turndownService.turndown(html);
   return value;
 }
@@ -83,7 +84,7 @@ const turndownService = new TurndownService({
   // Support multiple line breaks.
   .addRule("hardBreak", {
     filter: ["br"],
-    replacement: () => "&nbsp;\n\n",
+    replacement: () => "\n\n&nbsp;",
   })
   .addRule("taskListItems", {
     filter: (node) => {

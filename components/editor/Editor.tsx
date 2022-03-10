@@ -144,6 +144,10 @@ const Wrapper = styled.div`
       padding-right: 0;
     }
 
+    p {
+      margin-block: 16px;
+    }
+
   }
 `;
 
