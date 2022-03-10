@@ -13,7 +13,6 @@ import { YOUTUBE_REGEX } from "./editorUtils";
  */
 export function htmlToMarkdown(html: string): string {
   const value = turndownService.turndown(html);
-  console.log({ value });
   return value;
 }
 
