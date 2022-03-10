@@ -1,7 +1,7 @@
-.remirror-theme,
 .remirror-editor-wrapper,
 .remirror-editor {
   height: 100%;
+  position: relative;
 }
 
 .remirror-editor .mention {
@@ -20,6 +20,7 @@
 .remirror-editor .highlighted {
   background: #7dd26333;
 }
+
 .remirror-editor .hovered {
   background: #d8cd2d22;
 }
@@ -31,4 +32,12 @@
 
 .remirror-editor img {
   display: block;
+}
+
+.remirror-tooltip.remirror-theme {
+  background-color: #212121;
+}
+
+.mention-container.remirror-floating-popover {
+  background-color: #212121;
 }

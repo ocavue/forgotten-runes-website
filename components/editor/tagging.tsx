@@ -33,6 +33,7 @@ function UserSuggester() {
       positioner="cursor"
       enabled={enabled}
       placement="bottom-start"
+      containerClass="mention-container"
     >
       <div {...getMenuProps()} className="suggestions">
         {enabled &&

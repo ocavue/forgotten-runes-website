@@ -1,9 +1,38 @@
 import styled from "@emotion/styled";
-import { useActive, useCommands, useRemirrorContext } from "@remirror/react";
-import { useCallback } from "react";
+import {
+  ComponentItem,
+  Toolbar,
+  ToolbarItemUnion,
+  useActive,
+  useCommands,
+  useRemirrorContext,
+} from "@remirror/react";
+import { useCallback, useMemo } from "react";
 
 const MenuContainer = styled.div`
-  background: #681515;
+  background: #222;
+
+  .remirror-role {
+    background-color: #222;
+  }
+
+  .remirror-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .remirror-menu-pane-label {
+    color: #ccc;
+  }
+
+  .remirror-button {
+    color: #ccc;
+    background-color: #333;
+
+    &.remirror-button-active {
+      background-color: #a983ff;
+      color: #fff;
+    }
+  }
 `;
 
 const MenuButtonContainer = styled.button<{ actived?: boolean }>`
@@ -37,10 +66,10 @@ function useClearAllContent() {
   }, [clearContent]);
 }
 
-function useOpenUplpadDialog() {
+function useOnClickImage() {
   const { uploadFiles } = useCommands();
 
-  const openUplpadDialog = useCallback(() => {
+  const onClickImage = useCallback(() => {
     const input = document.createElement("input");
     input.type = "file";
     input.multiple = true;
@@ -56,14 +85,14 @@ function useOpenUplpadDialog() {
     input.click();
   }, [uploadFiles]);
 
-  return openUplpadDialog;
+  return onClickImage;
 }
 
 const MenuButtons = () => {
   const commands = useCommands();
   const active = useActive(true);
   const clearAllContent = useClearAllContent();
-  const openUplpadDialog = useOpenUplpadDialog();
+  const openUplpadDialog = useOnClickImage();
 
   return (
     <>
@@ -168,10 +197,213 @@ const MenuButtons = () => {
   );
 };
 
+function useLink() {
+  const active = useActive(true);
+  const linkActive = active.link();
+  const onCreateLink = useCallback(() => {}, []);
+  const onRemoveLink = useCallback(() => {}, []);
+  const onEditLink = useCallback(() => {}, []);
+
+  return useMemo(
+    () => ({ linkActive, onCreateLink, onRemoveLink, onEditLink }),
+    [linkActive, onCreateLink, onRemoveLink, onEditLink]
+  );
+}
+
 export const EditorMenu = () => {
+  const { linkActive, onCreateLink, onRemoveLink, onEditLink } = useLink();
+  const onClearContent = useClearAllContent();
+  const onClickImage = useOnClickImage();
+
+  const toolbarItems = useMemo(
+    () =>
+      createToolbarItems({
+        linkActive,
+        onClearContent,
+        onClickImage,
+        onCreateLink,
+        onRemoveLink,
+        onEditLink,
+      }),
+    [linkActive, onClearContent, onCreateLink, onRemoveLink, onEditLink]
+  );
+
   return (
     <MenuContainer>
-      <MenuButtons />
+      <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
     </MenuContainer>
   );
 };
+
+interface CreateToolbarItemsProps {
+  onClickImage: () => void;
+  onCreateLink: () => void;
+  onRemoveLink: () => void;
+  onEditLink: () => void;
+  onClearContent: () => void;
+  linkActive: boolean;
+}
+
+function createToolbarItems(
+  props: CreateToolbarItemsProps
+): ToolbarItemUnion[] {
+  const {
+    onClickImage,
+    onCreateLink,
+    onEditLink,
+    onRemoveLink,
+    onClearContent,
+    linkActive,
+  } = props;
+
+  return [
+    {
+      type: ComponentItem.ToolbarGroup,
+      label: "Formatting",
+      items: [
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleHeading",
+          attrs: { level: 1 },
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleHeading",
+          attrs: { level: 2 },
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarMenu,
+          icon: "heading",
+          label: "Headings",
+          menuLabel: "H",
+
+          items: [
+            {
+              type: ComponentItem.MenuGroup,
+              role: "radio",
+              items: [
+                {
+                  type: ComponentItem.MenuCommandPane,
+                  commandName: "toggleHeading",
+                  attrs: { level: 3 },
+                },
+                {
+                  type: ComponentItem.MenuCommandPane,
+                  commandName: "toggleHeading",
+                  attrs: { level: 4 },
+                },
+                {
+                  type: ComponentItem.MenuCommandPane,
+                  commandName: "toggleHeading",
+                  attrs: { level: 5 },
+                },
+                {
+                  type: ComponentItem.MenuCommandPane,
+                  commandName: "toggleHeading",
+                  attrs: { level: 6 },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleBold",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleItalic",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleUnderline",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleStrike",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleCode",
+          display: "icon",
+        },
+      ],
+      separator: "end",
+    },
+    {
+      type: ComponentItem.ToolbarGroup,
+      label: "Lists",
+      items: [
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleBulletList",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleOrderedList",
+          display: "icon",
+        },
+      ],
+      separator: "end",
+    },
+    {
+      type: ComponentItem.ToolbarGroup,
+      label: "Blocks",
+      items: [
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleBlockquote",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarCommandButton,
+          commandName: "toggleCodeBlock",
+          display: "icon",
+        },
+        {
+          type: ComponentItem.ToolbarButton,
+          icon: "imageLine",
+          onClick: onClickImage,
+          active: false,
+        },
+        {
+          type: ComponentItem.ToolbarButton,
+          icon: linkActive ? "linkM" : "link",
+          active: linkActive,
+          focusable: true,
+          onClick: linkActive ? onEditLink : onCreateLink,
+          refocusEditor: false,
+        },
+        {
+          type: ComponentItem.ToolbarButton,
+          icon: "linkUnlink",
+          disabled: !linkActive,
+          focusable: linkActive,
+          onClick: onRemoveLink,
+          refocusEditor: true,
+        },
+      ],
+      separator: "end",
+    },
+    {
+      type: ComponentItem.ToolbarGroup,
+      label: "Clear",
+      items: [
+        {
+          type: ComponentItem.ToolbarButton,
+          icon: "deleteBinLine",
+          onClick: onClearContent,
+          refocusEditor: false,
+        },
+      ],
+      separator: "none",
+    },
+  ];
+}
