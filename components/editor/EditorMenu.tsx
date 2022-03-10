@@ -349,11 +349,6 @@ function createToolbarItems(
         },
         {
           type: ComponentItem.ToolbarCommandButton,
-          commandName: "toggleUnderline",
-          display: "icon",
-        },
-        {
-          type: ComponentItem.ToolbarCommandButton,
           commandName: "toggleStrike",
           display: "icon",
         },
