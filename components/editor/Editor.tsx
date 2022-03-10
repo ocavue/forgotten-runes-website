@@ -30,6 +30,8 @@ import {
   TableExtension,
   TrailingNodeExtension,
   UnderlineExtension,
+  DropCursorExtension,
+  GapCursorExtension,
 } from "remirror/extensions";
 import { BehaviorExtension } from "./BehaviourExtension";
 import { EditorMenu } from "./EditorMenu";
@@ -51,7 +53,7 @@ const Wrapper = styled.div`
   font-size: 16px;
   font-family: "Alagard", serif;
   background-color: #3a110f;
-  height: 500px;
+  min-height: 500px;
 
   h1,
   h2,
@@ -102,12 +104,16 @@ const Wrapper = styled.div`
   .remirror-iframe {
     aspect-ratio: 16 / 9;
     width: 100%;
-    /* height: 360px; */
+    max-height: 500px;
   }
 
   .ProseMirror:active,
   .ProseMirror:focus {
     box-shadow: none;
+  }
+
+  .remirror-collapsible-list-item-button {
+    background-color: #ddd;
   }
 `;
 
@@ -125,6 +131,8 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
 
   const extensions = useCallback(
     () => [
+      new DropCursorExtension({ color: "white" }),
+      new GapCursorExtension(),
       new PlaceholderExtension({ placeholder }),
       createLinkExtension(),
       new BoldExtension(),
@@ -149,7 +157,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         htmlToMarkdown,
         markdownToHtml,
       }),
-      new IframeExtension(),
+      new IframeExtension({}),
       /**
        * `HardBreakExtension` allows us to create a newline inside paragraphs.
        * e.g. in a list item

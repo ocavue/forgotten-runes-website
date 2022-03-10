@@ -1,4 +1,4 @@
-import { FloatingWrapper, useMentionAtom } from "@remirror/react";
+import { FloatingWrapper, useMentionAtom, useActive } from "@remirror/react";
 import { useEffect, useState } from "react";
 import { cx } from "remirror";
 import { MentionAtomNodeAttributes } from "remirror/extensions";
@@ -8,6 +8,7 @@ function UserSuggester() {
   const [items, setItems] = useState<MentionAtomNodeAttributes[]>([]);
   const { state, getMenuProps, getItemProps, indexIsHovered, indexIsSelected } =
     useMentionAtom({ items: items });
+  const codeblockActive = useActive().codeBlock();
 
   useEffect(() => {
     if (!state) {
@@ -26,7 +27,7 @@ function UserSuggester() {
     setItems(filteredUsers);
   }, [state]);
 
-  const enabled = !!state;
+  const enabled = !!state && !codeblockActive;
 
   return (
     <FloatingWrapper

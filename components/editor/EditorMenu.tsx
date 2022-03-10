@@ -6,8 +6,54 @@ import {
   useActive,
   useCommands,
   useRemirrorContext,
+  useCurrentSelection,
+  useAttrs,
+  useChainedCommands,
+  useMarkRange,
+  useExtension,
 } from "@remirror/react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { LinkExtension } from "remirror/extensions";
+import { ModalDecorator } from "../ui/ModalDecorator";
+import Button from "../ui/Button";
+
+const ConnectModal = styled(ModalDecorator)`
+  &__Overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    transition: all 1s ease-in;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 2000;
+  }
+
+  &__Content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    border: none;
+    background: black;
+    overflow: auto;
+    border-radius: 3px;
+    outline: none;
+    padding: 80px;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    //min-width: 20vw;
+    //min-height: 30vw;
+    color: white;
+    display: flex;
+    //width: 70vw;
+    //max-width: 600px;
+    max-height: 90vh;
+    z-index: 2001;
+  }
+`;
 
 const MenuContainer = styled.div`
   background: #222;
@@ -35,183 +81,159 @@ const MenuContainer = styled.div`
   }
 `;
 
-const MenuButtonContainer = styled.button<{ actived?: boolean }>`
-  background: ${(props) => (props.actived ? "yellow" : "blue")};
-`;
-
-const MenuButton: React.FC<{ onClick: () => void; actived?: boolean }> = ({
-  onClick,
-  actived,
-  children,
-}) => {
-  return (
-    <MenuButtonContainer
-      onMouseDown={(event) => event.preventDefault()}
-      onClick={onClick}
-      actived={actived}
-    >
-      {children}
-    </MenuButtonContainer>
-  );
-};
-
-function useClearAllContent() {
-  const { clearContent } = useRemirrorContext();
-
-  return useCallback(() => {
-    const confirmed = confirm("Are you sure you want to clear all contents?");
-    if (confirmed) {
-      clearContent();
-    }
-  }, [clearContent]);
-}
-
-function useOnClickImage() {
-  const { uploadFiles } = useCommands();
-
-  const onClickImage = useCallback(() => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.multiple = true;
-
-    input.addEventListener("change", (event: Event) => {
-      const { files } = event.target as HTMLInputElement;
-
-      if (files) {
-        uploadFiles(Array.from(files));
-      }
-    });
-
-    input.click();
-  }, [uploadFiles]);
-
-  return onClickImage;
-}
-
-const MenuButtons = () => {
-  const commands = useCommands();
-  const active = useActive(true);
-  const clearAllContent = useClearAllContent();
-  const openUplpadDialog = useOnClickImage();
-
-  return (
-    <>
-      <MenuButton
-        onClick={() => commands.toggleHeading({ level: 1 })}
-        actived={active.heading({ level: 1 })}
-      >
-        H1
-      </MenuButton>
-      <MenuButton
-        onClick={() => commands.toggleHeading({ level: 2 })}
-        actived={active.heading({ level: 2 })}
-      >
-        H2
-      </MenuButton>
-      <MenuButton
-        onClick={() => commands.toggleHeading({ level: 3 })}
-        actived={active.heading({ level: 3 })}
-      >
-        H3
-      </MenuButton>
-      <MenuButton
-        onClick={() => commands.toggleHeading({ level: 4 })}
-        actived={active.heading({ level: 4 })}
-      >
-        H4
-      </MenuButton>
-      <MenuButton
-        onClick={() => commands.toggleHeading({ level: 5 })}
-        actived={active.heading({ level: 5 })}
-      >
-        H5
-      </MenuButton>
-      <MenuButton
-        onClick={() => commands.toggleHeading({ level: 6 })}
-        actived={active.heading({ level: 6 })}
-      >
-        H6
-      </MenuButton>
-
-      <MenuButton onClick={() => commands.toggleBold()} actived={active.bold()}>
-        Bold
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleItalic()}
-        actived={active.italic()}
-      >
-        Italic
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleUnderline()}
-        actived={active.underline()}
-      >
-        Underline
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleStrike()}
-        actived={active.strike()}
-      >
-        Strike
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleBulletList()}
-        actived={active.bulletList()}
-      >
-        BulletList
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleOrderedList()}
-        actived={active.orderedList()}
-      >
-        OrderedList
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleBlockquote()}
-        actived={active.blockquote()}
-      >
-        Blockquote
-      </MenuButton>
-
-      <MenuButton onClick={() => commands.toggleCode()} actived={active.code()}>
-        InlineCode
-      </MenuButton>
-
-      <MenuButton
-        onClick={() => commands.toggleCodeBlock({ language: "" })}
-        actived={active.codeBlock()}
-      >
-        CodeBlock
-      </MenuButton>
-
-      <MenuButton onClick={() => openUplpadDialog()}>InsertImage</MenuButton>
-
-      <MenuButton onClick={() => clearAllContent()}>ClearAllContent</MenuButton>
-    </>
-  );
-};
-
 function useLink() {
+  const range = useMarkRange("link");
+  const chain = useChainedCommands();
+  const url = (useAttrs().link()?.href as string) ?? "";
+  const selection = useCurrentSelection();
   const active = useActive(true);
   const linkActive = active.link();
-  const onCreateLink = useCallback(() => {}, []);
-  const onRemoveLink = useCallback(() => {}, []);
-  const onEditLink = useCallback(() => {}, []);
+
+  console.log({ range });
+
+  const onEditLink = useCallback(() => {
+    if (selection.empty && !range) {
+      return;
+    }
+
+    setIsOpen(true);
+  }, [selection.empty, range]);
+
+  const onRemoveLink = useCallback(() => {
+    if (!linkActive) {
+      return;
+    }
+
+    chain.removeLink().run();
+  }, [linkActive]);
+
+  const onSubmitLink = useCallback(
+    (href: string) => {
+      setIsOpen(false);
+
+      if (!href) {
+        chain.removeLink();
+      } else {
+        console.log("updating link", href);
+        chain.updateLink({ href, auto: false });
+      }
+
+      chain.focus(selection.to).run();
+    },
+    [selection.to]
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = useCallback(() => setIsOpen(false), []);
+  const openModal = useCallback(() => setIsOpen(true), []);
+
+  // Listen for shortcuts.
+  useExtension(
+    LinkExtension,
+    ({ addHandler }) =>
+      addHandler("onShortcut", (props) => {
+        if (isOpen) {
+          return;
+        }
+
+        openModal();
+      }),
+    [isOpen, openModal]
+  );
 
   return useMemo(
-    () => ({ linkActive, onCreateLink, onRemoveLink, onEditLink }),
-    [linkActive, onCreateLink, onRemoveLink, onEditLink]
+    () => ({
+      url,
+      linkActive,
+      onEditLink,
+      onRemoveLink,
+      onSubmitLink,
+      isOpen,
+      onClose,
+      openModal,
+      canEdit: !selection.empty || !!range,
+    }),
+    [
+      url,
+      linkActive,
+      onEditLink,
+      onRemoveLink,
+      isOpen,
+      onClose,
+      openModal,
+      onSubmitLink,
+      selection.empty,
+      range,
+    ]
   );
 }
 
+interface LinkModalProps {
+  isOpen: boolean;
+  url: string;
+  onSubmitLink: (link: string) => void;
+  onClose: () => void;
+}
+
+const LinkModal = (props: LinkModalProps) => {
+  const { isOpen, url, onSubmitLink, onClose } = props;
+  const [value, setValue] = useState(url);
+  return (
+    <ConnectModal isOpen={isOpen} onRequestClose={onClose}>
+      <Wrapper>
+        <Row>
+          <Label>Link</Label>
+          <Input
+            type="text"
+            name="url"
+            defaultValue={url}
+            autoFocus={true}
+            onKeyPress={(event) => {
+              if (event.key === "Enter") {
+                onSubmitLink(value);
+              }
+            }}
+            onChange={(event) => {
+              setValue(event.target.value);
+            }}
+          />
+        </Row>
+        <Button onClick={() => onSubmitLink(value)}>Submit</Button>
+      </Wrapper>
+    </ConnectModal>
+  );
+};
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  font-family: "Alagard", serif;
+  margin-bottom: 12px;
+`;
+const Input = styled.input`
+  font-family: "Alagard", serif;
+  font-size: 18px;
+`;
+const Label = styled.label`
+  font-size: 24px;
+  margin-right: 10px;
+`;
+
 export const EditorMenu = () => {
-  const { linkActive, onCreateLink, onRemoveLink, onEditLink } = useLink();
+  const {
+    url,
+    linkActive,
+    onRemoveLink,
+    onEditLink,
+    isOpen,
+    onClose,
+    canEdit,
+    onSubmitLink,
+  } = useLink();
   const onClearContent = useClearAllContent();
   const onClickImage = useOnClickImage();
 
@@ -221,27 +243,36 @@ export const EditorMenu = () => {
         linkActive,
         onClearContent,
         onClickImage,
-        onCreateLink,
-        onRemoveLink,
         onEditLink,
+        onRemoveLink,
+        canEdit,
       }),
-    [linkActive, onClearContent, onCreateLink, onRemoveLink, onEditLink]
+    [linkActive, onClearContent, onEditLink, onRemoveLink, onEditLink]
   );
 
   return (
-    <MenuContainer>
-      <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
-    </MenuContainer>
+    <>
+      <MenuContainer>
+        <LinkModal
+          isOpen={isOpen}
+          url={url}
+          onClose={onClose}
+          onSubmitLink={onSubmitLink}
+        />
+        <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
+      </MenuContainer>
+    </>
   );
 };
 
 interface CreateToolbarItemsProps {
   onClickImage: () => void;
-  onCreateLink: () => void;
-  onRemoveLink: () => void;
   onEditLink: () => void;
+  onRemoveLink: () => void;
+
   onClearContent: () => void;
   linkActive: boolean;
+  canEdit: boolean;
 }
 
 function createToolbarItems(
@@ -249,11 +280,12 @@ function createToolbarItems(
 ): ToolbarItemUnion[] {
   const {
     onClickImage,
-    onCreateLink,
     onEditLink,
+
     onRemoveLink,
     onClearContent,
     linkActive,
+    canEdit,
   } = props;
 
   return [
@@ -378,7 +410,8 @@ function createToolbarItems(
           icon: linkActive ? "linkM" : "link",
           active: linkActive,
           focusable: true,
-          onClick: linkActive ? onEditLink : onCreateLink,
+          disabled: !canEdit,
+          onClick: linkActive ? onEditLink : onEditLink,
           refocusEditor: false,
         },
         {
@@ -406,4 +439,37 @@ function createToolbarItems(
       separator: "none",
     },
   ];
+}
+
+function useClearAllContent() {
+  const { clearContent } = useRemirrorContext();
+
+  return useCallback(() => {
+    const confirmed = confirm("Are you sure you want to clear all contents?");
+    if (confirmed) {
+      clearContent();
+    }
+  }, [clearContent]);
+}
+
+function useOnClickImage() {
+  const { uploadFiles } = useCommands();
+
+  const onClickImage = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+
+    input.addEventListener("change", (event: Event) => {
+      const { files } = event.target as HTMLInputElement;
+
+      if (files) {
+        uploadFiles(Array.from(files));
+      }
+    });
+
+    input.click();
+  }, [uploadFiles]);
+
+  return onClickImage;
 }
