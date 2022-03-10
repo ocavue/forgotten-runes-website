@@ -6,7 +6,7 @@ import {
   useRemirror,
 } from "@remirror/react";
 import "@remirror/styles/all.css";
-import React, { FC, useCallback } from "react";
+import { useCallback } from "react";
 import jsx from "refractor/lang/jsx";
 import typescript from "refractor/lang/typescript";
 import { ExtensionPriority, RemirrorEventListener } from "remirror";
@@ -18,12 +18,10 @@ import {
   CodeExtension,
   HardBreakExtension,
   HeadingExtension,
-  IframeExtension,
   ItalicExtension,
   LinkExtension,
   ListItemExtension,
   MarkdownExtension,
-  MentionAtomExtension,
   OrderedListExtension,
   PlaceholderExtension,
   StrikeExtension,
@@ -33,11 +31,11 @@ import {
   DropCursorExtension,
   GapCursorExtension,
 } from "remirror/extensions";
-import { BehaviorExtension } from "./BehaviourExtension";
 import { EditorMenu } from "./EditorMenu";
 import { htmlToMarkdown } from "./htmlToMarkdown";
 import { createImageExtension, ImageUploader } from "./ImageExtension";
 import { createLinkExtension } from "./createLinkExtension";
+import { IframeExtension } from "./IframeExtension";
 import { markdownToHtml } from "./markdowToHtml";
 import { createMentionExtension } from "./createMentionExtension";
 import { Tagging } from "./tagging";
@@ -157,13 +155,12 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         htmlToMarkdown,
         markdownToHtml,
       }),
-      new IframeExtension(),
       /**
        * `HardBreakExtension` allows us to create a newline inside paragraphs.
        * e.g. in a list item
        */
       new HardBreakExtension(),
-      new BehaviorExtension(),
+      new IframeExtension(),
       createMentionExtension(),
       createImageExtension({ imageUploader }),
     ],

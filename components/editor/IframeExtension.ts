@@ -1,53 +1,160 @@
-import { parse, stringify } from "querystringify";
 import {
+  ApplySchemaAttributes,
+  command,
+  CommandFunction,
+  cx,
   extension,
-  PlainExtension,
+  ExtensionTag,
+  LiteralUnion,
+  NodeExtension,
+  NodeExtensionSpec,
+  NodeSpecOverride,
+  omitExtraAttributes,
+  ProsemirrorAttributes,
+  Static,
   getMatchString,
   keyBinding,
   KeyBindingProps,
   isTextSelection,
-  nodeInputRule,
-  InputRule,
   Transaction,
   isNodeSelection,
-  ExtensionPriority,
 } from "remirror";
 import { PasteRule } from "@remirror/pm/paste-rules";
 import { TextSelection } from "@remirror/pm/state";
 import { YOUTUBE_REGEX, createYouTubeUrl } from "./editorUtils";
 
-@extension({ defaultPriority: ExtensionPriority.Highest })
-export class BehaviorExtension extends PlainExtension {
-  name = "behaviour";
+interface IframeOptions {
+  /**
+   * The default source to use for the iframe.
+   */
+  defaultSource?: Static<string>;
 
   /**
-   * Create an input rule that listens converts the code fence into a code block
-   * when typing triple back tick followed by a space.
+   * The class to add to the iframe.
+   *
+   * @default 'remirror-iframe'
    */
-  // createInputRules(): InputRule[] {
-  //   //https://www.youtube.com/watch?v=
+  class?: Static<string>;
 
-  //   return [
-  //     nodeInputRule({
-  //       regexp: new RegExp(`${YOUTUBE_REGEX.source}$`),
-  //       type: this.store.schema.nodes.iframe,
-  //       // beforeDispatch: ({ tr, start }) => {
-  //       //   const $pos = tr.doc.resolve(start);
-  //       //   tr.setSelection(new TextSelection($pos));
-  //       // },
-  //       beforeDispatch: ({ tr }) => {
-  //         this.updateFromNodeSelection(tr);
-  //       },
-  //       getAttributes: (match) => {
-  //         return {
-  //           src: createYouTubeUrl(getMatchString(match, 1)),
-  //           frameBorder: 0,
-  //           type: "youtube",
-  //         };
-  //       },
-  //     }),
-  //   ];
-  // }
+  /**
+   * Enable resizing.
+   *
+   * If true, the iframe node will be rendered by `nodeView` instead of `toDOM`.
+   *
+   * @default false
+   */
+  enableResizing: boolean;
+}
+
+type IframeAttributes = ProsemirrorAttributes<{
+  src: string;
+  frameBorder?: number | string;
+  allowFullScreen?: "true";
+  width?: string | number;
+  height?: string | number;
+  type?: LiteralUnion<"youtube", string>;
+}>;
+
+/**
+ * An extension for the remirror editor.
+ */
+@extension<IframeOptions>({
+  defaultOptions: {
+    defaultSource: "",
+    class: "remirror-iframe",
+    enableResizing: false,
+  },
+  staticKeys: ["defaultSource", "class"],
+})
+export class IframeExtension extends NodeExtension<IframeOptions> {
+  get name() {
+    return "iframe" as const;
+  }
+
+  createTags() {
+    return [ExtensionTag.Block];
+  }
+
+  createNodeSpec(
+    extra: ApplySchemaAttributes,
+    override: NodeSpecOverride
+  ): NodeExtensionSpec {
+    const { defaultSource } = this.options;
+
+    return {
+      selectable: true,
+      ...override,
+      attrs: {
+        ...extra.defaults(),
+        src: defaultSource ? { default: defaultSource } : {},
+        allowFullScreen: { default: true },
+        frameBorder: { default: 0 },
+        type: { default: "custom" },
+        width: { default: null },
+        height: { default: null },
+      },
+      parseDOM: [
+        {
+          tag: "iframe",
+          getAttrs: (dom) => {
+            const frameBorder = (dom as HTMLElement).getAttribute(
+              "frameborder"
+            );
+            return {
+              ...extra.parse(dom),
+              type: (dom as HTMLElement).getAttribute("data-embed-type"),
+              height: (dom as HTMLElement).getAttribute("height"),
+              width: (dom as HTMLElement).getAttribute("width"),
+              allowFullScreen:
+                (dom as HTMLElement).getAttribute("allowfullscreen") === "false"
+                  ? false
+                  : true,
+              frameBorder: frameBorder ? Number.parseInt(frameBorder, 10) : 0,
+              src: (dom as HTMLElement).getAttribute("src"),
+            };
+          },
+        },
+        ...(override.parseDOM ?? []),
+      ],
+      toDOM: (node) => {
+        const { frameBorder, allowFullScreen, src, type, ...rest } =
+          omitExtraAttributes(node.attrs, extra);
+        const { class: className } = this.options;
+
+        return [
+          "div",
+          {
+            class: "remirror-iframe-wrapper",
+          },
+          [
+            "iframe",
+            {
+              style: "pointer-events: none;",
+              ...extra.dom(node),
+              ...rest,
+              class: cx(className, `${className}-${type as string}`),
+              src,
+              "data-embed-type": type,
+              allowfullscreen: allowFullScreen ? "true" : "false",
+              frameBorder: frameBorder?.toString(),
+            },
+          ],
+        ];
+      },
+    };
+  }
+
+  /**
+   * Add a custom iFrame to the editor.
+   */
+  @command()
+  addIframe(attributes: IframeAttributes): CommandFunction {
+    return ({ tr, dispatch }) => {
+      dispatch?.(tr.replaceSelectionWith(this.type.create(attributes)));
+
+      return true;
+    };
+  }
 
   createPasteRules(): PasteRule[] {
     return [
@@ -104,7 +211,7 @@ export class BehaviorExtension extends PlainExtension {
     tr.replaceWith(
       pos,
       end,
-      this.store.schema.nodes.iframe.create({
+      this.type.create({
         src,
         frameBorder: 0,
         type: "youtube",
