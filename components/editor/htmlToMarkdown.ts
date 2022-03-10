@@ -12,7 +12,10 @@ import { YOUTUBE_REGEX } from "./editorUtils";
  * Converts the provide HTML to markdown.
  */
 export function htmlToMarkdown(html: string): string {
-  html = html.replace(/<p><\/p>/g, "<p><br /></p>");
+  html;
+  html = html
+    // Hack to preserve empty lines
+    .replace(/<p><\/p>/g, '<p id="empty">&nbsp;empty</p>');
   const value = turndownService.turndown(html);
   return value;
 }
@@ -82,8 +85,8 @@ const turndownService = new TurndownService({
   headingStyle: "atx",
 })
   // Support multiple line breaks.
-  .addRule("hardBreak", {
-    filter: ["br"],
+  .addRule("customBreakTag", {
+    filter: (node) => node.id === "empty",
     replacement: () => "\n\n&nbsp;",
   })
   .addRule("taskListItems", {
