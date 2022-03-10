@@ -180,7 +180,6 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
         priority: ExtensionPriority.High,
         enableCollapsible: true,
       }),
-      new UnderlineExtension(),
       new CodeExtension(),
       new CodeBlockExtension({ supportedLanguages: [jsx, typescript] }),
       new TrailingNodeExtension(),
