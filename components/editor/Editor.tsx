@@ -102,7 +102,20 @@ const Wrapper = styled.div`
   .remirror-iframe {
     aspect-ratio: 16 / 9;
     width: 100%;
-    max-height: 500px;
+    height: 100%;
+    max-width: 1024px;
+    /* max-height: 450px; */
+    pointer-events: none;
+  }
+
+  .remirror-iframe-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* padding-top: 56.25%; */
   }
 
   .ProseMirror:active,
