@@ -4,7 +4,6 @@ import {
   Remirror,
   ThemeProvider,
   useRemirror,
-  // EmojiPopupComponent,
 } from "@remirror/react";
 import { EmojiPopupComponent } from "./Emoji";
 import "@remirror/styles/all.css";
@@ -138,6 +137,13 @@ const Wrapper = styled.div`
     .ProseMirror-gapcursor:after {
       border-top: 1px solid white;
     }
+
+    pre[class*='language-'] {
+      background: initial;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
   }
 `;
 
