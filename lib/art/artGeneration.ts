@@ -1466,11 +1466,21 @@ export async function fetchBufferFromUrlCached({
   }
 
   // console.log("cache miss", url);
-  const frameResponse = await fetch(url, {
+  let frameResponse = await fetch(url, {
     compress: false,
   });
   if (frameResponse.status !== 200) {
-    throw new Error(`Error can't find ${url} - ${frameResponse.status}`);
+    // small hack to try lowercase fetch as S3 is case sensitive and we have edge cases
+    frameResponse = await fetch(url.toLowerCase(), {
+      compress: false,
+    });
+    if (frameResponse.status !== 200) {
+      throw new Error(
+        `Error can't find ${url} or ${url.toLowerCase()} - ${
+          frameResponse.status
+        }`
+      );
+    }
   }
   let buffer = await frameResponse.buffer();
   __frameBufferCache[url] = buffer;

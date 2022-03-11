@@ -5,16 +5,12 @@ import { LorePageData } from "../../../../components/Lore/types";
 import OgImage from "../../../../components/OgImage";
 
 import {
-  bustLoreCache,
   getFirstAvailableWizardLoreUrl,
-  getLeftRightPages,
-  getLoreInChapterForm,
+  getLeftRightPagesV2,
 } from "../../../../components/Lore/loreFetchingUtils";
-import { CHARACTER_CONTRACTS } from "../../../../contracts/ForgottenRunesWizardsCultContract";
 import { getLoreUrl } from "../../../../components/Lore/loreUtils";
 import { promises as fs } from "fs";
 import path from "path";
-import flatMap from "lodash/flatMap";
 import LoreSharedLayout from "../../../../components/Lore/LoreSharedLayout";
 import Spacer from "../../../../components/Spacer";
 import { getCloudinaryFrontedImageSrc } from "../../../../components/Lore/LoreMarkdownRenderer";
@@ -100,7 +96,6 @@ async function getNarrativePageData(pageNum: number, loreTokenSlug: string) {
     return {
       redirect: {
         destination: getLoreUrl("narrative", 0, 0),
-        revalidate: 2,
       },
     };
   }
@@ -144,7 +139,6 @@ async function getNarrativePageData(pageNum: number, loreTokenSlug: string) {
           : await getFirstAvailableWizardLoreUrl(),
       },
     },
-    revalidate: 2,
   };
 }
 
@@ -185,7 +179,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     return {
       redirect: {
         destination: getLoreUrl(loreTokenSlug, tokenId, pageNum + 1),
-        revalidate: 2,
       },
     };
   }
@@ -207,7 +200,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     rightPage,
     previousPageRoute,
     nextPageRoute,
-  ] = await getLeftRightPages(
+  ] = await getLeftRightPagesV2(
     loreTokenSlug,
     tokenId,
     leftPageNum,
@@ -229,47 +222,41 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       lorePageData: {
         leftPage,
         rightPage,
-        previousPageRoute,
-        nextPageRoute,
+        previousPageRoute: previousPageRoute ?? null,
+        nextPageRoute: nextPageRoute ?? null,
       },
     },
-    revalidate: 2,
   };
 }
 
 export async function getStaticPaths() {
   const paths = [];
 
-  await bustLoreCache();
-
-  for (const [loreTokenSlug, loreTokenContract] of Object.entries(
-    CHARACTER_CONTRACTS
-  )) {
-    console.log(`Generating paths for ${loreTokenSlug} ${loreTokenContract}`);
-
-    const loreInChapterForm = await getLoreInChapterForm(
-      loreTokenContract,
-      true
-    );
-
-    // console.log(data);
-    //Note: its so annoying NextJs doesn't let you pass extra data to getStaticProps so now we fetch inside there too sigh... https://github.com/vercel/next.js/discussions/11272
-    paths.push(
-      ...flatMap(loreInChapterForm, (tokenLoreData: any) => {
-        return (tokenLoreData?.lore ?? []).map(
-          (loreData: any, index: number) => {
-            return {
-              params: {
-                loreTokenSlug,
-                tokenId: tokenLoreData.tokenId.toString(),
-                page: (index % 2 === 0 ? index : index + 1).toString(),
-              },
-            };
-          }
-        );
-      })
-    );
-  }
+  // const { data } = await client.query({
+  //   query: gql`
+  //     query WizardLore {
+  //       PaginatedLore(order_by: { globalpage: asc }) {
+  //         slug
+  //         tokenId
+  //         page
+  //         globalpage
+  //       }
+  //     }
+  //   `,
+  //   fetchPolicy: "no-cache",
+  // });
+  // paths.push(
+  //   ...map(data.PaginatedLore, (loreData: any) => {
+  //     const page = loreData.page - 1;
+  //     return {
+  //       params: {
+  //         loreTokenSlug: loreData.slug,
+  //         tokenId: loreData.tokenId.toString(),
+  //         page: getLoreAsEvenPage(page).toString(),
+  //       },
+  //     };
+  //   })
+  // );
 
   paths.push(...(await getNarrativePaths()));
 

@@ -17,8 +17,8 @@ export default async function handler(
     return res.status(404);
   }
 
-  if (!req.body?.signature || !req.body?.token_id || !req.body?.token_address) {
-    const errorMessage = `Must have all set: signature ${req.body?.signature}, token_id ${req.body?.token_id} and token_address ${req.body?.token_address}`;
+  if (!req.body?.token_id || !req.body?.token_address) {
+    const errorMessage = `Must have all set: token_id ${req.body?.token_id} and token_address ${req.body?.token_address}`;
     console.error(errorMessage);
     return res.status(400).json({
       error: errorMessage,
@@ -27,31 +27,31 @@ export default async function handler(
 
   const tokenId = req.body.token_id;
   const tokenAdddress = req.body.token_address;
-  console.log("Signature:", req.body.signature);
+  // console.log("Signature:", req.body.signature);
   console.log("Token Address:", tokenAdddress);
   console.log("Token ID:", tokenId);
 
-  const signingAddress = utils.verifyMessage(
-    tokenId.toString(),
-    req.body.signature
-  );
-
-  const contract = await getERC721Contract({
-    contractAddress: tokenAdddress,
-    provider: getProvider(true),
-  });
-
-  const owner = await contract.ownerOf(tokenId);
-
-  if (owner.toLowerCase() !== signingAddress.toLowerCase()) {
-    const error_message = `Signature address ${signingAddress.toLowerCase()} is not the owner of token ${tokenId} in contract ${
-      contract.address
-    }. Real owner is: ${owner.toLowerCase()}`;
-    console.error(error_message);
-    return res.status(403).json({
-      error: error_message,
-    });
-  }
+  // const signingAddress = utils.verifyMessage(
+  //   tokenId.toString(),
+  //   req.body.signature
+  // );
+  //
+  // const contract = await getERC721Contract({
+  //   contractAddress: tokenAdddress,
+  //   provider: getProvider(true),
+  // });
+  //
+  // const owner = await contract.ownerOf(tokenId);
+  //
+  // if (owner.toLowerCase() !== signingAddress.toLowerCase()) {
+  //   const error_message = `Signature address ${signingAddress.toLowerCase()} is not the owner of token ${tokenId} in contract ${
+  //     contract.address
+  //   }. Real owner is: ${owner.toLowerCase()}`;
+  //   console.error(error_message);
+  //   return res.status(403).json({
+  //     error: error_message,
+  //   });
+  // }
 
   try {
     // console.log("pinning json");
@@ -62,7 +62,6 @@ export default async function handler(
       attributes: [
         { trait_type: "Token Address", value: tokenAdddress },
         { trait_type: "Token ID", value: tokenId },
-        { trait_type: "Creator", value: signingAddress },
       ],
     });
     return res.status(201).json({ hash: response.IpfsHash });

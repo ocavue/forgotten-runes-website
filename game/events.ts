@@ -5,6 +5,7 @@ export default {
   ON_METAMASK_ATTEMPT_CONNECT: "ON_METAMASK_ATTEMPT_CONNECT",
   ON_METAMASK_CONNECTED: "ON_METAMASK_CONNECTED",
   ON_SITE_PROVIDER: "ON_SITE_PROVIDER",
+  ON_SCROLL: "ON_SCROLL",
 };
 
 export type OnMetamaskConnectedEventArgs = {
@@ -15,4 +16,11 @@ export type OnMetamaskConnectedEventArgs = {
 
 export type OnSiteProviderEventArgs = {
   provider: any;
+};
+
+export type OnScrollEventArgs = {
+  deltaX: number;
+  deltaY: number;
+  deltaZ: number;
+  scrollY: number;
 };

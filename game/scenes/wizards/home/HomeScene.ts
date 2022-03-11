@@ -23,8 +23,10 @@ import { AlagardFontMetrics } from "../../../fontSettings";
 
 //  This Scene is aspect ratio locked at 640 x 960 (and scaled and centered accordingly)
 
+const ORIGINAL = false;
+const SIMPLIFIED = true;
 const NIGHT = false;
-const WINTER = true;
+const WINTER = false;
 const BREAKPOINT = 768;
 
 export class HomeScene extends Phaser.Scene {
@@ -182,6 +184,11 @@ export class HomeScene extends Phaser.Scene {
       this.configureWinterWonderland();
       this.letItSnow();
     }
+
+    if (SIMPLIFIED) {
+      this.configureSummoningBegunWorld();
+    }
+
     // if (this.summoningBegun) {
     //   this.configureSummoningBegunWorld();
     // } else {
@@ -399,14 +406,18 @@ export class HomeScene extends Phaser.Scene {
 
     // const zoneGraphics = this.add.graphics();
     // zoneGraphics.strokeRect(centerX + 10, 414, 30, 30);
+
+    /*
     const hatZone = this.add.zone(centerX + 10, 414, 30, 30);
     hatZone.setOrigin(0, 0);
     hatZone.setPosition(centerX + 10, 414);
     hatZone.setInteractive({ useHandCursor: true }).on("pointerup", () => {
       this.launchShowScene();
     });
+    */
 
-    this.showCrow();
+    // no crow for now
+    // this.showCrow();
 
     const web3Controller = getWeb3Controller(this.game);
     web3Controller.emitter.on(
@@ -586,6 +597,7 @@ export class HomeScene extends Phaser.Scene {
   }
 
   updateCamera() {
+    console.log("HomeScene updateCamera");
     const camera = this.cameras.main;
     const width = this.scale.gameSize.width;
     const height = this.scale.gameSize.height;
@@ -594,18 +606,22 @@ export class HomeScene extends Phaser.Scene {
 
     const mainZoom = this.backgroundScene.cameras.main.zoom;
     camera.setZoom(mainZoom);
-
+    // console.log("mainZoom: ", mainZoom);
     if (mainZoom > 1) {
-      camera.scrollY = -height / mainZoom / 2;
+      camera.scrollY = -height / mainZoom / 2 - 120;
 
       // if (this.snowParticles) {
       // this.snowParticles.y = camera.scrollY;
       // }
+    } else {
+      camera.scrollY = -300;
     }
 
     // scroll based on whatever we initially had
     const initialCenterX = this.initialWidth / 2;
     camera.scrollX = (centerX - initialCenterX) * -1;
+
+    console.log("camera.scrollY: ", camera.scrollY);
     this.backgroundScene.updateCamera();
 
     this.updateDarkSkySize();
@@ -771,9 +787,11 @@ export class HomeScene extends Phaser.Scene {
         // this.updateCamera();
 
         const scrollYDiff = Math.abs(camera.scrollY - this.initialScrollY); // 0
-        // console.log("camera.scrollY: ", camera.scrollY, scrollYDiff);
         this.backgroundScene.updateParallax({
           scrollY: scrollYDiff,
+          deltaX,
+          deltaY,
+          deltaZ,
         });
       }
     );

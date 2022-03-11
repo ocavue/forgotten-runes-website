@@ -15,6 +15,7 @@ import { BlogPostGrid } from "../../components/Blog/BlogPostGrid";
 import { Flex } from "rebass";
 import { getProvider } from "../../hooks/useProvider";
 import { getOrdinal } from "english-ordinals";
+import { getLoreAsEvenPage } from "../../components/Lore/loreFetchingUtils";
 
 const RecentLorePage = ({
   recentLore,
@@ -117,7 +118,11 @@ export async function getStaticProps(context: GetStaticPropsContext) {
           .padEnd(256)
           .substring(0, 256)
           .trim()}...`,
-        url: getLoreUrl(entry.slug, entry.token.tokenId, entry.page - 1),
+        url: getLoreUrl(
+          entry.slug,
+          entry.token.tokenId,
+          getLoreAsEvenPage(entry.page - 1)
+        ),
       };
 
       return result;

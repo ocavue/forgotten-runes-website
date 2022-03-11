@@ -1,8 +1,9 @@
 export type Post = {
-  content: string;
+  content?: string;
   data: any;
-  filePath: string;
-  basename: string;
+  filePath?: string;
+  basename?: string;
   locale: string;
+  slug?: string;
   coverImageUrl?: string;
 };

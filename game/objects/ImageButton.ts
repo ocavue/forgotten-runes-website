@@ -37,6 +37,7 @@ export class ImageButton extends Phaser.GameObjects.Sprite {
               repeat: -1,
             });
           }
+          this.setAlpha(0.8);
           this.setFrame(hoverFrame);
         }
       })
@@ -46,6 +47,7 @@ export class ImageButton extends Phaser.GameObjects.Sprite {
         }
 
         if (this.enabled) {
+          this.setAlpha(1);
           this.setFrame(defaultFrame);
         }
       })

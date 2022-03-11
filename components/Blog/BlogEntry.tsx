@@ -85,16 +85,12 @@ export const BlogPostImgWrapInner = styled.div<{
 `;
 
 export default function BlogEntry({ post }: Props) {
+  const slug = post.slug
+    ? post.slug
+    : post.filePath?.replace(/(\.(\w\w-?(\w\w)?))?\.mdx?$/, "");
   return (
     <BlogEntryElement>
-      <Link
-        as={`/posts/${post.filePath.replace(
-          /(\.(\w\w-?(\w\w)?))?\.mdx?$/,
-          ""
-        )}`}
-        href={`/posts/[slug]`}
-        passHref={true}
-      >
+      <Link as={`/posts/${slug}`} href={`/posts/[slug]`} passHref={true}>
         <StyledImageAnchor title={post.data.title}>
           <BlogPostImgWrap>
             <BlogPostImgWrapInner>
@@ -112,16 +108,8 @@ export default function BlogEntry({ post }: Props) {
         <Category>{post.data.category || "Post"}</Category>
       </Link>
 
-      <Link
-        as={`/posts/${post.filePath.replace(
-          /(\.(\w\w-?(\w\w)?))?\.mdx?$/,
-          ""
-        )}`}
-        href={`/posts/[slug]`}
-        passHref={true}
-      >
+      <Link as={`/posts/${slug}`} href={`/posts/[slug]`} passHref={true}>
         <StyledAnchor title={post.data.title}>
-          {/* <BlogPostTitle>{post.data.title}</BlogPostTitle> */}
           {post.data.description && (
             <Description>{post.data.description}</Description>
           )}

@@ -34,11 +34,7 @@ module.exports = {
   webpackFinal: async (config) => {
     return merge(config, {
       resolve: {
-        alias: {
-          "@emotion/core": getPackageDir("@emotion/react"),
-          "@emotion/styled": getPackageDir("@emotion/styled"),
-          "emotion-theming": getPackageDir("@emotion/react"),
-        },
+        alias: {},
       },
     });
   },

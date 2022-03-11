@@ -39,7 +39,7 @@ const MapStyles = styled.div`
 `;
 
 export const MapWrapper = styled.div`
-  height: 90vh;
+  height: 80vh;
 `;
 
 type Props = {};
