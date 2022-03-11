@@ -304,17 +304,16 @@ export default function SiteNav({
         )}
         <ul className={"menu" + (isOpen ? " active" : "")} style={{ flex: 1 }}>
           <li className="item">
-            <a href="https://forgotten.market/" className="icon-link">
-              <ResponsivePixelImg src="/static/img/icons/nav/button_bag_default.png" />
-            </a>
-          </li>
-
-          <li className="item">
             <a
               href="https://opensea.io/collection/forgottenruneswizardscult"
               className="icon-link"
             >
               <ResponsivePixelImg src="/static/img/icons/nav/opensea_default.png" />
+            </a>
+          </li>
+          <li className="item">
+            <a href="https://forgotten.market/" className="icon-link">
+              <ResponsivePixelImg src="/static/img/icons/nav/button_bag_default.png" />
             </a>
           </li>
           <li className="item">

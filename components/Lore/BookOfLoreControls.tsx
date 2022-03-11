@@ -10,7 +10,10 @@ import { LoreNameWrapper } from "./BookSharedComponents";
 
 import { useEthers } from "@usedapp/core";
 import { ConnectWalletButton } from "../web3/ConnectWalletButton";
-import { CHARACTER_CONTRACTS } from "../../contracts/ForgottenRunesWizardsCultContract";
+import {
+  CHARACTER_CONTRACTS,
+  TOKEN_SLUG_TO_CONTRACT,
+} from "../../contracts/ForgottenRunesWizardsCultContract";
 import { Box, Flex } from "rebass";
 import truncateEthAddress from "truncate-eth-address";
 
@@ -85,6 +88,13 @@ const NoPageSpacer = styled.div`
   display: block;
 `;
 
+const OwnerSpan = styled.span`
+  a {
+    color: black;
+    text-decoration: none;
+  }
+`;
+
 const SocialContainer = styled.div`
   //position: absolute;
   //left: 0px;
@@ -143,18 +153,31 @@ const LoreSocialContainer = ({
   const gmUrl = `/scenes/gm/${tokenId}`;
   const downloadUrl = `/api/art/${loreTokenSlug}/${tokenId}.zip`;
   const lockscreenUrl = `/lockscreen?tokenSlug=${loreTokenSlug}&tokenId=${tokenId}`;
+  const tokenContractAddress =
+    TOKEN_SLUG_TO_CONTRACT[loreTokenSlug] ||
+    `0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42`;
 
   return (
     <SocialContainer>
       <SocialItem>
         <a
-          href={`https://opensea.io/assets/0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42/${tokenId}`}
+          href={`https://opensea.io/assets/${tokenContractAddress}/${tokenId}`}
           className="icon-link"
           target="_blank"
         >
           <ResponsivePixelImg src="/static/img/icons/social_opensea_default_w.png" />
         </a>
       </SocialItem>
+      <SocialItem>
+        <a
+          href={`https://forgotten.market/${tokenContractAddress}/${tokenId}`}
+          className="icon-link"
+          target="_blank"
+        >
+          <ResponsivePixelImg src="/static/img/icons/bol_button_bag.png" />
+        </a>
+      </SocialItem>
+
       <SocialItem>
         <a href={tweetUrl} className="icon-link" target="_blank">
           <ResponsivePixelImg src="/static/img/icons/social_twitter_default_w.png" />
@@ -283,12 +306,12 @@ export default function BookOfLoreControls({
               {currentOwner &&
               currentOwner.toLowerCase() !==
                 "0x0000000000000000000000000000000000000000" ? (
-                <span>
+                <OwnerSpan>
                   Owner:{" "}
                   <Link href={`https://opensea.io/${currentOwner}`}>
                     {truncateEthAddress(currentOwner)}
                   </Link>
-                </span>
+                </OwnerSpan>
               ) : null}
             </Box>
           </LoreNameWrapper>

@@ -33,6 +33,12 @@ export const FORGOTTEN_PONIES_ADDRESS: { [chainId: number]: string } = {
   1: `0xf55b615B479482440135Ebf1b907fD4c37eD9420`,
 };
 
+export const TOKEN_SLUG_TO_CONTRACT: { [tokenSlug: string]: string } = {
+  wizards: WIZARDS_CONTRACT_ADDRESS[1],
+  souls: FORGOTTEN_SOULS_ADDRESS[1],
+  ponies: FORGOTTEN_PONIES_ADDRESS[1],
+};
+
 export const getAllCharacterContracts = (chainId: number) => {
   return [
     WIZARDS_CONTRACT_ADDRESS[chainId].toLowerCase(),
