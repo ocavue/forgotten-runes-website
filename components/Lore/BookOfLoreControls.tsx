@@ -153,9 +153,10 @@ const LoreSocialContainer = ({
   const gmUrl = `/scenes/gm/${tokenId}`;
   const downloadUrl = `/api/art/${loreTokenSlug}/${tokenId}.zip`;
   const lockscreenUrl = `/lockscreen?tokenSlug=${loreTokenSlug}&tokenId=${tokenId}`;
-  const tokenContractAddress =
+  const tokenContractAddress = (
     TOKEN_SLUG_TO_CONTRACT[loreTokenSlug] ||
-    `0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42`;
+    `0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42`
+  ).toLowerCase();
 
   return (
     <SocialContainer>
