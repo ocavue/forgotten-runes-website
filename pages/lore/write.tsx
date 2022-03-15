@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import { Box, Flex } from "rebass";
-import LoreMarkdownRenderer from "../../components/Lore/LoreMarkdownRenderer";
+import LoreMarkdownRenderer, {
+  getCloudinaryFrontedImageSrc,
+} from "../../components/Lore/LoreMarkdownRenderer";
 import { useExtractColors } from "../../hooks/useExtractColors";
 import {
   TokenConfiguration,
@@ -35,6 +37,12 @@ import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
 });
+
+const MarkdownEditor = dynamic(() => import("../../components/editor"), {
+  ssr: false,
+});
+
+const MemoMarkdownEditor = memo(MarkdownEditor);
 
 const WriteLore = ({}: {}) => {
   const [previewText, setPreviewText] = useState<string>(
@@ -92,6 +100,11 @@ const WriteLore = ({}: {}) => {
     }
     if (existingLoreToken) setPickedToken(existingLoreToken);
   }, [existingLoreToken, existingLore, existingLoreBgColor]);
+
+  const onChangeMarkdown = useCallback((markdown: string) => {
+    console.log("[onChangeMarkdown] markdown:", markdown);
+    setEditorText(markdown);
+  }, []);
 
   const fetchingExistingLore = !existingLore && isEditMode;
 
@@ -192,47 +205,67 @@ const WriteLore = ({}: {}) => {
                 {isEditMode ? "Editing existing entry" : "New lore entry"}
               </h4>
               <div style={{ height: "100%" }}>
-                <MdEditor
-                  allowPasteImage={false}
-                  onChangeTrigger={"afterRender"}
-                  value={editorText}
-                  style={{ height: "100%" }}
-                  view={{ menu: true, md: true, html: false }}
-                  plugins={[
-                    "header",
-                    "font-bold",
-                    "font-italic",
-                    "font-underline",
-                    "font-strikethrough",
-                    "list-unordered",
-                    "list-ordered",
-                    "block-quote",
-                    "block-wrap",
-                    "block-code-inline",
-                    "block-code-block",
-                    "image",
-                    "link",
-                    "clear",
-                  ]}
-                  renderHTML={(text) => <></>}
-                  onChange={(value) => {
-                    setEditorText(value.text);
-                  }}
-                  onImageUpload={async (f: File) => {
+                <MemoMarkdownEditor
+                  initialContent={previewText}
+                  onChangeMarkdown={onChangeMarkdown}
+                  imageUploader={async (f: File) => {
                     try {
                       const res = await pinFileToIpfs(f, -1, "N/A");
 
-                      const url = `ipfs://${res.IpfsHash}`;
+                      const { newSrc: url } = getCloudinaryFrontedImageSrc(
+                        `ipfs://${res.IpfsHash}`
+                      );
                       if (!firstImageUrl) {
                         setFirstImageUrl(url);
                       }
-                      return url;
+                      return { url };
                     } catch (e: any) {
                       console.error(e);
-                      return "Problem uploading, please try again...";
+                      return { url: "Problem uploading, please try again..." };
                     }
                   }}
                 />
+                {/*<MdEditor*/}
+                {/*  allowPasteImage={false}*/}
+                {/*  onChangeTrigger={"afterRender"}*/}
+                {/*  value={editorText}*/}
+                {/*  style={{ height: "100%" }}*/}
+                {/*  view={{ menu: true, md: true, html: false }}*/}
+                {/*  plugins={[*/}
+                {/*    "header",*/}
+                {/*    "font-bold",*/}
+                {/*    "font-italic",*/}
+                {/*    "font-underline",*/}
+                {/*    "font-strikethrough",*/}
+                {/*    "list-unordered",*/}
+                {/*    "list-ordered",*/}
+                {/*    "block-quote",*/}
+                {/*    "block-wrap",*/}
+                {/*    "block-code-inline",*/}
+                {/*    "block-code-block",*/}
+                {/*    "image",*/}
+                {/*    "link",*/}
+                {/*    "clear",*/}
+                {/*  ]}*/}
+                {/*  renderHTML={(text) => <></>}*/}
+                {/*  onChange={(value) => {*/}
+                {/*    setEditorText(value.text);*/}
+                {/*  }}*/}
+                {/*  onImageUpload={async (f: File) => {*/}
+                {/*    try {*/}
+                {/*      const res = await pinFileToIpfs(f, -1, "N/A");*/}
+
+                {/*      const url = `ipfs://${res.IpfsHash}`;*/}
+                {/*      if (!firstImageUrl) {*/}
+                {/*        setFirstImageUrl(url);*/}
+                {/*      }*/}
+                {/*      return url;*/}
+                {/*    } catch (e: any) {*/}
+                {/*      console.error(e);*/}
+                {/*      return "Problem uploading, please try again...";*/}
+                {/*    }*/}
+                {/*  }}*/}
+                {/*/>*/}
               </div>
             </Flex>
             <Flex flex={1} pl={2} flexDirection={"column"}>

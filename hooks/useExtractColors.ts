@@ -57,9 +57,6 @@ export function useExtractColors(url?: string | null) {
     async function run() {
       if (!url) return;
 
-      const { newSrc: imageData, fallbackSrc } =
-        getCloudinaryFrontedImageSrc(url);
-
       const image: HTMLImageElement = document.createElement("img");
       image.addEventListener("load", function () {
         const canvas = document.createElement("canvas");
@@ -78,7 +75,7 @@ export function useExtractColors(url?: string | null) {
         setBgColor(extractedBgColor);
       });
       image.crossOrigin = "anonymous";
-      image.src = imageData;
+      image.src = url;
     }
     run();
   }, [url]);

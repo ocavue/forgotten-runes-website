@@ -7,7 +7,7 @@ import {
 } from "@remirror/react";
 import { EmojiPopupComponent } from "./Emoji";
 import "@remirror/styles/all.css";
-import { useCallback, type FC } from "react";
+import { FC, useCallback } from "react";
 import jsx from "refractor/lang/jsx";
 import typescript from "refractor/lang/typescript";
 import { ExtensionPriority, RemirrorEventListener } from "remirror";
@@ -53,7 +53,9 @@ export interface MarkdownEditorProps {
 const Wrapper = styled.div`
   font-size: 16px;
   font-family: "Alagard", serif;
-  background-color: #3a110f;
+  //background-color: #3a110f;
+  background-color: black;
+  border: 1px dimgrey solid;
   min-height: 500px;
 
   h1,
