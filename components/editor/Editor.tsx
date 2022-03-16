@@ -81,6 +81,10 @@ const Wrapper = styled.div`
     font-size: 16px;
   }
 
+  img {
+    max-width: 100%;
+  }
+
   .remirror-editor {
     max-height: 90vh;
     overflow-y: scroll;
