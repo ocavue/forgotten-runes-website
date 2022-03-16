@@ -81,6 +81,11 @@ const Wrapper = styled.div`
     font-size: 16px;
   }
 
+  .remirror-editor {
+    max-height: 90vh;
+    overflow-y: scroll;
+  }
+
   .remirror-editor.ProseMirror blockquote {
     background-color: #ffffff14;
     margin: 0;
