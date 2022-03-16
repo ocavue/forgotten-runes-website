@@ -29,7 +29,6 @@ import {
   StrikeExtension,
   TableExtension,
   TrailingNodeExtension,
-  UnderlineExtension,
   DropCursorExtension,
   GapCursorExtension,
   EmojiExtension,
@@ -43,7 +42,7 @@ import { markdownToHtml } from "./markdowToHtml";
 import { createMentionExtension } from "./createMentionExtension";
 import { Tagging } from "./Mentions";
 
-export interface MarkdownEditorProps {
+export interface MarkdownEditdevorProps {
   placeholder?: string;
   initialContent?: string;
   onChangeMarkdown?: (markdown: string) => void;
@@ -53,11 +52,24 @@ export interface MarkdownEditorProps {
 const Wrapper = styled.div`
   font-size: 16px;
   font-family: "Alagard", serif;
-  //background-color: #3a110f;
   background-color: black;
   border: 1px dimgrey solid;
   height: 100%;
-  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .remirror-editor-wrapper {
+    padding-top: 0;
+    flex: 1;
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .remirror-toolbar > *:not(:first-child) {
+    margin: 0 0 0 0;
+  }
 
   h1,
   h2,
@@ -88,7 +100,6 @@ const Wrapper = styled.div`
 
   .remirror-editor {
     height: 100%;
-    max-height: 100%;
     overflow-y: scroll;
   }
 
@@ -144,7 +155,6 @@ const Wrapper = styled.div`
   }
 
   .remirror-editor {
-    min-height: 500px;
     caret-color: white;
 
     .ProseMirror-gapcursor:after {

@@ -204,69 +204,67 @@ const WriteLore = ({}: {}) => {
               <h4>
                 {isEditMode ? "Editing existing entry" : "New lore entry"}
               </h4>
-              <div style={{ height: "100%" }}>
-                <MemoMarkdownEditor
-                  initialContent={previewText}
-                  onChangeMarkdown={onChangeMarkdown}
-                  imageUploader={async (f: File) => {
-                    try {
-                      const res = await pinFileToIpfs(f, -1, "N/A");
+              <MemoMarkdownEditor
+                initialContent={previewText}
+                onChangeMarkdown={onChangeMarkdown}
+                imageUploader={async (f: File) => {
+                  try {
+                    const res = await pinFileToIpfs(f, -1, "N/A");
 
-                      const { newSrc: url } = getCloudinaryFrontedImageSrc(
-                        `ipfs://${res.IpfsHash}`
-                      );
-                      if (!firstImageUrl) {
-                        setFirstImageUrl(url);
-                      }
-                      return { url };
-                    } catch (e: any) {
-                      console.error(e);
-                      return { url: "Problem uploading, please try again..." };
+                    const { newSrc: url } = getCloudinaryFrontedImageSrc(
+                      `ipfs://${res.IpfsHash}`
+                    );
+                    if (!firstImageUrl) {
+                      setFirstImageUrl(url);
                     }
-                  }}
-                />
-                {/*<MdEditor*/}
-                {/*  allowPasteImage={false}*/}
-                {/*  onChangeTrigger={"afterRender"}*/}
-                {/*  value={editorText}*/}
-                {/*  style={{ height: "100%" }}*/}
-                {/*  view={{ menu: true, md: true, html: false }}*/}
-                {/*  plugins={[*/}
-                {/*    "header",*/}
-                {/*    "font-bold",*/}
-                {/*    "font-italic",*/}
-                {/*    "font-underline",*/}
-                {/*    "font-strikethrough",*/}
-                {/*    "list-unordered",*/}
-                {/*    "list-ordered",*/}
-                {/*    "block-quote",*/}
-                {/*    "block-wrap",*/}
-                {/*    "block-code-inline",*/}
-                {/*    "block-code-block",*/}
-                {/*    "image",*/}
-                {/*    "link",*/}
-                {/*    "clear",*/}
-                {/*  ]}*/}
-                {/*  renderHTML={(text) => <></>}*/}
-                {/*  onChange={(value) => {*/}
-                {/*    setEditorText(value.text);*/}
-                {/*  }}*/}
-                {/*  onImageUpload={async (f: File) => {*/}
-                {/*    try {*/}
-                {/*      const res = await pinFileToIpfs(f, -1, "N/A");*/}
+                    return { url };
+                  } catch (e: any) {
+                    console.error(e);
+                    return { url: "Problem uploading, please try again..." };
+                  }
+                }}
+              />
+              {/*<MdEditor*/}
+              {/*  allowPasteImage={false}*/}
+              {/*  onChangeTrigger={"afterRender"}*/}
+              {/*  value={editorText}*/}
+              {/*  style={{ height: "100%" }}*/}
+              {/*  view={{ menu: true, md: true, html: false }}*/}
+              {/*  plugins={[*/}
+              {/*    "header",*/}
+              {/*    "font-bold",*/}
+              {/*    "font-italic",*/}
+              {/*    "font-underline",*/}
+              {/*    "font-strikethrough",*/}
+              {/*    "list-unordered",*/}
+              {/*    "list-ordered",*/}
+              {/*    "block-quote",*/}
+              {/*    "block-wrap",*/}
+              {/*    "block-code-inline",*/}
+              {/*    "block-code-block",*/}
+              {/*    "image",*/}
+              {/*    "link",*/}
+              {/*    "clear",*/}
+              {/*  ]}*/}
+              {/*  renderHTML={(text) => <></>}*/}
+              {/*  onChange={(value) => {*/}
+              {/*    setEditorText(value.text);*/}
+              {/*  }}*/}
+              {/*  onImageUpload={async (f: File) => {*/}
+              {/*    try {*/}
+              {/*      const res = await pinFileToIpfs(f, -1, "N/A");*/}
 
-                {/*      const url = `ipfs://${res.IpfsHash}`;*/}
-                {/*      if (!firstImageUrl) {*/}
-                {/*        setFirstImageUrl(url);*/}
-                {/*      }*/}
-                {/*      return url;*/}
-                {/*    } catch (e: any) {*/}
-                {/*      console.error(e);*/}
-                {/*      return "Problem uploading, please try again...";*/}
-                {/*    }*/}
-                {/*  }}*/}
-                {/*/>*/}
-              </div>
+              {/*      const url = `ipfs://${res.IpfsHash}`;*/}
+              {/*      if (!firstImageUrl) {*/}
+              {/*        setFirstImageUrl(url);*/}
+              {/*      }*/}
+              {/*      return url;*/}
+              {/*    } catch (e: any) {*/}
+              {/*      console.error(e);*/}
+              {/*      return "Problem uploading, please try again...";*/}
+              {/*    }*/}
+              {/*  }}*/}
+              {/*/>*/}
             </Flex>
             <Flex flex={1} pl={2} flexDirection={"column"}>
               <h4>Preview</h4>

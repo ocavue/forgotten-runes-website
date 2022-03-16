@@ -57,6 +57,7 @@ const ConnectModal = styled(ModalDecorator)`
 
 const MenuContainer = styled.div`
   background: #222;
+  /* flex-shrink: 1; */
 
   .remirror-role {
     background-color: #222;
@@ -288,7 +289,7 @@ function createToolbarItems(
   return [
     {
       type: ComponentItem.ToolbarGroup,
-      label: "Formatting",
+      label: "Headings",
       items: [
         {
           type: ComponentItem.ToolbarCommandButton,
@@ -337,6 +338,13 @@ function createToolbarItems(
             },
           ],
         },
+      ],
+      separator: "end",
+    },
+    {
+      type: ComponentItem.ToolbarGroup,
+      label: "Formatting",
+      items: [
         {
           type: ComponentItem.ToolbarCommandButton,
           commandName: "toggleBold",
