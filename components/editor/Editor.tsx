@@ -56,7 +56,7 @@ const Wrapper = styled.div`
   //background-color: #3a110f;
   background-color: black;
   border: 1px dimgrey solid;
-  min-height: 500px;
+  height: 100%;
   max-height: 100%;
 
   h1,
@@ -87,6 +87,7 @@ const Wrapper = styled.div`
   }
 
   .remirror-editor {
+    height: 100%;
     max-height: 100%;
     overflow-y: scroll;
   }
