@@ -33,6 +33,11 @@ import "react-toastify/dist/ReactToastify.css";
 import StyledToastContainer from "../../components/StyledToastContainer";
 import { NEW_LORE_DEFAULT_MARKDOWN } from "../../components/AddLore/loreDefaults";
 import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
+import { GetStaticPropsContext } from "next";
+import { client } from "~/lib/graphql";
+import { gql } from "@apollo/client";
+import { BOOK_OF_LORE_ADDRESS } from "~/contracts/ForgottenRunesWizardsCultContract";
+import { MentionAtomNodeAttributes } from "remirror/extensions";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
   ssr: false,
@@ -44,7 +49,11 @@ const MarkdownEditor = dynamic(() => import("../../components/editor"), {
 
 const MemoMarkdownEditor = memo(MarkdownEditor);
 
-const WriteLore = ({}: {}) => {
+const WriteLore = ({
+  mentionableTokens,
+}: {
+  mentionableTokens: MentionAtomNodeAttributes[];
+}) => {
   const [previewText, setPreviewText] = useState<string>(
     NEW_LORE_DEFAULT_MARKDOWN
   );
@@ -207,13 +216,12 @@ const WriteLore = ({}: {}) => {
               <MemoMarkdownEditor
                 initialContent={previewText}
                 onChangeMarkdown={onChangeMarkdown}
+                mentionableTokens={mentionableTokens}
                 imageUploader={async (f: File) => {
                   try {
                     const res = await pinFileToIpfs(f, -1, "N/A");
 
-                    const { newSrc: url } = getCloudinaryFrontedImageSrc(
-                      `ipfs://${res.IpfsHash}`
-                    );
+                    const url = `ipfs://${res.IpfsHash}`;
                     if (!firstImageUrl) {
                       setFirstImageUrl(url);
                     }
@@ -329,5 +337,48 @@ const WriteLore = ({}: {}) => {
     </Flex>
   );
 };
+
+export async function getStaticProps(context: GetStaticPropsContext) {
+  return {
+    props: {
+      mentionableTokens: (
+        await client.query({
+          query: gql`
+            query Tokens {
+              Token {
+                tokenId
+                pony {
+                  name
+                }
+                wizard {
+                  name
+                }
+                soul {
+                  name
+                }
+              }
+            }
+          `,
+        })
+      ).data.Token.map((tokenData: any): MentionAtomNodeAttributes => {
+        const actualToken =
+          tokenData.wizard ?? tokenData.soul ?? tokenData.pony;
+        const tokenType = tokenData.wizard
+          ? "wizard"
+          : tokenData.soul
+          ? "soul"
+          : tokenData.pony
+          ? "pony"
+          : "unknown";
+
+        return {
+          id: `${tokenType}${tokenData.tokenId}`,
+          label: actualToken?.name ?? `${tokenType} #${tokenData.tokenId} `,
+        };
+      }),
+    },
+    revalidate: 12 * 60 * 60,
+  };
+}
 
 export default WriteLore;

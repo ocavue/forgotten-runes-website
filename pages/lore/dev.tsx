@@ -23,6 +23,10 @@ import LoreMarkdownRenderer, {
   getCloudinaryFrontedImageSrc,
 } from "../../components/Lore/LoreMarkdownRenderer";
 import { useExtractColors } from "../../hooks/useExtractColors";
+import { GetStaticPropsContext } from "next";
+import { client } from "~/lib/graphql";
+import { gql } from "@apollo/client";
+import { MentionAtomNodeAttributes } from "remirror/extensions";
 
 const MarkdownEditor = dynamic(() => import("../../components/editor"), {
   ssr: false,
@@ -38,7 +42,11 @@ https://www.youtube.com/watch?v=dQw4w9WgXcQ
 Best wizard of all is @wizard2140. His dreams of befriending @pony0 one day. Watch out for @soul1732!
 `;
 
-const WriteLore = ({}: {}) => {
+const WriteLore = ({
+  mentionableTokens,
+}: {
+  mentionableTokens: MentionAtomNodeAttributes[];
+}) => {
   const [previewText, setPreviewText] = useState<string>(
     NEW_LORE_DEFAULT_MARKDOWN
   );
@@ -129,6 +137,7 @@ const WriteLore = ({}: {}) => {
         <Flex flex={1} flexDirection="column">
           <h4>{isEditMode ? "Editing existing entry" : "New lore entry"}</h4>
           <MemoMarkdownEditor
+            mentionableTokens={mentionableTokens}
             initialContent={previewText}
             onChangeMarkdown={onChangeMarkdown}
             imageUploader={async (f: File) => {
@@ -192,5 +201,48 @@ const WriteLore = ({}: {}) => {
     </>
   );
 };
+
+export async function getStaticProps(context: GetStaticPropsContext) {
+  return {
+    props: {
+      mentionableTokens: (
+        await client.query({
+          query: gql`
+            query Tokens {
+              Token {
+                tokenId
+                pony {
+                  name
+                }
+                wizard {
+                  name
+                }
+                soul {
+                  name
+                }
+              }
+            }
+          `,
+        })
+      ).data.Token.map((tokenData: any): MentionAtomNodeAttributes => {
+        const actualToken =
+          tokenData.wizard ?? tokenData.soul ?? tokenData.pony;
+        const tokenType = tokenData.wizard
+          ? "wizard"
+          : tokenData.soul
+          ? "soul"
+          : tokenData.pony
+          ? "pony"
+          : "unknown";
+
+        return {
+          id: `${tokenType}${tokenData.tokenId}`,
+          label: actualToken?.name ?? `${tokenType} #${tokenData.tokenId} `,
+        };
+      }),
+    },
+    revalidate: 12 * 60 * 60,
+  };
+}
 
 export default WriteLore;

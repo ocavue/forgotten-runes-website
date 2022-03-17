@@ -5,9 +5,12 @@ import {
   // ExtensionMentionAtomTheme
 } from "remirror";
 import { MentionAtomNodeAttributes } from "remirror/extensions";
-import { allMentionItems } from "./allMentionItems";
 
-function UserSuggester() {
+export function Tagging({
+  mentionableTokens,
+}: {
+  mentionableTokens: MentionAtomNodeAttributes[];
+}) {
   const [items, setItems] = useState<MentionAtomNodeAttributes[]>([]);
   const { state, getMenuProps, getItemProps, indexIsHovered, indexIsSelected } =
     useMentionAtom({ items: items });
@@ -19,7 +22,7 @@ function UserSuggester() {
     }
 
     const searchTerm = state.query.full.toLowerCase();
-    const filteredUsers = allMentionItems
+    const filteredUsers = mentionableTokens
       .filter(
         (item) =>
           item.label.toLowerCase().includes(searchTerm) ||
@@ -73,7 +76,3 @@ function UserSuggester() {
     </FloatingWrapper>
   );
 }
-
-export const Tagging = (): JSX.Element => {
-  return <UserSuggester />;
-};

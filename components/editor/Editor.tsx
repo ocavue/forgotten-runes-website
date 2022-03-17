@@ -32,21 +32,23 @@ import {
   DropCursorExtension,
   GapCursorExtension,
   EmojiExtension,
+  MentionAtomNodeAttributes,
 } from "remirror/extensions";
 import { EditorMenu } from "./EditorMenu";
 import { htmlToMarkdown } from "./htmlToMarkdown";
 import { createImageExtension, ImageUploader } from "./ImageExtension";
 import { createLinkExtension } from "./createLinkExtension";
 import { IframeExtension } from "./IframeExtension";
-import { markdownToHtml } from "./markdowToHtml";
+import { markdownToHtmlFunctionGenerator } from "./markdowToHtml";
 import { createMentionExtension } from "./createMentionExtension";
 import { Tagging } from "./Mentions";
 
-export interface MarkdownEditdevorProps {
+export interface MarkdownEditorProps {
   placeholder?: string;
   initialContent?: string;
   onChangeMarkdown?: (markdown: string) => void;
   imageUploader?: ImageUploader;
+  mentionableTokens?: MentionAtomNodeAttributes[];
 }
 
 const Wrapper = styled.div`
@@ -183,6 +185,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
     children,
     onChangeMarkdown,
     imageUploader,
+    mentionableTokens,
   } = props;
 
   const extensions = useCallback(
@@ -210,7 +213,9 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new MarkdownExtension({
         copyAsMarkdown: false,
         htmlToMarkdown,
-        markdownToHtml,
+        markdownToHtml: markdownToHtmlFunctionGenerator(
+          mentionableTokens ?? []
+        ),
       }),
       /**
        * `HardBreakExtension` allows us to create a newline inside paragraphs.
@@ -247,7 +252,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       >
         <EditorMenu />
         <EditorComponent />
-        <Tagging />
+        <Tagging mentionableTokens={mentionableTokens ?? []} />
         <EmojiPopupComponent />
         {children}
       </Remirror>

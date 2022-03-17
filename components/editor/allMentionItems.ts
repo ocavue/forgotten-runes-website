@@ -9,23 +9,23 @@ export const allMentionItems: MentionAtomNodeAttributes[] = [
   // { id: "pony0", label: "MetaPony" },
 ];
 
-for (const [id, wizard] of Object.entries(productionWizardData)) {
-  allMentionItems.push({
-    id: `wizard${id}`,
-    label: wizard.name,
-  });
-}
-
-for (const [id, soul] of Object.entries(productionSoulsData)) {
-  allMentionItems.push({
-    id: `soul${id}`,
-    label: `Soul #${id}`,
-  });
-}
-
-for (const [id, pony] of Object.entries(productionPoniesData)) {
-  allMentionItems.push({
-    id: `pony${id}`,
-    label: pony.name,
-  });
-}
+// for (const [id, wizard] of Object.entries(productionWizardData)) {
+//   allMentionItems.push({
+//     id: `wizard${id}`,
+//     label: wizard.name,
+//   });
+// }
+//
+// for (const [id, soul] of Object.entries(productionSoulsData)) {
+//   allMentionItems.push({
+//     id: `soul${id}`,
+//     label: `Soul #${id}`,
+//   });
+// }
+//
+// for (const [id, pony] of Object.entries(productionPoniesData)) {
+//   allMentionItems.push({
+//     id: `pony${id}`,
+//     label: pony.name,
+//   });
+// }
