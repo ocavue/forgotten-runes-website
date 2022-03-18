@@ -5,42 +5,41 @@ import {
   ThemeProvider,
   useRemirror,
 } from "@remirror/react";
-import { EmojiPopupComponent } from "./Emoji";
 import "@remirror/styles/all.css";
 import { FC, useCallback } from "react";
 import jsx from "refractor/lang/jsx";
 import typescript from "refractor/lang/typescript";
 import { ExtensionPriority, RemirrorEventListener } from "remirror";
-import emojiData from "svgmoji/emoji.json";
 import {
   BlockquoteExtension,
   BoldExtension,
   BulletListExtension,
   CodeBlockExtension,
   CodeExtension,
+  DropCursorExtension,
+  EmojiExtension,
+  GapCursorExtension,
   HardBreakExtension,
   HeadingExtension,
   ItalicExtension,
   LinkExtension,
   ListItemExtension,
   MarkdownExtension,
+  MentionAtomNodeAttributes,
   OrderedListExtension,
   PlaceholderExtension,
   StrikeExtension,
-  TableExtension,
   TrailingNodeExtension,
-  DropCursorExtension,
-  GapCursorExtension,
-  EmojiExtension,
-  MentionAtomNodeAttributes,
 } from "remirror/extensions";
-import { EditorMenu } from "./EditorMenu";
-import { htmlToMarkdown } from "./htmlToMarkdown";
-import { createImageExtension, ImageUploader } from "./ImageExtension";
+import emojiData from "svgmoji/emoji.json";
 import { createLinkExtension } from "./createLinkExtension";
-import { IframeExtension } from "./IframeExtension";
-import { markdownToHtmlFunctionGenerator } from "./markdowToHtml";
 import { createMentionExtension } from "./createMentionExtension";
+import { EditorMenu } from "./EditorMenu";
+import { EmojiPopupComponent } from "./Emoji";
+import { htmlToMarkdown } from "./htmlToMarkdown";
+import { IframeExtension } from "./IframeExtension";
+import { createImageExtension, ImageUploader } from "./ImageExtension";
+import { markdownToHtmlFunctionGenerator } from "./markdowToHtml";
 import { Tagging } from "./Mentions";
 
 export interface MarkdownEditorProps {
@@ -209,7 +208,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new CodeExtension(),
       new CodeBlockExtension({ supportedLanguages: [jsx, typescript] }),
       new TrailingNodeExtension(),
-      new TableExtension(),
+      // new TableExtension(),
       new MarkdownExtension({
         copyAsMarkdown: false,
         htmlToMarkdown,
