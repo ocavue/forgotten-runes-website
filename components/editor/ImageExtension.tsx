@@ -91,7 +91,8 @@ export function createImageExtension({
 }) {
   return new ImageExtension({
     pasteRuleRegexp: /^.*image.*$/i,
-
+    // Support storing the `ipfs://` image
+    extraAttributes: { ipfs: { default: null, parseDOM: "data-ipfs" } },
     render: (props): JSX.Element => {
       const attrs = props.node.attrs as FileAttributes;
       if (attrs.url) {

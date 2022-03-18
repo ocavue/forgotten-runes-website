@@ -207,6 +207,13 @@ const turndownService = new TurndownService({
       return `@${extractMentionId(node as HTMLElement) || content}`;
     },
   })
+  .addRule("ipfs", {
+    filter: ["img"],
+    replacement: (content, node) => {
+      console.log({ content, node });
+      return content;
+    },
+  })
 
   .addRule("youtube_video", {
     filter: (node, options) => {

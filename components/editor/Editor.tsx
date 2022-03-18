@@ -208,7 +208,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       new CodeExtension(),
       new CodeBlockExtension({ supportedLanguages: [jsx, typescript] }),
       new TrailingNodeExtension(),
-      // new TableExtension(),
+
       new MarkdownExtension({
         copyAsMarkdown: false,
         htmlToMarkdown,
