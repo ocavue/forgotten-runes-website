@@ -36,7 +36,6 @@ import { ConnectWalletButton } from "../../components/web3/ConnectWalletButton";
 import { GetStaticPropsContext } from "next";
 import { client } from "~/lib/graphql";
 import { gql } from "@apollo/client";
-import { BOOK_OF_LORE_ADDRESS } from "~/contracts/ForgottenRunesWizardsCultContract";
 import { MentionAtomNodeAttributes } from "remirror/extensions";
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {

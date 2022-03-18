@@ -246,7 +246,7 @@ export const MarkdownEditor: FC<MarkdownEditorProps> = (props) => {
       <Remirror
         manager={manager}
         initialContent={initialContent}
-        autoFocus
+        autoFocus={"start"}
         onChange={onChange}
       >
         <EditorMenu />

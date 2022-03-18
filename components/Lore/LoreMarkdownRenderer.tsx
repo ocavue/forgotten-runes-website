@@ -62,6 +62,13 @@ const LoreMarkdownRenderer = ({
         children={markdown}
         remarkPlugins={[remarkGfm as any]}
         components={{
+          a: ({ href, children, ...props }) => {
+            if (href?.startsWith("https://www.youtube.com")) {
+              return <ReactPlayer url={href} width={"100%"} />;
+            }
+
+            return <a href={href}>{children?.[0] ?? "link"}</a>;
+          },
           pre: ({ node, children, ...props }) => (
             <pre {...props} style={{ whiteSpace: "pre-line" }}>
               {children}
@@ -74,50 +81,49 @@ const LoreMarkdownRenderer = ({
               const child = children[i];
 
               if (typeof child === "string") {
-                if (child.startsWith("https://www.youtube.com")) {
-                  processedChildren.push(
-                    <ReactPlayer url={child} width={"100%"} />
-                  );
-                } else {
-                  const tokenTagMatches = [...child.matchAll(TOKEN_TAG_REGEX)];
+                // if (child.startsWith("https://www.youtube.com")) {
+                //   processedChildren.push(
+                //     <ReactPlayer url={child} width={"100%"} />
+                //   );
+                // } else {
+                const tokenTagMatches = [...child.matchAll(TOKEN_TAG_REGEX)];
 
-                  if (tokenTagMatches.length > 0) {
-                    tokenTagMatches.forEach((match, index) => {
-                      const priorMatchEnd =
-                        index === 0
-                          ? 0
-                          : // @ts-ignore
-                            tokenTagMatches[index - 1].index +
-                            // @ts-ignore
-                            tokenTagMatches[index - 1][0].length;
-
-                      const tagType = match[1]; // e.g. "wizard"
-                      const slug = getSlugFromTag(tagType);
-                      const tokenId = match[2];
-
-                      const name = getTokenName(
-                        tokenId,
-                        getContractFromTokenSlug(slug)
-                      );
-
-                      processedChildren.push(
-                        child.slice(priorMatchEnd, match.index)
-                      );
-                      processedChildren.push(
-                        <Link href={`/lore/${slug}/${tokenId}`}>{name}</Link>
-                      );
-
-                      if (index === tokenTagMatches.length - 1) {
-                        const fullMatchedWord = match[0]; // e.g. @wizard123
-                        processedChildren.push(
+                if (tokenTagMatches.length > 0) {
+                  tokenTagMatches.forEach((match, index) => {
+                    const priorMatchEnd =
+                      index === 0
+                        ? 0
+                        : // @ts-ignore
+                          tokenTagMatches[index - 1].index +
                           // @ts-ignore
-                          child.slice(match.index + fullMatchedWord.length)
-                        );
-                      }
-                    });
-                  } else {
-                    processedChildren.push(child);
-                  }
+                          tokenTagMatches[index - 1][0].length;
+
+                    const tagType = match[1]; // e.g. "wizard"
+                    const slug = getSlugFromTag(tagType);
+                    const tokenId = match[2];
+
+                    const name = getTokenName(
+                      tokenId,
+                      getContractFromTokenSlug(slug)
+                    );
+
+                    processedChildren.push(
+                      child.slice(priorMatchEnd, match.index)
+                    );
+                    processedChildren.push(
+                      <Link href={`/lore/${slug}/${tokenId}`}>{name}</Link>
+                    );
+
+                    if (index === tokenTagMatches.length - 1) {
+                      const fullMatchedWord = match[0]; // e.g. @wizard123
+                      processedChildren.push(
+                        // @ts-ignore
+                        child.slice(match.index + fullMatchedWord.length)
+                      );
+                    }
+                  });
+                } else {
+                  processedChildren.push(child);
                 }
               } else {
                 // do nothing, pass through
