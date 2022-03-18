@@ -34,14 +34,6 @@ const MarkdownEditor = dynamic(() => import("../../components/editor"), {
 
 const MemoMarkdownEditor = memo(MarkdownEditor);
 
-const TEMP_LORE_DEFAULT_MARKDOWN = `
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-![wizards-2140-2-back.png](https://www.forgottenrunes.com/static/img/forgotten-runes-logo.png)
-
-Best wizard of all is @wizard2140. His dreams of befriending @pony0 one day. Watch out for @soul1732!
-`;
-
 const WriteLore = ({
   mentionableTokens,
 }: {
@@ -143,13 +135,15 @@ const WriteLore = ({
             imageUploader={async (f: File) => {
               try {
                 const res = await pinFileToIpfs(f, -1, "N/A");
+                const url = `ipfs://${res.IpfsHash}`;
 
-                const { newSrc: url } = getCloudinaryFrontedImageSrc(
-                  `ipfs://${res.IpfsHash}`
-                );
+                const { newSrc: cloudinaryUrl } =
+                  getCloudinaryFrontedImageSrc(url);
+
                 if (!firstImageUrl) {
-                  setFirstImageUrl(url);
+                  setFirstImageUrl(cloudinaryUrl);
                 }
+
                 return { url };
               } catch (e: any) {
                 console.error(e);

@@ -44,6 +44,7 @@ export function markdownToHtmlFunctionGenerator(
       xhtml: true,
       sanitizer,
     });
+
     return html;
   };
 }

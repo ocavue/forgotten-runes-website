@@ -8,6 +8,7 @@ import {
   NodeSpecOverride,
   uniqueId,
 } from "remirror";
+import { getCloudinaryFrontedImageSrc } from "../Lore/LoreMarkdownRenderer";
 import { sleep } from "./editorUtils";
 
 class ImageExtension extends FileExtension {
@@ -22,6 +23,11 @@ class ImageExtension extends FileExtension {
     let spec = super.createNodeSpec(extra, override);
     return {
       ...spec,
+      attrs: {
+        ...spec.attrs,
+        ...extra.defaults(),
+        ipfs: { default: null },
+      },
       inline: true,
       parseDOM: [
         {
@@ -29,23 +35,39 @@ class ImageExtension extends FileExtension {
           priority: ExtensionPriority.High,
           getAttrs: (dom): FileAttributes => {
             const img = dom as HTMLImageElement;
+
             const url = img.getAttribute("src") || "";
+            const { ipfs } = img.dataset;
             const fileName = img.getAttribute("alt") || "";
-            const attrs = { url, fileName };
+            const attrs = { ...extra.parse(dom), url, fileName, ipfs };
             return attrs;
           },
         },
       ],
       toDOM: (node) => {
-        const { url, fileName } = node.attrs;
-        const attrs = { src: url, alt: fileName };
+        let { url, fileName, ipfs } = node.attrs;
+        let src = url;
+
+        if (url.startsWith("ipfs://")) {
+          ipfs = url;
+          src = getCloudinaryFrontedImageSrc(url).newSrc;
+        }
+
+        const attrs = {
+          ...extra.dom(node),
+          src,
+          alt: fileName,
+          "data-ipfs": ipfs,
+        };
         return ["img", attrs];
       },
     };
   }
 }
 
-export type ImageUploader = (file: File) => Promise<{ url: string }>;
+export type ImageUploader = (
+  file: File
+) => Promise<{ url: string; ipfs?: string }>;
 
 // TODO: replace this to actual implementation
 const defaultImageUploader: ImageUploader = async (file) => {
@@ -91,12 +113,25 @@ export function createImageExtension({
 }) {
   return new ImageExtension({
     pasteRuleRegexp: /^.*image.*$/i,
-    // Support storing the `ipfs://` image
-    extraAttributes: { ipfs: { default: null, parseDOM: "data-ipfs" } },
     render: (props): JSX.Element => {
       const attrs = props.node.attrs as FileAttributes;
       if (attrs.url) {
-        return <img src={attrs.url} title={attrs.fileName} />;
+        let extraProps: Partial<Record<string, string>> = {};
+        let src = attrs.url;
+
+        if (attrs.url?.startsWith("ipfs://")) {
+          extraProps["data-ipfs"] = attrs.url;
+          src = getCloudinaryFrontedImageSrc(attrs.url).newSrc;
+        }
+
+        return (
+          <img
+            src={src}
+            title={attrs.fileName}
+            alt={attrs.fileName}
+            {...extraProps}
+          />
+        );
       } else {
         return <div>Uploading {attrs.fileName} ...</div>;
       }

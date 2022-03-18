@@ -209,9 +209,22 @@ const turndownService = new TurndownService({
   })
   .addRule("ipfs", {
     filter: ["img"],
+
     replacement: (content, node) => {
-      console.log({ content, node });
-      return content;
+      if (!(node instanceof HTMLElement)) {
+        return content;
+      }
+
+      console.log(node.dataset);
+
+      if (!node.dataset.ipfs?.startsWith("ipfs://")) {
+        return content;
+      }
+
+      const { ipfs } = node.dataset;
+      const alt = node.getAttribute("alt") ?? "";
+      console.log({ content, node, ipfs, alt });
+      return `![${alt}](${ipfs})`;
     },
   })
 

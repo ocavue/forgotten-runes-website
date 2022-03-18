@@ -220,11 +220,15 @@ const WriteLore = ({
                 imageUploader={async (f: File) => {
                   try {
                     const res = await pinFileToIpfs(f, -1, "N/A");
-
                     const url = `ipfs://${res.IpfsHash}`;
+
+                    const { newSrc: cloudinaryUrl } =
+                      getCloudinaryFrontedImageSrc(url);
+
                     if (!firstImageUrl) {
-                      setFirstImageUrl(url);
+                      setFirstImageUrl(cloudinaryUrl);
                     }
+
                     return { url };
                   } catch (e: any) {
                     console.error(e);
