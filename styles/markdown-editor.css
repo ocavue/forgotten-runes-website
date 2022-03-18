@@ -40,3 +40,9 @@
 .remirror-theme .remirror-floating-popover {
   background-color: #212121;
 }
+
+.remirror-theme .remirror-floating-popover .suggestion.highlighted {
+  outline-style: dashed;
+  outline-width: 2px;
+  outline-color: #d8584fc7;
+}
