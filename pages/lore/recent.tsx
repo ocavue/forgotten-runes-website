@@ -58,76 +58,82 @@ const RecentLorePage = ({
 export async function getStaticProps(context: GetStaticPropsContext) {
   const provider = await getProvider(true);
 
-  const recentLoreData = await client.query({
-    query: gql`
-      query Query {
-        PaginatedLore(
-          limit: 20
-          order_by: { createdAtBlock: desc }
-          where: { _and: { nsfw: { _eq: false }, struck: { _eq: false } } }
-        ) {
-          createdAtBlock
-          token {
-            wizard {
-              image
-              name
-              backgroundColor
+  let recentLore: any[];
+
+  if (!process.env.GRAPHQL_ENDPOINT) {
+    recentLore = [];
+  } else {
+    const recentLoreData = await client.query({
+      query: gql`
+        query Query {
+          PaginatedLore(
+            limit: 20
+            order_by: { createdAtBlock: desc }
+            where: { _and: { nsfw: { _eq: false }, struck: { _eq: false } } }
+          ) {
+            createdAtBlock
+            token {
+              wizard {
+                image
+                name
+                backgroundColor
+              }
+              soul {
+                image
+                name
+                backgroundColor
+              }
+              pony {
+                image
+                name
+                backgroundColor
+              }
+              tokenId
             }
-            soul {
-              image
-              name
-              backgroundColor
-            }
-            pony {
-              image
-              name
-              backgroundColor
-            }
-            tokenId
+            markdownText
+            page
+            firstImage
+            slug
+            creator
+            backgroundColor
           }
-          markdownText
-          page
-          firstImage
-          slug
-          creator
-          backgroundColor
         }
-      }
-    `,
-    fetchPolicy: "no-cache",
-  });
+      `,
+      fetchPolicy: "no-cache",
+    });
 
-  const recentLore = await Promise.all(
-    (recentLoreData.data?.PaginatedLore ?? []).map(async (entry: any) => {
-      const token =
-        entry.token?.wizard ?? entry.token?.soul ?? entry.token?.pony;
-      const name = token?.name ?? "Unknown";
-      const characterImage = token?.image;
+    recentLore = await Promise.all(
+      (recentLoreData.data?.PaginatedLore ?? []).map(async (entry: any) => {
+        const token =
+          entry.token?.wizard ?? entry.token?.soul ?? entry.token?.pony;
+        const name = token?.name ?? "Unknown";
+        const characterImage = token?.image;
 
-      const result: RecentLoreEntryType = {
-        createdAtTimestamp: (await provider.getBlock(entry.createdAtBlock))
-          .timestamp,
-        title: `${getOrdinal(entry.page)} entry for ${name}`,
-        image: entry?.firstImage ?? characterImage,
-        pixelateImage: !entry?.firstImage,
-        coverImageFit: !!entry?.firstImage,
-        backgroundColor: token?.backgroundColor
-          ? `#${token?.backgroundColor}`
-          : "black",
-        story: `${markdownToTxt(entry?.markdownText ?? "Image only lore")
-          .padEnd(256)
-          .substring(0, 256)
-          .trim()}...`,
-        url: getLoreUrl(
-          entry.slug,
-          entry.token.tokenId,
-          getLoreAsEvenPage(entry.page - 1)
-        ),
-      };
+        const result: RecentLoreEntryType = {
+          createdAtTimestamp: (await provider.getBlock(entry.createdAtBlock))
+            .timestamp,
+          title: `${getOrdinal(entry.page)} entry for ${name}`,
+          image: entry?.firstImage ?? characterImage,
+          pixelateImage: !entry?.firstImage,
+          coverImageFit: !!entry?.firstImage,
+          backgroundColor: token?.backgroundColor
+            ? `#${token?.backgroundColor}`
+            : "black",
+          story: `${markdownToTxt(entry?.markdownText ?? "Image only lore")
+            .padEnd(256)
+            .substring(0, 256)
+            .trim()}...`,
+          url: getLoreUrl(
+            entry.slug,
+            entry.token.tokenId,
+            getLoreAsEvenPage(entry.page - 1)
+          ),
+        };
 
-      return result;
-    })
-  );
+        return result;
+      })
+    );
+  }
 
   return {
     props: { recentLore: recentLore },

@@ -10,6 +10,14 @@ import React from "react";
 import Spacer from "../components/Spacer";
 
 export default function FaqPage({ entry }: { entry: Entry<any> }) {
+  if (!entry) {
+    return (
+      <InfoPageLayout size={"wide"}>
+        <h1>Whoops, we had no content for this page :(</h1>
+      </InfoPageLayout>
+    );
+  }
+
   return (
     <InfoPageLayout size={"wide"}>
       <Flex flexDirection={"column"} width={"100%"} alignItems={"center"}>
@@ -131,13 +139,21 @@ export default function FaqPage({ entry }: { entry: Entry<any> }) {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
-  const client = createClient({
-    space: process.env.CONTENTFUL_SPACE as string,
-    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
-  });
+  let entry: any = null;
 
-  const entry = await client.getEntry("6yF1z7Y7tv3vOChPST5Jxj"); // TODO: maybe some json config for specific static pages
-  // console.log(entry);
+  if (process.env.CONTENTFUL_SPACE) {
+    const client = createClient({
+      space: process.env.CONTENTFUL_SPACE as string,
+      accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
+    });
+
+    entry = await client.getEntry("6yF1z7Y7tv3vOChPST5Jxj", { locale }); // TODO: maybe some json config for specific static pages
+
+    if (!entry) {
+      //default to english
+      entry = await client.getEntry("6yF1z7Y7tv3vOChPST5Jxj");
+    }
+  }
 
   return {
     props: {
