@@ -353,31 +353,33 @@ export const getStaticPaths: GetStaticPaths = async ({
     // Map the path into the static paths object required by Next.js
     .map(({ slug, locale }) => ({ params: { slug }, locale }));
 
-  const client = createClient({
-    space: process.env.CONTENTFUL_SPACE as string,
-    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
-  });
+  if (process.env.CONTENTFUL_SPACE) {
+    const client = createClient({
+      space: process.env.CONTENTFUL_SPACE as string,
+      accessToken: process.env.CONTENTFUL_ACCESS_TOKEN as string,
+    });
 
-  const englishEntries = await client.getEntries({
-    content_type: "blogPost",
-    locale: "en-US",
-  });
+    const englishEntries = await client.getEntries({
+      content_type: "blogPost",
+      locale: "en-US",
+    });
 
-  const japaneseEntries = await client.getEntries({
-    content_type: "blogPost",
-    locale: "ja",
-  });
+    const japaneseEntries = await client.getEntries({
+      content_type: "blogPost",
+      locale: "ja",
+    });
 
-  const entries = englishEntries.items.concat(japaneseEntries.items);
+    const entries = englishEntries.items.concat(japaneseEntries.items);
 
-  paths.push(
-    ...entries.map((entry: any) => ({
-      params: {
-        slug: entry.fields.slug,
-      },
-      locale: entry.sys.locale,
-    }))
-  );
+    paths.push(
+      ...entries.map((entry: any) => ({
+        params: {
+          slug: entry.fields.slug,
+        },
+        locale: entry.sys.locale,
+      }))
+    );
+  }
 
   return {
     paths,

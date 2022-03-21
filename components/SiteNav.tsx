@@ -312,6 +312,11 @@ export default function SiteNav({
             </a>
           </li>
           <li className="item">
+            <a href="https://forgotten.market/" className="icon-link">
+              <ResponsivePixelImg src="/static/img/icons/nav/button_bag_default.png" />
+            </a>
+          </li>
+          <li className="item">
             <a href="https://twitter.com/forgottenrunes" className="icon-link">
               <ResponsivePixelImg src="/static/img/icons/nav/twitter_default.png" />
             </a>
