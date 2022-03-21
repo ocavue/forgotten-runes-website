@@ -5,6 +5,7 @@ import {
   // ExtensionMentionAtomTheme
 } from "remirror";
 import { MentionAtomNodeAttributes } from "remirror/extensions";
+import { cursorPositioner } from "./Positioners";
 
 export function Tagging({
   mentionableTokens,
@@ -13,11 +14,15 @@ export function Tagging({
 }) {
   const [items, setItems] = useState<MentionAtomNodeAttributes[]>([]);
   const { state, getMenuProps, getItemProps, indexIsHovered, indexIsSelected } =
-    useMentionAtom({ items: items });
+    useMentionAtom({ items });
   const codeblockActive = useActive().codeBlock();
 
   useEffect(() => {
     if (!state) {
+      if (items.length) {
+        setItems([]);
+      }
+
       return;
     }
 
@@ -34,17 +39,20 @@ export function Tagging({
   }, [state]);
 
   const enabled = !!state && !codeblockActive;
+  const menuProps = getMenuProps();
+  console.log(menuProps.ref);
+  console.log(menuProps);
 
   return (
     <FloatingWrapper
-      positioner="cursor"
+      positioner={cursorPositioner}
       enabled={enabled}
-      placement="bottom-start"
+      placement="auto-end"
       // containerClass="mention-container"
       renderOutsideEditor
     >
       <div
-        {...getMenuProps()}
+        {...menuProps}
         className={cx(
           "suggestions"
           // ExtensionMentionAtomTheme.MENTION_ATOM_POPUP_WRAPPER

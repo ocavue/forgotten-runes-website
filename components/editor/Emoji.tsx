@@ -6,6 +6,7 @@ import {
   useActive,
 } from "@remirror/react";
 import { cx, ExtensionEmojiTheme } from "remirror";
+import { cursorPositioner } from "./Positioners";
 
 /**
  * Display the image for the emoji displayed via the CDN.
@@ -29,13 +30,13 @@ const emptyList: never[] = [];
  */
 export const EmojiPopupComponent: FC = () => {
   const { state, getMenuProps, getItemProps, indexIsHovered, indexIsSelected } =
-    useEmoji();
+    useEmoji({});
   const codeblockActive = useActive().codeBlock();
   const enabled = !!state && !codeblockActive;
 
   return (
     <FloatingWrapper
-      positioner="cursor"
+      positioner={cursorPositioner}
       enabled={enabled}
       placement="auto-end"
       renderOutsideEditor
