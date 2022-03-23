@@ -8,6 +8,7 @@ import NextNprogress from "nextjs-progressbar";
 
 import "../public/static/game/wizards/fonts.css";
 
+import "@remirror/styles/all.css";
 import "react-markdown-editor-lite/lib/index.css";
 import "../styles/root.css";
 import "../styles/markdown-editor.css";
