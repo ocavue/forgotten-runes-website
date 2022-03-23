@@ -6,7 +6,7 @@ export function createLinkExtension() {
   });
 
   extension.addHandler("onClick", (event, data) => {
-    alert(`You clicked link: ${JSON.stringify(data)}`);
+    // alert(`You clicked link: ${JSON.stringify(data)}`);
     // TODO: go to the link target
     return true;
   });
