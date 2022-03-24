@@ -10,7 +10,7 @@ export function createMentionExtension() {
 
   extension.addHandler("onClick", (event, nodeWithPosition) => {
     const attrs = nodeWithPosition.node.attrs as MentionAtomNodeAttributes;
-    alert(`You clicked: ${JSON.stringify(attrs)}`);
+    // alert(`You clicked: ${JSON.stringify(attrs)}`);
     // TODO: go to the mention target
     return true;
   });
