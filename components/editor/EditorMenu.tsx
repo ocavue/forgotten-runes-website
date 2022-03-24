@@ -234,6 +234,10 @@ const LinkWrapper = styled.div`
   border: 1px white solid;
 
   a {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: white;
     font-size: 14px;
     text-decoration: none;
@@ -253,8 +257,9 @@ const OpenLink = (props: OpenLinkProps) => {
       {url && (
         <LinkWrapper>
           <a href={url} target="_blank" rel="noreferrer noopener">
-            {url} ⬈
-          </a>
+            {url}
+          </a>{" "}
+          ⬈
         </LinkWrapper>
       )}
     </FloatingWrapper>
