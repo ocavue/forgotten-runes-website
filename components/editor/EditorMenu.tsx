@@ -252,7 +252,9 @@ const OpenLink = (props: OpenLinkProps) => {
     >
       {url && (
         <LinkWrapper>
-          <a href={url}>{url} ⬈</a>
+          <a href={url} target="_blank" rel="noreferrer noopener">
+            {url} ⬈
+          </a>
         </LinkWrapper>
       )}
     </FloatingWrapper>
