@@ -1,4 +1,9 @@
-import { Coords, EditorState, isTextSelection } from "remirror";
+import {
+  Coords,
+  EditorState,
+  getSelectedWord,
+  isTextSelection,
+} from "remirror";
 import {
   hasStateChanged,
   // isPositionVisible,
@@ -90,3 +95,37 @@ export const selectionPositioner = createSelectionPositioner(
 export const cursorPositioner = createSelectionPositioner(
   (state) => state.selection.empty
 );
+
+/**
+ * Creates a position which captures the current active word. Nothing is returned
+ * if no word is active.
+ *
+ * This is only active when the selection is empty (cursor selection)
+ *
+ * @remarks
+ *
+ * Creates a rect that wraps the nearest word.
+ */
+export const nearestWordPositioner = selectionPositioner.clone(() => ({
+  getActive: (props) => {
+    const { state, view } = props;
+
+    if (!state.selection.empty) {
+      return Positioner.EMPTY;
+    }
+
+    const word = getSelectedWord(state);
+
+    if (!word) {
+      return Positioner.EMPTY;
+    }
+
+    try {
+      return [
+        { from: view.coordsAtPos(word.from), to: view.coordsAtPos(word.to) },
+      ];
+    } catch {
+      return Positioner.EMPTY;
+    }
+  },
+}));

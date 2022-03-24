@@ -11,11 +11,13 @@ import {
   useChainedCommands,
   useMarkRange,
   useExtension,
+  FloatingWrapper,
 } from "@remirror/react";
 import { useCallback, useMemo, useState } from "react";
 import { LinkExtension } from "remirror/extensions";
 import { ModalDecorator } from "../ui/ModalDecorator";
 import Button from "../ui/Button";
+import { nearestWordPositioner } from "./Positioners";
 
 const ConnectModal = styled(ModalDecorator)`
   &__Overlay {
@@ -175,6 +177,7 @@ interface LinkModalProps {
 const LinkModal = (props: LinkModalProps) => {
   const { isOpen, url, onSubmitLink, onClose } = props;
   const [value, setValue] = useState(url);
+
   return (
     <ConnectModal isOpen={isOpen} onRequestClose={onClose}>
       <Wrapper>
@@ -221,6 +224,41 @@ const Label = styled.label`
   margin-right: 10px;
 `;
 
+interface OpenLinkProps {
+  url: string;
+}
+
+const LinkWrapper = styled.div`
+  background: #222;
+  padding: 0px 3px;
+  border: 1px white solid;
+
+  a {
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: normal;
+  }
+`;
+
+const OpenLink = (props: OpenLinkProps) => {
+  const { url } = props;
+
+  return (
+    <FloatingWrapper
+      enabled={!!url}
+      placement="bottom"
+      positioner={nearestWordPositioner}
+    >
+      {url && (
+        <LinkWrapper>
+          <a href={url}>{url} ⬈</a>
+        </LinkWrapper>
+      )}
+    </FloatingWrapper>
+  );
+};
+
 export const EditorMenu = () => {
   const {
     url,
@@ -258,6 +296,7 @@ export const EditorMenu = () => {
           onSubmitLink={onSubmitLink}
         />
         <Toolbar items={toolbarItems} refocusEditor label="Top Toolbar" />
+        <OpenLink url={url} />
       </MenuContainer>
     </>
   );
