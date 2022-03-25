@@ -40,8 +40,6 @@ export function Tagging({
 
   const enabled = !!state && !codeblockActive;
   const menuProps = getMenuProps();
-  console.log(menuProps.ref);
-  console.log(menuProps);
 
   return (
     <FloatingWrapper

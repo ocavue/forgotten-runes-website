@@ -215,15 +215,12 @@ const turndownService = new TurndownService({
         return content;
       }
 
-      console.log(node.dataset);
-
       if (!node.dataset.ipfs?.startsWith("ipfs://")) {
         return content;
       }
 
       const { ipfs } = node.dataset;
       const alt = node.getAttribute("alt") ?? "";
-      console.log({ content, node, ipfs, alt });
       return `![${alt}](${ipfs})`;
     },
   })
